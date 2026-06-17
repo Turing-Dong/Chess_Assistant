@@ -34,16 +34,16 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "D:/ESP/Espressif/tools/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-objdump.exe")
+  set(CMAKE_OBJDUMP "D:/ESP/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/esp-idf/esp_hw_support/port/esp32s3/cmake_install.cmake")
+  include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_hw_support/port/esp32s3/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/esp-idf/esp_hw_support/lowpower/cmake_install.cmake")
+  include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_hw_support/lowpower/cmake_install.cmake")
 endif()
 

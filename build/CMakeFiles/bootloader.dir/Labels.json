@@ -2,34 +2,34 @@
 	"sources" : 
 	[
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/CMakeFiles/bootloader"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/CMakeFiles/bootloader"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/CMakeFiles/bootloader.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/CMakeFiles/bootloader.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/CMakeFiles/bootloader-complete.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/CMakeFiles/bootloader-complete.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
 		},
 		{
-			"file" : "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+			"file" : "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
 		}
 	],
 	"target" : 

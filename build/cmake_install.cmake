@@ -1,4 +1,4 @@
-# Install script for directory: G:/1_Personal_File/chessAssistant/programV2.0/programV2.1
+# Install script for directory: G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,12 +34,12 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "D:/ESP/Espressif/tools/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-objdump.exe")
+  set(CMAKE_OBJDUMP "D:/ESP/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/esp-idf/cmake_install.cmake")
+  include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

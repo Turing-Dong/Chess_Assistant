@@ -1,4 +1,4 @@
-/* * Data converted from G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 #if !defined (__APPLE__) && !defined (__linux__)

@@ -29393,6 +29393,181 @@
                 "id": "component-config-wi-fi-provisioning-manager",
                 "title": "Wi-Fi Provisioning Manager",
                 "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "OV5640_SUPPORT",
+                        "name": "OV5640_SUPPORT",
+                        "range": null,
+                        "title": "Support OV5640 5MP",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice SCCB_HARDWARE_I2C_PORT>",
+                                "help": null,
+                                "id": "SCCB_HARDWARE_I2C_PORT0",
+                                "name": "SCCB_HARDWARE_I2C_PORT0",
+                                "range": null,
+                                "title": "I2C0",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice SCCB_HARDWARE_I2C_PORT>",
+                                "help": null,
+                                "id": "SCCB_HARDWARE_I2C_PORT1",
+                                "name": "SCCB_HARDWARE_I2C_PORT1",
+                                "range": null,
+                                "title": "I2C1",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "component-config-camera-configuration-i2c-peripheral-to-use-for-sccb",
+                        "name": "SCCB_HARDWARE_I2C_PORT",
+                        "title": "I2C peripheral to use for SCCB",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "SCCB_CLK_FREQ",
+                        "name": "SCCB_CLK_FREQ",
+                        "range": [
+                            100000,
+                            400000
+                        ],
+                        "title": "SCCB clk frequency",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "CAMERA_TASK_STACK_SIZE",
+                        "name": "CAMERA_TASK_STACK_SIZE",
+                        "range": null,
+                        "title": "CAM task stack size",
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice CAMERA_TASK_PINNED_TO_CORE>",
+                                "help": null,
+                                "id": "CAMERA_CORE0",
+                                "name": "CAMERA_CORE0",
+                                "range": null,
+                                "title": "CORE0",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice CAMERA_TASK_PINNED_TO_CORE>",
+                                "help": null,
+                                "id": "CAMERA_CORE1",
+                                "name": "CAMERA_CORE1",
+                                "range": null,
+                                "title": "CORE1",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice CAMERA_TASK_PINNED_TO_CORE>",
+                                "help": null,
+                                "id": "CAMERA_NO_AFFINITY",
+                                "name": "CAMERA_NO_AFFINITY",
+                                "range": null,
+                                "title": "NO_AFFINITY",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "component-config-camera-configuration-camera-task-pinned-to-core",
+                        "name": "CAMERA_TASK_PINNED_TO_CORE",
+                        "title": "Camera task pinned to core",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "CAMERA_DMA_BUFFER_SIZE_MAX",
+                        "name": "CAMERA_DMA_BUFFER_SIZE_MAX",
+                        "range": [
+                            8192,
+                            32768
+                        ],
+                        "title": "DMA buffer size",
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice CAMERA_CONV_PROTOCOL>",
+                                        "help": null,
+                                        "id": "LCD_CAM_CONV_BT601_ENABLED",
+                                        "name": "LCD_CAM_CONV_BT601_ENABLED",
+                                        "range": null,
+                                        "title": "BT601",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice CAMERA_CONV_PROTOCOL>",
+                                        "help": null,
+                                        "id": "LCD_CAM_CONV_BT709_ENABLED",
+                                        "name": "LCD_CAM_CONV_BT709_ENABLED",
+                                        "range": null,
+                                        "title": "BT709",
+                                        "type": "bool"
+                                    }
+                                ],
+                                "depends_on": "CAMERA_CONVERTER_ENABLED",
+                                "help": null,
+                                "id": "component-config-camera-configuration-enable-camera-rgb-yuv-converter-camera-converter-protocol",
+                                "name": "CAMERA_CONV_PROTOCOL",
+                                "title": "Camera converter protocol",
+                                "type": "choice"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "CAMERA_CONVERTER_ENABLED",
+                                "help": null,
+                                "id": "LCD_CAM_CONV_FULL_RANGE_ENABLED",
+                                "name": "LCD_CAM_CONV_FULL_RANGE_ENABLED",
+                                "range": null,
+                                "title": "Camera converter full range mode",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": "IDF_TARGET_ESP32S3",
+                        "help": null,
+                        "id": "CAMERA_CONVERTER_ENABLED",
+                        "name": "CAMERA_CONVERTER_ENABLED",
+                        "range": null,
+                        "title": "Enable camera RGB/YUV converter",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-camera-configuration",
+                "title": "Camera configuration",
+                "type": "menu"
             }
         ],
         "depends_on": null,
