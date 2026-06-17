@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/CMakeFiles/bootloader
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/CMakeFiles/bootloader.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/CMakeFiles/bootloader-complete.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+G:/1_Personal_File/chessAssistant/programV2.0/programV2.1/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

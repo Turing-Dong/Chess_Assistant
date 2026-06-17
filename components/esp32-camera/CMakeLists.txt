@@ -1,0 +1,27 @@
+idf_component_register(
+    SRCS
+        "driver/esp_camera.c"
+        "driver/cam_hal.c"
+        "driver/sccb.c"
+        "driver/sensor.c"
+        "sensors/ov5640.c"
+        "target/esp32s3/ll_cam.c"
+        "conversions/yuv.c"
+        "conversions/to_jpg.cpp"
+        "conversions/to_bmp.c"
+        "conversions/jpge.cpp"
+        "conversions/esp_jpg_decode.c"
+    INCLUDE_DIRS
+        "driver/include"
+        "conversions/include"
+    PRIV_INCLUDE_DIRS
+        "driver/private_include"
+        "sensors/private_include"
+        "target/private_include"
+        "target/jpeg_include"
+        "conversions/private_include"
+    REQUIRES
+        driver
+        esp_timer
+        nvs_flash
+)

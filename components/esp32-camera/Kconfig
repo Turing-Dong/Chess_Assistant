@@ -1,0 +1,64 @@
+menu "Camera configuration"
+
+    config OV5640_SUPPORT
+        bool "Support OV5640 5MP"
+        default y
+
+    choice SCCB_HARDWARE_I2C_PORT
+        bool "I2C peripheral to use for SCCB"
+        default SCCB_HARDWARE_I2C_PORT1
+
+        config SCCB_HARDWARE_I2C_PORT0
+            bool "I2C0"
+        config SCCB_HARDWARE_I2C_PORT1
+            bool "I2C1"
+    endchoice
+
+    config SCCB_CLK_FREQ
+        int "SCCB clk frequency"
+        default 100000
+        range 100000 400000
+
+    config CAMERA_TASK_STACK_SIZE
+        int "CAM task stack size"
+        default 2048
+
+    choice CAMERA_TASK_PINNED_TO_CORE
+        bool "Camera task pinned to core"
+        default CAMERA_CORE0
+
+        config CAMERA_CORE0
+            bool "CORE0"
+        config CAMERA_CORE1
+            bool "CORE1"
+        config CAMERA_NO_AFFINITY
+            bool "NO_AFFINITY"
+    endchoice
+
+    config CAMERA_DMA_BUFFER_SIZE_MAX
+        int "DMA buffer size"
+        range 8192 32768
+        default 32768
+
+    config CAMERA_CONVERTER_ENABLED
+        bool "Enable camera RGB/YUV converter"
+        depends on IDF_TARGET_ESP32S3
+        default n
+
+    choice CAMERA_CONV_PROTOCOL
+        bool "Camera converter protocol"
+        depends on CAMERA_CONVERTER_ENABLED
+        default LCD_CAM_CONV_BT601_ENABLED
+
+        config LCD_CAM_CONV_BT601_ENABLED
+            bool "BT601"
+        config LCD_CAM_CONV_BT709_ENABLED
+            bool "BT709"
+    endchoice
+
+    config LCD_CAM_CONV_FULL_RANGE_ENABLED
+        bool "Camera converter full range mode"
+        depends on CAMERA_CONVERTER_ENABLED
+        default y
+
+endmenu
