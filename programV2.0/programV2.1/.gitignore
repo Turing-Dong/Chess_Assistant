@@ -1,0 +1,12 @@
+# ESP-IDF / CMake build output
+**/build/
+**/managed_components/
+**/sdkconfig.old
+
+# Python/tooling cache
+**/__pycache__/
+*.py[cod]
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
