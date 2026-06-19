@@ -1,24 +1,3 @@
-/**
- ****************************************************************************************************
- * @file        camera.c
- * @author      正点原子团队(ALIENTEK)
- * @version     V1.0
- * @date        2023-08-26
- * @brief       摄像头驱动代码
- *
- * @license     Copyright (c) 2020-2032, 广州市星翼电子科技有限公司
- ****************************************************************************************************
- * @attention
- *
- * 实验平台:正点原子 ESP32-S3 开发板
- * 在线视频:www.yuanzige.com
- * 技术论坛:www.openedv.com
- * 公司网址:www.alientek.com
- * 购买地址:openedv.taobao.com
- *
- ****************************************************************************************************
- */
-
 #include "camera.h"
 
 
@@ -64,15 +43,18 @@ uint8_t camera_init(void)
 
     if (CAM_PIN_PWDN == GPIO_NUM_NC)
     {
+        /* OV5640 PWDN is active high. */
         CAM_PWDN(0);
+        vTaskDelay(pdMS_TO_TICKS(10));
     } 
 
     if (CAM_PIN_RESET == GPIO_NUM_NC)
     { 
+        /* OV5640 RESET is active low. */
         CAM_RST(0);
-        vTaskDelay(20);
+        vTaskDelay(pdMS_TO_TICKS(20));
         CAM_RST(1);
-        vTaskDelay(20);
+        vTaskDelay(pdMS_TO_TICKS(20));
     }
 
     /* 摄像头初始化 */

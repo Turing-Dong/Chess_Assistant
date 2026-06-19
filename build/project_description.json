@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "05_Time_slice_scheduling",
-    "project_version":    "78924e2-dirty",
+    "project_version":    "5446e42-dirty",
     "project_path":       "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode",
     "idf_path":           "D:/ESP/Espressif/frameworks/esp-idf-v5.3.1",
     "build_dir":          "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build",
