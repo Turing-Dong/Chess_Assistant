@@ -6,10 +6,8 @@ i2c_obj_t pca9555a_i2c_master;
 static uint16_t pca9555a_output_latch = PCA9555A_DEFAULT_OUTPUT;
 static uint16_t pca9555a_failed = 0;
 
-esp_err_t pca9555a_read_ports(uint8_t *data, size_t len)
+esp_err_t pca9555a_read_registers(uint8_t reg, uint8_t *data, size_t len)
 {
-    uint8_t reg = PCA9555A_INPUT_PORT0_REG;
-
     i2c_buf_t bufs[2] = {
         {.len = 1, .buf = &reg},
         {.len = len, .buf = data},
@@ -17,6 +15,11 @@ esp_err_t pca9555a_read_ports(uint8_t *data, size_t len)
 
     return i2c_transfer(&pca9555a_i2c_master, PCA9555A_ADDR, 2, bufs,
                         I2C_FLAG_WRITE | I2C_FLAG_READ | I2C_FLAG_STOP);
+}
+
+esp_err_t pca9555a_read_ports(uint8_t *data, size_t len)
+{
+    return pca9555a_read_registers(PCA9555A_INPUT_PORT0_REG, data, len);
 }
 
 esp_err_t pca9555a_write_ports(uint8_t reg, uint8_t *data, size_t len)

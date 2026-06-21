@@ -68,7 +68,7 @@
 
 /* Configuration bit: 1=input, 0=output. P0_3..P0_6 are low-active keys. */
 #define PCA9555A_DEFAULT_CONFIG        0xFF78
-#define PCA9555A_DEFAULT_OUTPUT        PCA9555A_OV5640_RESET_IO
+#define PCA9555A_DEFAULT_OUTPUT        (PCA9555A_OV5640_RESET_IO | PCA9555A_BEEP_IO)
 
 #define PCA9555A_KEY1                  pca9555a_pin_read(PCA9555A_KEY1_IO)
 #define PCA9555A_KEY2                  pca9555a_pin_read(PCA9555A_KEY2_IO)
@@ -81,6 +81,7 @@
 #define PCA9555A_KEY4_PRES             4
 
 void pca9555a_init(i2c_obj_t self);
+esp_err_t pca9555a_read_registers(uint8_t reg, uint8_t *data, size_t len);
 esp_err_t pca9555a_read_ports(uint8_t *data, size_t len);
 esp_err_t pca9555a_write_ports(uint8_t reg, uint8_t *data, size_t len);
 uint16_t pca9555a_ioconfig(uint16_t config_value);

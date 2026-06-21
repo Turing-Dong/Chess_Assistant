@@ -197,7 +197,7 @@ build dfu-flash: phony CMakeFiles/dfu-flash
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -509,7 +509,7 @@ build CMakeFiles/dfu-flash | ${cmake_ninja_workdir}CMakeFiles/dfu-flash: CUSTOM_
 # Utility command for edit_cache
 
 build esp-idf/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -653,7 +653,7 @@ build esp-idf/xtensa/libxtensa.a: C_STATIC_LIBRARY_LINKER____idf_xtensa_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/xtensa/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\xtensa && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\xtensa && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -789,7 +789,7 @@ build esp-idf/esp_driver_gpio/libesp_driver_gpio.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_gpio/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_gpio && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_gpio && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -909,7 +909,7 @@ build esp-idf/esp_pm/libesp_pm.a: C_STATIC_LIBRARY_LINKER____idf_esp_pm_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/esp_pm/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_pm && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_pm && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -1027,7 +1027,7 @@ build esp-idf/mbedtls/custom_bundle: phony
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -1122,7 +1122,7 @@ build esp-idf/mbedtls/mbedtls/apidoc: phony esp-idf/mbedtls/mbedtls/CMakeFiles/a
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -1200,7 +1200,7 @@ build esp-idf/mbedtls/mbedtls/CMakeFiles/apidoc | ${cmake_ninja_workdir}esp-idf/
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/include/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\include && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\include && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -1271,7 +1271,7 @@ build esp-idf/mbedtls/mbedtls/include/install/strip: phony esp-idf/mbedtls/mbedt
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/3rdparty/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\3rdparty && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\3rdparty && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -1391,7 +1391,7 @@ build esp-idf/mbedtls/mbedtls/3rdparty/everest/libeverest.a: CXX_STATIC_LIBRARY_
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/3rdparty/everest/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\3rdparty\everest && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\3rdparty\everest && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -1503,7 +1503,7 @@ build esp-idf/mbedtls/mbedtls/3rdparty/p256-m/libp256m.a: CXX_STATIC_LIBRARY_LIN
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/3rdparty/p256-m/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\3rdparty\p256-m && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\3rdparty\p256-m && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -2696,7 +2696,7 @@ build esp-idf/mbedtls/mbedtls/library/lib: phony esp-idf/mbedtls/mbedtls/library
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/library/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\library && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\library && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -2773,7 +2773,7 @@ build esp-idf/mbedtls/mbedtls/library/CMakeFiles/lib | ${cmake_ninja_workdir}esp
 # Utility command for edit_cache
 
 build esp-idf/mbedtls/mbedtls/pkgconfig/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\pkgconfig && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mbedtls\mbedtls\pkgconfig && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -2856,7 +2856,7 @@ build esp-idf/bootloader/encrypted-bootloader-flash: phony esp-idf/bootloader/CM
 # Utility command for edit_cache
 
 build esp-idf/bootloader/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\bootloader && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\bootloader && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -2960,7 +2960,7 @@ build esp-idf/esptool_py/app_check_size: phony esp-idf/esptool_py/CMakeFiles/app
 # Utility command for edit_cache
 
 build esp-idf/esptool_py/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esptool_py && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esptool_py && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -3089,7 +3089,7 @@ build esp-idf/partition_table/partition_table-flash: phony esp-idf/partition_tab
 # Utility command for edit_cache
 
 build esp-idf/partition_table/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\partition_table && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\partition_table && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -3218,7 +3218,7 @@ build esp-idf/partition_table/CMakeFiles/partition_table-flash | ${cmake_ninja_w
 build cmake_object_order_depends_target___idf_esp_app_format: phony || cmake_object_order_depends_target___idf_esp_bootloader_format
 
 build esp-idf/esp_app_format/CMakeFiles/__idf_esp_app_format.dir/esp_app_desc.c.obj: C_COMPILER____idf_esp_app_format_ D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_app_format/esp_app_desc.c || cmake_object_order_depends_target___idf_esp_app_format
-  DEFINES = -DESP_PLATFORM -DIDF_VER=\"v5.3.1-dirty\" -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -D PROJECT_NAME=\"05_Time_slice_scheduling\" -DPROJECT_VER=\"5446e42-dirty\"
+  DEFINES = -DESP_PLATFORM -DIDF_VER=\"v5.3.1-dirty\" -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -D PROJECT_NAME=\"05_Time_slice_scheduling\" -DPROJECT_VER=\"a8f83dd-dirty\"
   DEP_FILE = esp-idf\esp_app_format\CMakeFiles\__idf_esp_app_format.dir\esp_app_desc.c.obj.d
   FLAGS = -mlongcalls  -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-bzero -fno-builtin-stpcpy -fno-builtin-strncpy -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -mdisable-hardware-atomics -Og -fno-shrink-wrap -fmacro-prefix-map=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode=. -fmacro-prefix-map=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -std=gnu17 -Wno-old-style-declaration
   INCLUDES = -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_app_format/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/platform_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/esp_additions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/dma/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/ldo/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/. -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/heap/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/log/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/platform_port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/include/private -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/deprecated_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps/sntp -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/lwip/src/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/freertos/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/arch -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/sys
@@ -3246,7 +3246,7 @@ build esp-idf/esp_app_format/libesp_app_format.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_app_format/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_app_format && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_app_format && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -3350,7 +3350,7 @@ build esp-idf/esp_bootloader_format/libesp_bootloader_format.a: C_STATIC_LIBRARY
 # Utility command for edit_cache
 
 build esp-idf/esp_bootloader_format/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_bootloader_format && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_bootloader_format && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -3462,7 +3462,7 @@ build esp-idf/app_update/libapp_update.a: C_STATIC_LIBRARY_LINKER____idf_app_upd
 # Utility command for edit_cache
 
 build esp-idf/app_update/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\app_update && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\app_update && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -3574,7 +3574,7 @@ build esp-idf/esp_partition/libesp_partition.a: C_STATIC_LIBRARY_LINKER____idf_e
 # Utility command for edit_cache
 
 build esp-idf/esp_partition/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_partition && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_partition && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -3784,7 +3784,7 @@ build esp-idf/efuse/efuse_test_table: phony esp-idf/efuse/CMakeFiles/efuse_test_
 # Utility command for edit_cache
 
 build esp-idf/efuse/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\efuse && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\efuse && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -4061,7 +4061,7 @@ build esp-idf/bootloader_support/libbootloader_support.a: C_STATIC_LIBRARY_LINKE
 # Utility command for edit_cache
 
 build esp-idf/bootloader_support/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\bootloader_support && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\bootloader_support && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -4189,7 +4189,7 @@ build esp-idf/esp_mm/libesp_mm.a: C_STATIC_LIBRARY_LINKER____idf_esp_mm_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/esp_mm/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_mm && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_mm && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -4453,7 +4453,7 @@ build esp-idf/spi_flash/libspi_flash.a: C_STATIC_LIBRARY_LINKER____idf_spi_flash
 # Utility command for edit_cache
 
 build esp-idf/spi_flash/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\spi_flash && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\spi_flash && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -4871,7 +4871,7 @@ build esp-idf/esp_system/__ldgen_output_sections.ld: phony esp-idf/esp_system/CM
 # Utility command for edit_cache
 
 build esp-idf/esp_system/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -4943,7 +4943,7 @@ build esp-idf/esp_system/CMakeFiles/memory.ld | ${cmake_ninja_workdir}esp-idf/es
 # Custom command for esp-idf\esp_system\ld\memory.ld
 
 build esp-idf/esp_system/ld/memory.ld | ${cmake_ninja_workdir}esp-idf/esp_system/ld/memory.ld: CUSTOM_COMMAND D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld/esp32s3/memory.ld.in config/sdkconfig.h
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake.exe -DCC=D:/ESP/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe -DSOURCE=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld/esp32s3/memory.ld.in -DTARGET=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/memory.ld -DCONFIG_DIR=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -DLD_DIR=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld -P G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/linker_script_generator.cmake"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake.exe -DCC=D:/ESP/Espressif/tools/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe -DSOURCE=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld/esp32s3/memory.ld.in -DTARGET=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/memory.ld -DCONFIG_DIR=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -DLD_DIR=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld -P G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/linker_script_generator.cmake"
   DESC = Generating G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/memory.ld linker script...
   restat = 1
 
@@ -4958,7 +4958,7 @@ build esp-idf/esp_system/CMakeFiles/sections.ld.in | ${cmake_ninja_workdir}esp-i
 # Custom command for esp-idf\esp_system\ld\sections.ld.in
 
 build esp-idf/esp_system/ld/sections.ld.in | ${cmake_ninja_workdir}esp-idf/esp_system/ld/sections.ld.in: CUSTOM_COMMAND D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld/esp32s3/sections.ld.in config/sdkconfig.h
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake.exe -DCC=D:/ESP/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe -DSOURCE=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld/esp32s3/sections.ld.in -DTARGET=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/sections.ld.in -DCONFIG_DIR=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -DLD_DIR=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld -P G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/linker_script_generator.cmake"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake.exe -DCC=D:/ESP/Espressif/tools/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe -DSOURCE=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld/esp32s3/sections.ld.in -DTARGET=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/sections.ld.in -DCONFIG_DIR=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -DLD_DIR=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/ld -P G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/linker_script_generator.cmake"
   DESC = Generating G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp_system/ld/sections.ld.in linker script...
   restat = 1
 
@@ -4973,7 +4973,7 @@ build esp-idf/esp_system/CMakeFiles/__ldgen_output_sections.ld | ${cmake_ninja_w
 # Custom command for esp-idf\esp_system\ld\sections.ld
 
 build esp-idf/esp_system/ld/sections.ld | ${cmake_ninja_workdir}esp-idf/esp_system/ld/sections.ld: CUSTOM_COMMAND esp-idf/esp_system/ld/sections.ld.in D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gpio/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_pm/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_mm/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/spi_flash/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/app.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/common.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/soc.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/log/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/heap/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/dma/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/ldo/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/linker_common.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/newlib.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/system_libs.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gptimer/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_ringbuf/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_uart/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/app_trace/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_event/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_pcnt/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_spi/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_mcpwm/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ana_cmpr/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_dac/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_rmt/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdm/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2c/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ledc/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/twai/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_phy/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/vfs/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_netif/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/wpa_supplicant/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_wifi/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_eth/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_gdbstub/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_psram/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_lcd/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/espcoredump/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/ieee802154/linker.lf D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/openthread/linker.lf esp-idf/xtensa/libxtensa.a esp-idf/esp_driver_gpio/libesp_driver_gpio.a esp-idf/esp_pm/libesp_pm.a esp-idf/mbedtls/libmbedtls.a esp-idf/esp_app_format/libesp_app_format.a esp-idf/esp_bootloader_format/libesp_bootloader_format.a esp-idf/app_update/libapp_update.a esp-idf/esp_partition/libesp_partition.a esp-idf/efuse/libefuse.a esp-idf/bootloader_support/libbootloader_support.a esp-idf/esp_mm/libesp_mm.a esp-idf/spi_flash/libspi_flash.a esp-idf/esp_system/libesp_system.a esp-idf/esp_common/libesp_common.a esp-idf/esp_rom/libesp_rom.a esp-idf/hal/libhal.a esp-idf/log/liblog.a esp-idf/heap/libheap.a esp-idf/soc/libsoc.a esp-idf/esp_hw_support/libesp_hw_support.a esp-idf/freertos/libfreertos.a esp-idf/newlib/libnewlib.a esp-idf/pthread/libpthread.a esp-idf/cxx/libcxx.a esp-idf/esp_timer/libesp_timer.a esp-idf/esp_driver_gptimer/libesp_driver_gptimer.a esp-idf/esp_ringbuf/libesp_ringbuf.a esp-idf/esp_driver_uart/libesp_driver_uart.a esp-idf/app_trace/libapp_trace.a esp-idf/esp_event/libesp_event.a esp-idf/nvs_flash/libnvs_flash.a esp-idf/esp_driver_pcnt/libesp_driver_pcnt.a esp-idf/esp_driver_spi/libesp_driver_spi.a esp-idf/esp_driver_mcpwm/libesp_driver_mcpwm.a esp-idf/esp_driver_i2s/libesp_driver_i2s.a esp-idf/sdmmc/libsdmmc.a esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a esp-idf/esp_driver_rmt/libesp_driver_rmt.a esp-idf/esp_driver_tsens/libesp_driver_tsens.a esp-idf/esp_driver_sdm/libesp_driver_sdm.a esp-idf/esp_driver_i2c/libesp_driver_i2c.a esp-idf/esp_driver_ledc/libesp_driver_ledc.a esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a esp-idf/driver/libdriver.a esp-idf/esp_phy/libesp_phy.a esp-idf/esp_vfs_console/libesp_vfs_console.a esp-idf/vfs/libvfs.a esp-idf/lwip/liblwip.a esp-idf/esp_netif/libesp_netif.a esp-idf/wpa_supplicant/libwpa_supplicant.a esp-idf/esp_coex/libesp_coex.a esp-idf/esp_wifi/libesp_wifi.a esp-idf/unity/libunity.a esp-idf/cmock/libcmock.a esp-idf/console/libconsole.a esp-idf/http_parser/libhttp_parser.a esp-idf/esp-tls/libesp-tls.a esp-idf/esp_adc/libesp_adc.a esp-idf/esp_driver_cam/libesp_driver_cam.a esp-idf/esp_eth/libesp_eth.a esp-idf/esp_gdbstub/libesp_gdbstub.a esp-idf/esp_hid/libesp_hid.a esp-idf/tcp_transport/libtcp_transport.a esp-idf/esp_http_client/libesp_http_client.a esp-idf/esp_http_server/libesp_http_server.a esp-idf/esp_https_ota/libesp_https_ota.a esp-idf/esp_https_server/libesp_https_server.a esp-idf/esp_psram/libesp_psram.a esp-idf/esp_lcd/libesp_lcd.a esp-idf/protobuf-c/libprotobuf-c.a esp-idf/protocomm/libprotocomm.a esp-idf/esp_local_ctrl/libesp_local_ctrl.a esp-idf/espcoredump/libespcoredump.a esp-idf/wear_levelling/libwear_levelling.a esp-idf/fatfs/libfatfs.a esp-idf/json/libjson.a esp-idf/mqtt/libmqtt.a esp-idf/nvs_sec_provider/libnvs_sec_provider.a esp-idf/perfmon/libperfmon.a esp-idf/spiffs/libspiffs.a esp-idf/touch_element/libtouch_element.a esp-idf/usb/libusb.a esp-idf/wifi_provisioning/libwifi_provisioning.a esp-idf/main/libmain.a esp-idf/esp32-camera/libesp32-camera.a esp-idf/BSP/libBSP.a G$:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/sdkconfig || esp-idf/BSP/libBSP.a esp-idf/app_trace/libapp_trace.a esp-idf/app_update/libapp_update.a esp-idf/bootloader_support/libbootloader_support.a esp-idf/cmock/libcmock.a esp-idf/console/libconsole.a esp-idf/cxx/libcxx.a esp-idf/driver/libdriver.a esp-idf/efuse/libefuse.a esp-idf/esp-tls/libesp-tls.a esp-idf/esp32-camera/libesp32-camera.a esp-idf/esp_adc/libesp_adc.a esp-idf/esp_app_format/libesp_app_format.a esp-idf/esp_bootloader_format/libesp_bootloader_format.a esp-idf/esp_coex/libesp_coex.a esp-idf/esp_common/libesp_common.a esp-idf/esp_driver_cam/libesp_driver_cam.a esp-idf/esp_driver_gpio/libesp_driver_gpio.a esp-idf/esp_driver_gptimer/libesp_driver_gptimer.a esp-idf/esp_driver_i2c/libesp_driver_i2c.a esp-idf/esp_driver_i2s/libesp_driver_i2s.a esp-idf/esp_driver_ledc/libesp_driver_ledc.a esp-idf/esp_driver_mcpwm/libesp_driver_mcpwm.a esp-idf/esp_driver_pcnt/libesp_driver_pcnt.a esp-idf/esp_driver_rmt/libesp_driver_rmt.a esp-idf/esp_driver_sdm/libesp_driver_sdm.a esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a esp-idf/esp_driver_spi/libesp_driver_spi.a esp-idf/esp_driver_tsens/libesp_driver_tsens.a esp-idf/esp_driver_uart/libesp_driver_uart.a esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a esp-idf/esp_eth/libesp_eth.a esp-idf/esp_event/libesp_event.a esp-idf/esp_gdbstub/libesp_gdbstub.a esp-idf/esp_hid/libesp_hid.a esp-idf/esp_http_client/libesp_http_client.a esp-idf/esp_http_server/libesp_http_server.a esp-idf/esp_https_ota/libesp_https_ota.a esp-idf/esp_https_server/libesp_https_server.a esp-idf/esp_hw_support/libesp_hw_support.a esp-idf/esp_lcd/libesp_lcd.a esp-idf/esp_local_ctrl/libesp_local_ctrl.a esp-idf/esp_mm/libesp_mm.a esp-idf/esp_netif/libesp_netif.a esp-idf/esp_partition/libesp_partition.a esp-idf/esp_phy/libesp_phy.a esp-idf/esp_pm/libesp_pm.a esp-idf/esp_psram/libesp_psram.a esp-idf/esp_ringbuf/libesp_ringbuf.a esp-idf/esp_rom/libesp_rom.a esp-idf/esp_system/libesp_system.a esp-idf/esp_system/memory.ld esp-idf/esp_system/sections.ld.in esp-idf/esp_timer/libesp_timer.a esp-idf/esp_vfs_console/libesp_vfs_console.a esp-idf/esp_wifi/libesp_wifi.a esp-idf/espcoredump/libespcoredump.a esp-idf/fatfs/libfatfs.a esp-idf/freertos/libfreertos.a esp-idf/hal/libhal.a esp-idf/heap/libheap.a esp-idf/http_parser/libhttp_parser.a esp-idf/json/libjson.a esp-idf/log/liblog.a esp-idf/lwip/liblwip.a esp-idf/main/libmain.a esp-idf/mbedtls/custom_bundle esp-idf/mbedtls/libmbedtls.a esp-idf/mbedtls/mbedtls/3rdparty/everest/libeverest.a esp-idf/mbedtls/mbedtls/3rdparty/p256-m/libp256m.a esp-idf/mbedtls/mbedtls/library/libmbedcrypto.a esp-idf/mbedtls/mbedtls/library/libmbedtls.a esp-idf/mbedtls/mbedtls/library/libmbedx509.a esp-idf/mqtt/libmqtt.a esp-idf/newlib/libnewlib.a esp-idf/nvs_flash/libnvs_flash.a esp-idf/nvs_sec_provider/libnvs_sec_provider.a esp-idf/perfmon/libperfmon.a esp-idf/protobuf-c/libprotobuf-c.a esp-idf/protocomm/libprotocomm.a esp-idf/pthread/libpthread.a esp-idf/sdmmc/libsdmmc.a esp-idf/soc/libsoc.a esp-idf/spi_flash/libspi_flash.a esp-idf/spiffs/libspiffs.a esp-idf/tcp_transport/libtcp_transport.a esp-idf/touch_element/libtouch_element.a esp-idf/unity/libunity.a esp-idf/usb/libusb.a esp-idf/vfs/libvfs.a esp-idf/wear_levelling/libwear_levelling.a esp-idf/wifi_provisioning/libwifi_provisioning.a esp-idf/wpa_supplicant/libwpa_supplicant.a esp-idf/xtensa/libxtensa.a
-  COMMAND = esp-idf\esp_system\CMakeFiles\sections.ld-d65dc84.bat 8e4260dd2a27d227
+  COMMAND = esp-idf\esp_system\CMakeFiles\sections.ld-d65dc84.bat 04d84696e5e3cb41
   DESC = Generating ld/sections.ld
   restat = 1
 
@@ -4987,7 +4987,7 @@ build esp-idf/esp_system/ld/sections.ld | ${cmake_ninja_workdir}esp-idf/esp_syst
 # Utility command for edit_cache
 
 build esp-idf/esp_system/port/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system\port && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system\port && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -5058,7 +5058,7 @@ build esp-idf/esp_system/port/install/strip: phony esp-idf/esp_system/port/CMake
 # Utility command for edit_cache
 
 build esp-idf/esp_system/port/soc/esp32s3/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system\port\soc\esp32s3 && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_system\port\soc\esp32s3 && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -5162,7 +5162,7 @@ build esp-idf/esp_common/libesp_common.a: C_STATIC_LIBRARY_LINKER____idf_esp_com
 # Utility command for edit_cache
 
 build esp-idf/esp_common/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_common && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_common && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -5338,7 +5338,7 @@ build esp-idf/esp_rom/libesp_rom.a: C_STATIC_LIBRARY_LINKER____idf_esp_rom_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_rom/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_rom && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_rom && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -5866,7 +5866,7 @@ build esp-idf/hal/libhal.a: C_STATIC_LIBRARY_LINKER____idf_hal_ esp-idf/hal/CMak
 # Utility command for edit_cache
 
 build esp-idf/hal/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\hal && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\hal && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -5986,7 +5986,7 @@ build esp-idf/log/liblog.a: C_STATIC_LIBRARY_LINKER____idf_log_ esp-idf/log/CMak
 # Utility command for edit_cache
 
 build esp-idf/log/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\log && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\log && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -6138,7 +6138,7 @@ build esp-idf/heap/libheap.a: C_STATIC_LIBRARY_LINKER____idf_heap_ esp-idf/heap/
 # Utility command for edit_cache
 
 build esp-idf/heap/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\heap && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\heap && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -6442,7 +6442,7 @@ build esp-idf/soc/libsoc.a: C_STATIC_LIBRARY_LINKER____idf_soc_ esp-idf/soc/CMak
 # Utility command for edit_cache
 
 build esp-idf/soc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\soc && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\soc && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -6938,7 +6938,7 @@ build esp-idf/esp_hw_support/libesp_hw_support.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_hw_support/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hw_support && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hw_support && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7009,7 +7009,7 @@ build esp-idf/esp_hw_support/install/strip: phony esp-idf/esp_hw_support/CMakeFi
 # Utility command for edit_cache
 
 build esp-idf/esp_hw_support/port/esp32s3/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hw_support\port\esp32s3 && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hw_support\port\esp32s3 && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7080,7 +7080,7 @@ build esp-idf/esp_hw_support/port/esp32s3/install/strip: phony esp-idf/esp_hw_su
 # Utility command for edit_cache
 
 build esp-idf/esp_hw_support/lowpower/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hw_support\lowpower && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hw_support\lowpower && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7304,7 +7304,7 @@ build esp-idf/freertos/libfreertos.a: C_STATIC_LIBRARY_LINKER____idf_freertos_ e
 # Utility command for edit_cache
 
 build esp-idf/freertos/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\freertos && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\freertos && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7552,7 +7552,7 @@ build esp-idf/newlib/libnewlib.a: C_STATIC_LIBRARY_LINKER____idf_newlib_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/newlib/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\newlib && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\newlib && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7623,7 +7623,7 @@ build esp-idf/newlib/install/strip: phony esp-idf/newlib/CMakeFiles/install/stri
 # Utility command for edit_cache
 
 build esp-idf/newlib/port/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\newlib\port && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\newlib\port && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7759,7 +7759,7 @@ build esp-idf/pthread/libpthread.a: C_STATIC_LIBRARY_LINKER____idf_pthread_ esp-
 # Utility command for edit_cache
 
 build esp-idf/pthread/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\pthread && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\pthread && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -7879,7 +7879,7 @@ build esp-idf/cxx/libcxx.a: C_STATIC_LIBRARY_LINKER____idf_cxx_ esp-idf/cxx/CMak
 # Utility command for edit_cache
 
 build esp-idf/cxx/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\cxx && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\cxx && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8023,7 +8023,7 @@ build esp-idf/esp_timer/libesp_timer.a: C_STATIC_LIBRARY_LINKER____idf_esp_timer
 # Utility command for edit_cache
 
 build esp-idf/esp_timer/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_timer && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_timer && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8135,7 +8135,7 @@ build esp-idf/esp_driver_gptimer/libesp_driver_gptimer.a: C_STATIC_LIBRARY_LINKE
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_gptimer/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_gptimer && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_gptimer && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8239,7 +8239,7 @@ build esp-idf/esp_ringbuf/libesp_ringbuf.a: C_STATIC_LIBRARY_LINKER____idf_esp_r
 # Utility command for edit_cache
 
 build esp-idf/esp_ringbuf/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_ringbuf && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_ringbuf && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8351,7 +8351,7 @@ build esp-idf/esp_driver_uart/libesp_driver_uart.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_uart/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_uart && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_uart && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8479,7 +8479,7 @@ build esp-idf/app_trace/libapp_trace.a: C_STATIC_LIBRARY_LINKER____idf_app_trace
 # Utility command for edit_cache
 
 build esp-idf/app_trace/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\app_trace && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\app_trace && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8599,7 +8599,7 @@ build esp-idf/esp_event/libesp_event.a: C_STATIC_LIBRARY_LINKER____idf_esp_event
 # Utility command for edit_cache
 
 build esp-idf/esp_event/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_event && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_event && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8807,7 +8807,7 @@ build esp-idf/nvs_flash/libnvs_flash.a: C_STATIC_LIBRARY_LINKER____idf_nvs_flash
 # Utility command for edit_cache
 
 build esp-idf/nvs_flash/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\nvs_flash && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\nvs_flash && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -8911,7 +8911,7 @@ build esp-idf/esp_driver_pcnt/libesp_driver_pcnt.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_pcnt/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_pcnt && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_pcnt && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9047,7 +9047,7 @@ build esp-idf/esp_driver_spi/libesp_driver_spi.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_spi/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_spi && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_spi && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9207,7 +9207,7 @@ build esp-idf/esp_driver_mcpwm/libesp_driver_mcpwm.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_mcpwm/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_mcpwm && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_mcpwm && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9278,7 +9278,7 @@ build esp-idf/esp_driver_mcpwm/install/strip: phony esp-idf/esp_driver_mcpwm/CMa
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_ana_cmpr/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_ana_cmpr && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_ana_cmpr && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9414,7 +9414,7 @@ build esp-idf/esp_driver_i2s/libesp_driver_i2s.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_i2s/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_i2s && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_i2s && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9566,7 +9566,7 @@ build esp-idf/sdmmc/libsdmmc.a: C_STATIC_LIBRARY_LINKER____idf_sdmmc_ esp-idf/sd
 # Utility command for edit_cache
 
 build esp-idf/sdmmc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\sdmmc && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\sdmmc && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9678,7 +9678,7 @@ build esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_sdmmc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdmmc && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdmmc && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9798,7 +9798,7 @@ build esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_sdspi/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdspi && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdspi && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9869,7 +9869,7 @@ build esp-idf/esp_driver_sdspi/install/strip: phony esp-idf/esp_driver_sdspi/CMa
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_sdio/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdio && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdio && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -9940,7 +9940,7 @@ build esp-idf/esp_driver_sdio/install/strip: phony esp-idf/esp_driver_sdio/CMake
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_dac/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_dac && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_dac && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10068,7 +10068,7 @@ build esp-idf/esp_driver_rmt/libesp_driver_rmt.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_rmt/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_rmt && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_rmt && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10172,7 +10172,7 @@ build esp-idf/esp_driver_tsens/libesp_driver_tsens.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_tsens/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_tsens && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_tsens && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10276,7 +10276,7 @@ build esp-idf/esp_driver_sdm/libesp_driver_sdm.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_sdm/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdm && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_sdm && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10396,7 +10396,7 @@ build esp-idf/esp_driver_i2c/libesp_driver_i2c.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_i2c/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_i2c && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_i2c && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10500,7 +10500,7 @@ build esp-idf/esp_driver_ledc/libesp_driver_ledc.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_ledc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_ledc && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_ledc && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10571,7 +10571,7 @@ build esp-idf/esp_driver_ledc/install/strip: phony esp-idf/esp_driver_ledc/CMake
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_parlio/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_parlio && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_parlio && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10691,7 +10691,7 @@ build esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a: C_STAT
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_usb_serial_jtag/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_usb_serial_jtag && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_usb_serial_jtag && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -10891,7 +10891,7 @@ build esp-idf/driver/libdriver.a: C_STATIC_LIBRARY_LINKER____idf_driver_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/driver/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\driver && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\driver && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -11035,7 +11035,7 @@ build esp-idf/esp_phy/libesp_phy.a: C_STATIC_LIBRARY_LINKER____idf_esp_phy_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_phy/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_phy && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_phy && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -11139,7 +11139,7 @@ build esp-idf/esp_vfs_console/libesp_vfs_console.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_vfs_console/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_vfs_console && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_vfs_console && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -11259,7 +11259,7 @@ build esp-idf/vfs/libvfs.a: C_STATIC_LIBRARY_LINKER____idf_vfs_ esp-idf/vfs/CMak
 # Utility command for edit_cache
 
 build esp-idf/vfs/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\vfs && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\vfs && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -12043,7 +12043,7 @@ build esp-idf/lwip/liblwip.a: C_STATIC_LIBRARY_LINKER____idf_lwip_ esp-idf/lwip/
 # Utility command for edit_cache
 
 build esp-idf/lwip/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\lwip && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\lwip && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -12114,7 +12114,7 @@ build esp-idf/lwip/install/strip: phony esp-idf/lwip/CMakeFiles/install/strip.ut
 # Utility command for edit_cache
 
 build esp-idf/esp_netif_stack/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_netif_stack && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_netif_stack && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -12282,7 +12282,7 @@ build esp-idf/esp_netif/libesp_netif.a: C_STATIC_LIBRARY_LINKER____idf_esp_netif
 # Utility command for edit_cache
 
 build esp-idf/esp_netif/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_netif && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_netif && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13043,7 +13043,7 @@ build esp-idf/wpa_supplicant/libwpa_supplicant.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/wpa_supplicant/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\wpa_supplicant && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\wpa_supplicant && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13147,7 +13147,7 @@ build esp-idf/esp_coex/libesp_coex.a: C_STATIC_LIBRARY_LINKER____idf_esp_coex_ e
 # Utility command for edit_cache
 
 build esp-idf/esp_coex/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_coex && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_coex && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13315,7 +13315,7 @@ build esp-idf/esp_wifi/libesp_wifi.a: C_STATIC_LIBRARY_LINKER____idf_esp_wifi_ e
 # Utility command for edit_cache
 
 build esp-idf/esp_wifi/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_wifi && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_wifi && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13386,7 +13386,7 @@ build esp-idf/esp_wifi/install/strip: phony esp-idf/esp_wifi/CMakeFiles/install/
 # Utility command for edit_cache
 
 build esp-idf/bt/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\bt && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\bt && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13546,7 +13546,7 @@ build esp-idf/unity/libunity.a: C_STATIC_LIBRARY_LINKER____idf_unity_ esp-idf/un
 # Utility command for edit_cache
 
 build esp-idf/unity/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\unity && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\unity && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13650,7 +13650,7 @@ build esp-idf/cmock/libcmock.a: C_STATIC_LIBRARY_LINKER____idf_cmock_ esp-idf/cm
 # Utility command for edit_cache
 
 build esp-idf/cmock/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\cmock && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\cmock && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -13898,7 +13898,7 @@ build esp-idf/console/libconsole.a: C_STATIC_LIBRARY_LINKER____idf_console_ esp-
 # Utility command for edit_cache
 
 build esp-idf/console/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\console && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\console && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14002,7 +14002,7 @@ build esp-idf/http_parser/libhttp_parser.a: C_STATIC_LIBRARY_LINKER____idf_http_
 # Utility command for edit_cache
 
 build esp-idf/http_parser/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\http_parser && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\http_parser && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14138,7 +14138,7 @@ build esp-idf/esp-tls/libesp-tls.a: C_STATIC_LIBRARY_LINKER____idf_esp-tls_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp-tls/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp-tls && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp-tls && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14322,7 +14322,7 @@ build esp-idf/esp_adc/libesp_adc.a: C_STATIC_LIBRARY_LINKER____idf_esp_adc_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_adc/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_adc && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_adc && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14393,7 +14393,7 @@ build esp-idf/esp_adc/install/strip: phony esp-idf/esp_adc/CMakeFiles/install/st
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_isp/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_isp && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_isp && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14505,7 +14505,7 @@ build esp-idf/esp_driver_cam/libesp_driver_cam.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_cam/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_cam && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_cam && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14576,7 +14576,7 @@ build esp-idf/esp_driver_cam/install/strip: phony esp-idf/esp_driver_cam/CMakeFi
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_jpeg/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_jpeg && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_jpeg && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14647,7 +14647,7 @@ build esp-idf/esp_driver_jpeg/install/strip: phony esp-idf/esp_driver_jpeg/CMake
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_ppa/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_ppa && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_ppa && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14718,7 +14718,7 @@ build esp-idf/esp_driver_ppa/install/strip: phony esp-idf/esp_driver_ppa/CMakeFi
 # Utility command for edit_cache
 
 build esp-idf/esp_driver_touch_sens/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_touch_sens && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_driver_touch_sens && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14838,7 +14838,7 @@ build esp-idf/esp_eth/libesp_eth.a: C_STATIC_LIBRARY_LINKER____idf_esp_eth_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_eth/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_eth && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_eth && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -14982,7 +14982,7 @@ build esp-idf/esp_gdbstub/libesp_gdbstub.a: C_STATIC_LIBRARY_LINKER____idf_esp_g
 # Utility command for edit_cache
 
 build esp-idf/esp_gdbstub/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_gdbstub && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_gdbstub && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15102,7 +15102,7 @@ build esp-idf/esp_hid/libesp_hid.a: C_STATIC_LIBRARY_LINKER____idf_esp_hid_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_hid/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hid && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_hid && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15238,7 +15238,7 @@ build esp-idf/tcp_transport/libtcp_transport.a: C_STATIC_LIBRARY_LINKER____idf_t
 # Utility command for edit_cache
 
 build esp-idf/tcp_transport/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\tcp_transport && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\tcp_transport && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15366,7 +15366,7 @@ build esp-idf/esp_http_client/libesp_http_client.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_http_client/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_http_client && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_http_client && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15518,7 +15518,7 @@ build esp-idf/esp_http_server/libesp_http_server.a: C_STATIC_LIBRARY_LINKER____i
 # Utility command for edit_cache
 
 build esp-idf/esp_http_server/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_http_server && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_http_server && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15622,7 +15622,7 @@ build esp-idf/esp_https_ota/libesp_https_ota.a: C_STATIC_LIBRARY_LINKER____idf_e
 # Utility command for edit_cache
 
 build esp-idf/esp_https_ota/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_https_ota && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_https_ota && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15726,7 +15726,7 @@ build esp-idf/esp_https_server/libesp_https_server.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/esp_https_server/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_https_server && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_https_server && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -15846,7 +15846,7 @@ build esp-idf/esp_psram/libesp_psram.a: C_STATIC_LIBRARY_LINKER____idf_esp_psram
 # Utility command for edit_cache
 
 build esp-idf/esp_psram/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_psram && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_psram && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16030,7 +16030,7 @@ build esp-idf/esp_lcd/libesp_lcd.a: C_STATIC_LIBRARY_LINKER____idf_esp_lcd_ esp-
 # Utility command for edit_cache
 
 build esp-idf/esp_lcd/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_lcd && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_lcd && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16134,7 +16134,7 @@ build esp-idf/protobuf-c/libprotobuf-c.a: C_STATIC_LIBRARY_LINKER____idf_protobu
 # Utility command for edit_cache
 
 build esp-idf/protobuf-c/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\protobuf-c && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\protobuf-c && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16334,7 +16334,7 @@ build esp-idf/protocomm/libprotocomm.a: C_STATIC_LIBRARY_LINKER____idf_protocomm
 # Utility command for edit_cache
 
 build esp-idf/protocomm/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\protocomm && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\protocomm && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16462,7 +16462,7 @@ build esp-idf/esp_local_ctrl/libesp_local_ctrl.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/esp_local_ctrl/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_local_ctrl && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp_local_ctrl && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16630,7 +16630,7 @@ build esp-idf/espcoredump/libespcoredump.a: C_STATIC_LIBRARY_LINKER____idf_espco
 # Utility command for edit_cache
 
 build esp-idf/espcoredump/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\espcoredump && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\espcoredump && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16782,7 +16782,7 @@ build esp-idf/wear_levelling/libwear_levelling.a: C_STATIC_LIBRARY_LINKER____idf
 # Utility command for edit_cache
 
 build esp-idf/wear_levelling/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\wear_levelling && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\wear_levelling && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -16958,7 +16958,7 @@ build esp-idf/fatfs/libfatfs.a: C_STATIC_LIBRARY_LINKER____idf_fatfs_ esp-idf/fa
 # Utility command for edit_cache
 
 build esp-idf/fatfs/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\fatfs && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\fatfs && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17029,7 +17029,7 @@ build esp-idf/fatfs/install/strip: phony esp-idf/fatfs/CMakeFiles/install/strip.
 # Utility command for edit_cache
 
 build esp-idf/idf_test/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\idf_test && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\idf_test && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17100,7 +17100,7 @@ build esp-idf/idf_test/install/strip: phony esp-idf/idf_test/CMakeFiles/install/
 # Utility command for edit_cache
 
 build esp-idf/ieee802154/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\ieee802154 && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\ieee802154 && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17212,7 +17212,7 @@ build esp-idf/json/libjson.a: C_STATIC_LIBRARY_LINKER____idf_json_ esp-idf/json/
 # Utility command for edit_cache
 
 build esp-idf/json/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\json && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\json && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17340,7 +17340,7 @@ build esp-idf/mqtt/libmqtt.a: C_STATIC_LIBRARY_LINKER____idf_mqtt_ esp-idf/mqtt/
 # Utility command for edit_cache
 
 build esp-idf/mqtt/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mqtt && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\mqtt && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17444,7 +17444,7 @@ build esp-idf/nvs_sec_provider/libnvs_sec_provider.a: C_STATIC_LIBRARY_LINKER___
 # Utility command for edit_cache
 
 build esp-idf/nvs_sec_provider/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\nvs_sec_provider && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\nvs_sec_provider && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17515,7 +17515,7 @@ build esp-idf/nvs_sec_provider/install/strip: phony esp-idf/nvs_sec_provider/CMa
 # Utility command for edit_cache
 
 build esp-idf/openthread/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\openthread && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\openthread && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17635,7 +17635,7 @@ build esp-idf/perfmon/libperfmon.a: C_STATIC_LIBRARY_LINKER____idf_perfmon_ esp-
 # Utility command for edit_cache
 
 build esp-idf/perfmon/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\perfmon && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\perfmon && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17787,7 +17787,7 @@ build esp-idf/spiffs/libspiffs.a: C_STATIC_LIBRARY_LINKER____idf_spiffs_ esp-idf
 # Utility command for edit_cache
 
 build esp-idf/spiffs/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\spiffs && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\spiffs && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17915,7 +17915,7 @@ build esp-idf/touch_element/libtouch_element.a: C_STATIC_LIBRARY_LINKER____idf_t
 # Utility command for edit_cache
 
 build esp-idf/touch_element/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\touch_element && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\touch_element && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -17986,7 +17986,7 @@ build esp-idf/touch_element/install/strip: phony esp-idf/touch_element/CMakeFile
 # Utility command for edit_cache
 
 build esp-idf/ulp/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\ulp && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\ulp && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -18138,7 +18138,7 @@ build esp-idf/usb/libusb.a: C_STATIC_LIBRARY_LINKER____idf_usb_ esp-idf/usb/CMak
 # Utility command for edit_cache
 
 build esp-idf/usb/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\usb && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\usb && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -18322,7 +18322,7 @@ build esp-idf/wifi_provisioning/libwifi_provisioning.a: C_STATIC_LIBRARY_LINKER_
 # Utility command for edit_cache
 
 build esp-idf/wifi_provisioning/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\wifi_provisioning && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\wifi_provisioning && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -18434,7 +18434,7 @@ build esp-idf/main/libmain.a: C_STATIC_LIBRARY_LINKER____idf_main_ esp-idf/main/
 # Utility command for edit_cache
 
 build esp-idf/main/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\main && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\main && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -18618,7 +18618,7 @@ build esp-idf/esp32-camera/libesp32-camera.a: C_STATIC_LIBRARY_LINKER____idf_esp
 # Utility command for edit_cache
 
 build esp-idf/esp32-camera/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp32-camera && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\esp32-camera && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -18691,11 +18691,19 @@ build esp-idf/esp32-camera/install/strip: phony esp-idf/esp32-camera/CMakeFiles/
 #############################################
 # Order-only phony target for __idf_BSP
 
-build cmake_object_order_depends_target___idf_BSP: phony || cmake_object_order_depends_target___idf_esp32-camera cmake_object_order_depends_target___idf_xtensa
+build cmake_object_order_depends_target___idf_BSP: phony || camera_test.jpg.S cmake_object_order_depends_target___idf_esp32-camera cmake_object_order_depends_target___idf_xtensa
 
 build esp-idf/BSP/CMakeFiles/__idf_BSP.dir/CAMERA/camera.c.obj: C_COMPILER____idf_BSP_ G$:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA/camera.c || cmake_object_order_depends_target___idf_BSP
   DEFINES = -DESP_PLATFORM -DIDF_VER=\"v5.3.1-dirty\" -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS
   DEP_FILE = esp-idf\BSP\CMakeFiles\__idf_BSP.dir\CAMERA\camera.c.obj.d
+  FLAGS = -mlongcalls  -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-bzero -fno-builtin-stpcpy -fno-builtin-strncpy -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -mdisable-hardware-atomics -Og -fno-shrink-wrap -fmacro-prefix-map=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode=. -fmacro-prefix-map=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -std=gnu17 -Wno-old-style-declaration -ffast-math -O3 -Wno-error=format=-Wno-format
+  INCLUDES = -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/LED -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/BEEP -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/ADC -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/IIC -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/KEY -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/LCD -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/PCA9555A -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/SPI -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/platform_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/esp_additions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/dma/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/ldo/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/. -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/heap/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/log/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/platform_port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/include/private -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/deprecated_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps/sntp -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/lwip/src/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/freertos/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/arch -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/sys -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/deprecated -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/i2c/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/touch_sensor/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/twai/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/touch_sensor/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_pm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_ringbuf/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gpio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_pcnt/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gptimer/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_spi/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_mcpwm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ana_cmpr/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2s/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdmmc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/sdmmc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdspi/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_dac/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_rmt/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_tsens/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2c/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_uart/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/vfs/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ledc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_parlio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_usb_serial_jtag/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/interface -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/deprecated/include -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/esp32-camera/driver/include -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/esp32-camera/conversions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_timer/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/nvs_flash/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/spi_flash/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_partition/include
+  OBJECT_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir
+  OBJECT_FILE_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir\CAMERA
+
+build esp-idf/BSP/CMakeFiles/__idf_BSP.dir/CAMERA/camera_display.c.obj: C_COMPILER____idf_BSP_ G$:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA/camera_display.c || cmake_object_order_depends_target___idf_BSP
+  DEFINES = -DESP_PLATFORM -DIDF_VER=\"v5.3.1-dirty\" -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS
+  DEP_FILE = esp-idf\BSP\CMakeFiles\__idf_BSP.dir\CAMERA\camera_display.c.obj.d
   FLAGS = -mlongcalls  -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-bzero -fno-builtin-stpcpy -fno-builtin-strncpy -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -mdisable-hardware-atomics -Og -fno-shrink-wrap -fmacro-prefix-map=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode=. -fmacro-prefix-map=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -std=gnu17 -Wno-old-style-declaration -ffast-math -O3 -Wno-error=format=-Wno-format
   INCLUDES = -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/LED -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/BEEP -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/ADC -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/IIC -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/KEY -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/LCD -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/PCA9555A -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/SPI -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/platform_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/esp_additions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/dma/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/ldo/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/. -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/heap/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/log/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/platform_port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/include/private -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/deprecated_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps/sntp -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/lwip/src/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/freertos/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/arch -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/sys -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/deprecated -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/i2c/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/touch_sensor/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/twai/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/touch_sensor/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_pm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_ringbuf/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gpio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_pcnt/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gptimer/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_spi/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_mcpwm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ana_cmpr/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2s/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdmmc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/sdmmc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdspi/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_dac/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_rmt/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_tsens/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2c/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_uart/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/vfs/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ledc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_parlio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_usb_serial_jtag/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/interface -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/deprecated/include -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/esp32-camera/driver/include -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/esp32-camera/conversions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_timer/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/nvs_flash/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/spi_flash/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_partition/include
   OBJECT_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir
@@ -18765,6 +18773,14 @@ build esp-idf/BSP/CMakeFiles/__idf_BSP.dir/SPI/spi.c.obj: C_COMPILER____idf_BSP_
   OBJECT_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir
   OBJECT_FILE_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir\SPI
 
+build esp-idf/BSP/CMakeFiles/__idf_BSP.dir/__/__/camera_test.jpg.S.obj: ASM_COMPILER____idf_BSP_ G$:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/camera_test.jpg.S || cmake_object_order_depends_target___idf_BSP
+  DEFINES = -DESP_PLATFORM -DIDF_VER=\"v5.3.1-dirty\" -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS
+  DEP_FILE = esp-idf\BSP\CMakeFiles\__idf_BSP.dir\__\__\camera_test.jpg.S.obj.d
+  FLAGS = -mlongcalls  -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -mdisable-hardware-atomics -Og -fno-shrink-wrap -fmacro-prefix-map=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode=. -fmacro-prefix-map=D:/ESP/Espressif/frameworks/esp-idf-v5.3.1=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -ffast-math -O3 -Wno-error=format=-Wno-format
+  INCLUDES = -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/config -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/LED -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/BEEP -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/ADC -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/IIC -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/KEY -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/LCD -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/PCA9555A -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/SPI -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/platform_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/config/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/esp_additions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/include/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/dma/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/ldo/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/. -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/port/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/heap/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/log/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/platform_port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/include/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/esp32s3 -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/soc -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/port/include/private -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/xtensa/deprecated_include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/include/apps/sntp -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/lwip/src/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/freertos/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/arch -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/lwip/port/esp32xx/include/sys -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/deprecated -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/i2c/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/touch_sensor/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/twai/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/driver/touch_sensor/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_pm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_ringbuf/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gpio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_pcnt/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_gptimer/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_spi/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_mcpwm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ana_cmpr/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2s/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdmmc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/sdmmc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdspi/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_dac/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_rmt/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_tsens/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_sdm/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_i2c/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_uart/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/vfs/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_ledc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_parlio/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_driver_usb_serial_jtag/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/interface -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/esp32s3/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_adc/deprecated/include -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/esp32-camera/driver/include -IG:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/esp32-camera/conversions/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_timer/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/nvs_flash/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/spi_flash/include -ID:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_partition/include
+  OBJECT_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir
+  OBJECT_FILE_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir\__\__
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target __idf_BSP
@@ -18773,7 +18789,7 @@ build esp-idf/BSP/CMakeFiles/__idf_BSP.dir/SPI/spi.c.obj: C_COMPILER____idf_BSP_
 #############################################
 # Link the static library esp-idf\BSP\libBSP.a
 
-build esp-idf/BSP/libBSP.a: C_STATIC_LIBRARY_LINKER____idf_BSP_ esp-idf/BSP/CMakeFiles/__idf_BSP.dir/CAMERA/camera.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/LED/led.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/BEEP/beep.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/ADC/adc.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/IIC/iic.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/KEY/key.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/LCD/lcd.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/PCA9555A/pca9555a.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/SPI/spi.c.obj || esp-idf/esp32-camera/libesp32-camera.a esp-idf/xtensa/libxtensa.a
+build esp-idf/BSP/libBSP.a: C_STATIC_LIBRARY_LINKER____idf_BSP_ esp-idf/BSP/CMakeFiles/__idf_BSP.dir/CAMERA/camera.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/CAMERA/camera_display.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/LED/led.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/BEEP/beep.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/ADC/adc.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/IIC/iic.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/KEY/key.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/LCD/lcd.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/PCA9555A/pca9555a.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/SPI/spi.c.obj esp-idf/BSP/CMakeFiles/__idf_BSP.dir/__/__/camera_test.jpg.S.obj || esp-idf/esp32-camera/libesp32-camera.a esp-idf/xtensa/libxtensa.a
   LANGUAGE_COMPILE_FLAGS = -mlongcalls  -fno-builtin-memcpy -fno-builtin-memset -fno-builtin-bzero -fno-builtin-stpcpy -fno-builtin-strncpy
   OBJECT_DIR = esp-idf\BSP\CMakeFiles\__idf_BSP.dir
   POST_BUILD = cd .
@@ -18786,7 +18802,7 @@ build esp-idf/BSP/libBSP.a: C_STATIC_LIBRARY_LINKER____idf_BSP_ esp-idf/BSP/CMak
 # Utility command for edit_cache
 
 build esp-idf/BSP/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\BSP && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build\esp-idf\BSP && D:\ESP\Espressif\tools\tools\cmake\3.24.0\bin\cmake-gui.exe -SG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode -BG:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build"
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -18846,6 +18862,15 @@ build esp-idf/BSP/CMakeFiles/install/strip.util: CUSTOM_COMMAND esp-idf/BSP/all
   restat = 1
 
 build esp-idf/BSP/install/strip: phony esp-idf/BSP/CMakeFiles/install/strip.util
+
+
+#############################################
+# Custom command for camera_test.jpg.S
+
+build camera_test.jpg.S | ${cmake_ninja_workdir}camera_test.jpg.S: CUSTOM_COMMAND G$:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA/camera_test.jpg D$:/ESP/Espressif/frameworks/esp-idf-v5.3.1/tools/cmake/scripts/data_file_embed_asm.cmake || esp-idf/app_update/libapp_update.a esp-idf/bootloader_support/libbootloader_support.a esp-idf/cxx/libcxx.a esp-idf/driver/libdriver.a esp-idf/efuse/libefuse.a esp-idf/esp-tls/libesp-tls.a esp-idf/esp32-camera/libesp32-camera.a esp-idf/esp_adc/libesp_adc.a esp-idf/esp_app_format/libesp_app_format.a esp-idf/esp_bootloader_format/libesp_bootloader_format.a esp-idf/esp_coex/libesp_coex.a esp-idf/esp_common/libesp_common.a esp-idf/esp_driver_gpio/libesp_driver_gpio.a esp-idf/esp_driver_gptimer/libesp_driver_gptimer.a esp-idf/esp_driver_i2c/libesp_driver_i2c.a esp-idf/esp_driver_i2s/libesp_driver_i2s.a esp-idf/esp_driver_ledc/libesp_driver_ledc.a esp-idf/esp_driver_mcpwm/libesp_driver_mcpwm.a esp-idf/esp_driver_pcnt/libesp_driver_pcnt.a esp-idf/esp_driver_rmt/libesp_driver_rmt.a esp-idf/esp_driver_sdm/libesp_driver_sdm.a esp-idf/esp_driver_sdmmc/libesp_driver_sdmmc.a esp-idf/esp_driver_sdspi/libesp_driver_sdspi.a esp-idf/esp_driver_spi/libesp_driver_spi.a esp-idf/esp_driver_tsens/libesp_driver_tsens.a esp-idf/esp_driver_uart/libesp_driver_uart.a esp-idf/esp_driver_usb_serial_jtag/libesp_driver_usb_serial_jtag.a esp-idf/esp_eth/libesp_eth.a esp-idf/esp_event/libesp_event.a esp-idf/esp_gdbstub/libesp_gdbstub.a esp-idf/esp_http_client/libesp_http_client.a esp-idf/esp_http_server/libesp_http_server.a esp-idf/esp_https_ota/libesp_https_ota.a esp-idf/esp_hw_support/libesp_hw_support.a esp-idf/esp_mm/libesp_mm.a esp-idf/esp_netif/libesp_netif.a esp-idf/esp_partition/libesp_partition.a esp-idf/esp_phy/libesp_phy.a esp-idf/esp_pm/libesp_pm.a esp-idf/esp_psram/libesp_psram.a esp-idf/esp_ringbuf/libesp_ringbuf.a esp-idf/esp_rom/libesp_rom.a esp-idf/esp_system/libesp_system.a esp-idf/esp_system/memory.ld esp-idf/esp_system/sections.ld.in esp-idf/esp_timer/libesp_timer.a esp-idf/esp_vfs_console/libesp_vfs_console.a esp-idf/esp_wifi/libesp_wifi.a esp-idf/freertos/libfreertos.a esp-idf/hal/libhal.a esp-idf/heap/libheap.a esp-idf/http_parser/libhttp_parser.a esp-idf/log/liblog.a esp-idf/lwip/liblwip.a esp-idf/mbedtls/custom_bundle esp-idf/mbedtls/libmbedtls.a esp-idf/mbedtls/mbedtls/3rdparty/everest/libeverest.a esp-idf/mbedtls/mbedtls/3rdparty/p256-m/libp256m.a esp-idf/mbedtls/mbedtls/library/libmbedcrypto.a esp-idf/mbedtls/mbedtls/library/libmbedtls.a esp-idf/mbedtls/mbedtls/library/libmbedx509.a esp-idf/newlib/libnewlib.a esp-idf/nvs_flash/libnvs_flash.a esp-idf/pthread/libpthread.a esp-idf/sdmmc/libsdmmc.a esp-idf/soc/libsoc.a esp-idf/spi_flash/libspi_flash.a esp-idf/tcp_transport/libtcp_transport.a esp-idf/vfs/libvfs.a esp-idf/wpa_supplicant/libwpa_supplicant.a esp-idf/xtensa/libxtensa.a
+  COMMAND = cmd.exe /C "cd /D G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\build && D:\ESP\Espressif\tools\cmake\3.24.0\bin\cmake.exe -D DATA_FILE=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/components/BSP/CAMERA/camera_test.jpg -D SOURCE_FILE=G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/camera_test.jpg.S -D FILE_TYPE=BINARY -P D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/tools/cmake/scripts/data_file_embed_asm.cmake"
+  DESC = Generating ../../camera_test.jpg.S
+  restat = 1
 
 # =============================================================================
 # Target aliases.

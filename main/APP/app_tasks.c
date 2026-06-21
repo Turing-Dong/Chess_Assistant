@@ -2,6 +2,7 @@
 #include "led.h"
 #include "beep.h"
 #include "lcd.h"
+#include "camera.h"
 /*FreeRTOS*********************************************************************************************/
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -12,7 +13,7 @@ TaskHandle_t              LedTask_Handler;
 void led_task(void *pvParameters);
 
 #define LCD_TASK_PRIO      9
-#define LCD_TASK_STK_SIZE  4*1024
+#define LCD_TASK_STK_SIZE  6*1024
 TaskHandle_t              LcdTask_Handler;
 void lcd_task(void *pvParameters);
 
@@ -118,8 +119,7 @@ void task2(void *pvParameters)
 void led_task(void *pvParameters)
 {
     pvParameters = pvParameters;
-    beep_init();
-    beep_write(1);
+
     while (1)
     {
         LED_TOGGLE();
@@ -130,33 +130,67 @@ void led_task(void *pvParameters)
 void lcd_task(void *pvParameters)
 {
     pvParameters = pvParameters;
-    uint32_t refresh_count = 0;
 
-    lcd_fill(0, 0, lcd_self.width - 1, 180, BLACK);
+    lcd_clear(BLACK);
     lcd_fill(0, 0, lcd_self.width - 1, 39, BLUE);
-    lcd_show_string(12, 10, lcd_self.width - 24, 24, 16, "ST7796 LCD TEST", WHITE);
+    lcd_show_string(12, 10, lcd_self.width - 24, 24, 16,
+                    "ST7796 LANDSCAPE JPEG TEST", WHITE);
 
-    lcd_show_string(12, 60, lcd_self.width - 24, 24, 16, "GPIO9  RS/DC", WHITE);
-    lcd_show_string(12, 84, lcd_self.width - 24, 24, 16, "GPIO10 CS", WHITE);
-    lcd_show_string(12, 108, lcd_self.width - 24, 24, 16, "GPIO11 MOSI", WHITE);
-    lcd_show_string(12, 132, lcd_self.width - 24, 24, 16, "GPIO12 SCLK", WHITE);
-    lcd_show_string(12, 156, lcd_self.width - 24, 24, 16, "GPIO13 SDO", WHITE);
+    uint16_t camera_y = lcd_self.height - CAMERA_DISPLAY_HEIGHT;
+    lcd_fill(CAMERA_DISPLAY_X,
+             camera_y,
+             CAMERA_DISPLAY_X + CAMERA_DISPLAY_WIDTH - 1,
+             lcd_self.height - 1,
+             BLACK);
+    uint16_t status_x = CAMERA_DISPLAY_X + CAMERA_DISPLAY_WIDTH + 8;
+    uint16_t status_width = lcd_self.width - status_x - 4;
 
-    lcd_fill(12, 210, 71, 269, RED);
-    lcd_fill(84, 210, 143, 269, GREEN);
-    lcd_fill(156, 210, 215, 269, BLUE);
-    lcd_fill(228, 210, 287, 269, YELLOW);
+    lcd_fill(status_x, camera_y, lcd_self.width - 1, lcd_self.height - 1, BLACK);
+    lcd_show_string(status_x, 96, status_width, 24, 16, "CAMERA", GREEN);
+    lcd_show_string(status_x, 128, status_width, 24, 16, "360x240", WHITE);
+    lcd_show_string(status_x, 160, status_width, 24, 16, "LEFT", WHITE);
+    lcd_show_string(status_x, 184, status_width, 24, 16, "BOTTOM", WHITE);
 
-    lcd_draw_rectangle(8, 204, 291, 275, BLACK);
-    lcd_draw_line(12, 300, lcd_self.width - 13, 300, RED);
-    lcd_draw_line(12, 320, lcd_self.width - 13, 360, GREEN);
-    lcd_draw_circle(lcd_self.width / 2, 410, 35, MAGENTA);
+#if CAMERA_USE_TEST_FRAME
+    esp_err_t camera_error = camera_show_test_frame();
+
+    lcd_fill(status_x, 240, lcd_self.width - 1, 287, BLACK);
+
+    if (camera_error == ESP_OK)
+    {
+        lcd_show_string(status_x, 240, status_width, 24, 16, "TEST OK", GREEN);
+    }
+    else
+    {
+        lcd_show_string(status_x, 240, status_width, 24, 16, "ERROR", RED);
+        lcd_show_num(status_x, 264, (uint32_t)camera_error, 6, 16, RED);
+    }
 
     while (1)
     {
-        lcd_fill(12, 452, 220, 475, BLACK);
-        lcd_show_string(12, 452, 120, 24, 16, "Refresh:", WHITE);
-        lcd_show_num(88, 452, refresh_count++, 6, 16, RED);
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
+#else
+    uint32_t refresh_count = 0;
+
+    while (1)
+    {
+        esp_err_t camera_error = camera_show();
+
+        lcd_fill(status_x, 240, lcd_self.width - 1, 287, BLACK);
+
+        if (camera_error == ESP_OK)
+        {
+            lcd_show_string(status_x, 240, status_width, 24, 16, "FRAME", WHITE);
+            lcd_show_num(status_x, 264, refresh_count++, 6, 16, RED);
+        }
+        else
+        {
+            lcd_show_string(status_x, 240, status_width, 24, 16, "ERROR", RED);
+            lcd_show_num(status_x, 264, (uint32_t)camera_error, 6, 16, RED);
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+#endif
 }

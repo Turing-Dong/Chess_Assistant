@@ -22,7 +22,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "led.h"
+#include "beep.h"
 #include "lcd.h"
+#include "camera.h"
 #include "spi.h"
 #include "pca9555a.h"
 #include "esp_system.h"
@@ -49,10 +51,29 @@ void app_main(void)
         ret = nvs_flash_init();
     }
     i2c0_master = iic_init(I2C_NUM_0);  /* 初始化IIC0 */
+#if LCD_DRIVER_MODE == LCD_DRIVER_HARDWARE_SPI
     spi2_init();                        /* 初始化SPI2 */
+#endif
     pca9555a_init(i2c0_master);         /* PCA9555A IO扩展芯片初始化 */
+    beep_init();                        /* 蜂鸣器关闭，硬件为低电平有效 */
     led_init();                         /* 初始化LED */
     lcd_init();                         /* 初始化ST7796 LCD */
+#if LCD_DIAGNOSTIC_MODE
+    printf("LCD diagnostic mode: the panel should remain solid red.\r\n");
+    while (1)
+    {
+        LED_TOGGLE();
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+#endif
+#if !CAMERA_USE_TEST_FRAME
+    ret = camera_init();
+
+    if (ret != ESP_OK)
+    {
+        printf("camera_init failed: %s\r\n", esp_err_to_name(ret));
+    }
+#endif
 
     freertos_demo();    /* 运行FreeRTOS例程 */
 }

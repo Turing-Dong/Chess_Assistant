@@ -11,12 +11,34 @@
 #include "pca9555a.h"
 #include "spi.h"
 
+/* LCD driver selection */
+#define LCD_DRIVER_SOFTWARE       0
+#define LCD_DRIVER_HARDWARE_SPI   1
+
+#ifndef LCD_DRIVER_MODE
+#define LCD_DRIVER_MODE           LCD_DRIVER_HARDWARE_SPI
+#endif
+
+/* Keep enabled while diagnosing a white screen. The application stops after
+ * LCD initialization and leaves a solid red frame on the panel. */
+#define LCD_DIAGNOSTIC_MODE       0
+
+#if (LCD_DRIVER_MODE != LCD_DRIVER_SOFTWARE) && \
+    (LCD_DRIVER_MODE != LCD_DRIVER_HARDWARE_SPI)
+#error "LCD_DRIVER_MODE must be LCD_DRIVER_SOFTWARE or LCD_DRIVER_HARDWARE_SPI"
+#endif
+
 /* ST7796 SPI interface */
 #define LCD_NUM_RS      GPIO_NUM_9
 #define LCD_NUM_CS      GPIO_NUM_10
 #define LCD_NUM_MOSI    GPIO_NUM_11
 #define LCD_NUM_SCLK    GPIO_NUM_12
 #define LCD_NUM_SDO     GPIO_NUM_13
+
+/* Verified hardware SPI clock for the 3-wire 9-bit interface. */
+#define LCD_SPI_CLOCK_HZ    (8 * 1000 * 1000)
+#define LCD_SPI_DATA_CHUNK  1024
+#define LCD_SPI_BULK_MIN_BYTES  32
 
 #define LCD_RS(x)       gpio_set_level(LCD_NUM_RS, (x) ? 1 : 0)
 #define LCD_DC(x)       LCD_RS(x)
@@ -29,6 +51,12 @@
 
 #define LCD_WIDTH       320
 #define LCD_HEIGHT      480
+
+#define LCD_DIR_PORTRAIT             0
+#define LCD_DIR_PORTRAIT_REVERSE     1
+#define LCD_DIR_LANDSCAPE            2
+#define LCD_DIR_LANDSCAPE_REVERSE    3
+#define LCD_DEFAULT_DIR              LCD_DIR_LANDSCAPE
 
 #define WHITE           0xFFFF
 #define BLACK           0x0000

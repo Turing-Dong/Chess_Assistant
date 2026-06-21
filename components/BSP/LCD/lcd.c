@@ -1,6 +1,8 @@
 #include "lcd.h"
 #include "lcdfont.h"
 
+static const char *TAG = "lcd";
+
 spi_device_handle_t MY_LCD_Handle;
 uint8_t lcd_buf[LCD_BUF_SIZE];
 lcd_obj_t lcd_self;
@@ -17,17 +19,23 @@ static uint32_t lcd_total_pixels(void)
     return (uint32_t)lcd_self.width * lcd_self.height;
 }
 
+#if LCD_DRIVER_MODE == LCD_DRIVER_SOFTWARE
+
 static inline void lcd_bus_delay(void)
 {
     __asm__ __volatile__("nop");
     __asm__ __volatile__("nop");
 }
 
-static void lcd_write_9bit(uint8_t dc, uint8_t data)
+static void lcd_write_9bit_software(uint8_t dc, uint8_t data)
 {
     LCD_CS(0);
 
-    LCD_RS(dc);
+    /*
+     * The panel RS pin is tied to GND in 3-wire mode. Command/data selection
+     * is therefore carried exclusively by the first serial bit:
+     * 0 = command, 1 = parameter/pixel data.
+     */
     LCD_MOSI(dc);
     LCD_SCLK(0);
     lcd_bus_delay();
@@ -47,6 +55,119 @@ static void lcd_write_9bit(uint8_t dc, uint8_t data)
     LCD_CS(1);
 }
 
+#else
+
+#define LCD_SPI_PACKED_CHUNK_SIZE \
+    ((LCD_SPI_DATA_CHUNK * 9 + 7) / 8)
+
+static uint8_t lcd_spi_tx_buf[LCD_SPI_PACKED_CHUNK_SIZE]
+    __attribute__((aligned(4)));
+
+static void IRAM_ATTR lcd_spi_pre_transfer_callback(spi_transaction_t *transaction)
+{
+    (void)transaction;
+    gpio_set_level(LCD_NUM_CS, 0);
+}
+
+static void IRAM_ATTR lcd_spi_post_transfer_callback(spi_transaction_t *transaction)
+{
+    (void)transaction;
+    gpio_set_level(LCD_NUM_CS, 1);
+}
+
+static void lcd_spi_device_init(void)
+{
+    spi_device_interface_config_t device_config = {
+        .clock_speed_hz = LCD_SPI_CLOCK_HZ,
+        /*
+         * The verified GPIO waveform keeps SCLK high while idle, changes SDA
+         * after the falling edge and lets the panel sample on the rising edge.
+         */
+        .mode = 3,
+        .spics_io_num = -1,
+        .queue_size = 1,
+        .flags = SPI_DEVICE_HALFDUPLEX,
+        .pre_cb = lcd_spi_pre_transfer_callback,
+        .post_cb = lcd_spi_post_transfer_callback,
+    };
+
+    ESP_ERROR_CHECK(spi_bus_add_device(SPI2_HOST, &device_config, &MY_LCD_Handle));
+}
+
+static void lcd_write_9bit_hardware(uint8_t dc, uint8_t data)
+{
+    spi_transaction_ext_t transaction = {
+        .base = {
+            .flags = SPI_TRANS_VARIABLE_CMD | SPI_TRANS_USE_TXDATA,
+            .cmd = dc ? 1 : 0,
+            .length = 8,
+            .tx_data = {data},
+        },
+        .command_bits = 1,
+    };
+
+    /*
+     * Use the SPI peripheral's native command phase for the ninth D/C bit.
+     * This avoids any dependence on CPU byte order for a non-byte-aligned
+     * transmit buffer.
+     */
+    ESP_ERROR_CHECK(spi_device_polling_transmit(
+        MY_LCD_Handle, (spi_transaction_t *)&transaction));
+}
+
+static void lcd_write_data_hardware(const uint8_t *data, int len)
+{
+    while (len > 0)
+    {
+        int chunk = (len > LCD_SPI_DATA_CHUNK) ? LCD_SPI_DATA_CHUNK : len;
+        size_t bit_index = 0;
+        size_t packed_bytes = ((size_t)chunk * 9 + 7) / 8;
+
+        memset(lcd_spi_tx_buf, 0, packed_bytes);
+
+        for (int i = 0; i < chunk; i++)
+        {
+            uint16_t serial_word = 0x100U | data[i];
+
+            for (int bit = 8; bit >= 0; bit--)
+            {
+                if (serial_word & (1U << bit))
+                {
+                    lcd_spi_tx_buf[bit_index >> 3] |=
+                        (uint8_t)(1U << (7 - (bit_index & 7)));
+                }
+
+                bit_index++;
+            }
+        }
+
+        spi_transaction_t transaction = {
+            .length = chunk * 9,
+            .tx_buffer = lcd_spi_tx_buf,
+        };
+
+        /*
+         * The queued DMA transaction blocks this task while the peripheral
+         * shifts the packed 9-bit words, allowing the idle task to run.
+         */
+        ESP_ERROR_CHECK(spi_device_transmit(MY_LCD_Handle, &transaction));
+
+        data += chunk;
+        len -= chunk;
+    }
+}
+
+#endif
+
+static void lcd_write_9bit(uint8_t dc, uint8_t data)
+{
+#if LCD_DRIVER_MODE == LCD_DRIVER_SOFTWARE
+    lcd_write_9bit_software(dc, data);
+#else
+    lcd_write_9bit_hardware(dc, data);
+#endif
+}
+
 void lcd_write_cmd(uint8_t cmd)
 {
     lcd_write_9bit(0, cmd);
@@ -59,10 +180,29 @@ void lcd_write_data(const uint8_t *data, int len)
         return;
     }
 
+#if LCD_DRIVER_MODE == LCD_DRIVER_HARDWARE_SPI
+    /*
+     * Commands, address parameters and initialization registers must retain
+     * the original 9-bit framing: CS is released after every byte. Large
+     * pixel buffers can use a continuous stream of packed 9-bit words.
+     */
+    if (len < LCD_SPI_BULK_MIN_BYTES)
+    {
+        for (int i = 0; i < len; i++)
+        {
+            lcd_write_9bit_hardware(1, data[i]);
+        }
+    }
+    else
+    {
+        lcd_write_data_hardware(data, len);
+    }
+#else
     for (int i = 0; i < len; i++)
     {
         lcd_write_9bit(1, data[i]);
     }
+#endif
 }
 
 void lcd_write_data16(uint16_t data)
@@ -586,6 +726,9 @@ void lcd_off(void)
 
 static void lcd_hard_reset(void)
 {
+    uint8_t output_regs[2] = {0};
+    uint8_t config_regs[2] = {0};
+
     pca9555a_ioconfig(PCA9555A_DEFAULT_CONFIG & ~(SLCD_PWR_IO | SLCD_RST_IO));
     LCD_PWR(1);
     LCD_RST(1);
@@ -594,23 +737,49 @@ static void lcd_hard_reset(void)
     vTaskDelay(pdMS_TO_TICKS(20));
     LCD_RST(1);
     vTaskDelay(pdMS_TO_TICKS(120));
+
+    esp_err_t output_error =
+        pca9555a_read_registers(PCA9555A_OUTPUT_PORT0_REG, output_regs, sizeof(output_regs));
+    esp_err_t config_error =
+        pca9555a_read_registers(PCA9555A_CONFIG_PORT0_REG, config_regs, sizeof(config_regs));
+
+    if (output_error == ESP_OK && config_error == ESP_OK)
+    {
+        uint16_t output = ((uint16_t)output_regs[1] << 8) | output_regs[0];
+        uint16_t config = ((uint16_t)config_regs[1] << 8) | config_regs[0];
+
+        ESP_LOGI(TAG, "PCA9555A LCD control: output=0x%04X config=0x%04X",
+                 output, config);
+    }
+    else
+    {
+        ESP_LOGE(TAG, "Failed to verify LCD power/reset: output=%s config=%s",
+                 esp_err_to_name(output_error), esp_err_to_name(config_error));
+    }
 }
 
 static void lcd_gpio_init(void)
 {
     gpio_config_t gpio_init_struct = {
-        .pin_bit_mask = (1ULL << LCD_NUM_RS) |
-                        (1ULL << LCD_NUM_CS) |
+#if LCD_DRIVER_MODE == LCD_DRIVER_SOFTWARE
+        .pin_bit_mask = (1ULL << LCD_NUM_CS) |
                         (1ULL << LCD_NUM_MOSI) |
                         (1ULL << LCD_NUM_SCLK),
+#else
+        .pin_bit_mask = (1ULL << LCD_NUM_CS),
+#endif
         .mode = GPIO_MODE_OUTPUT,
         .pull_up_en = GPIO_PULLUP_ENABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .intr_type = GPIO_INTR_DISABLE,
     };
 
-    gpio_config(&gpio_init_struct);
+    if (gpio_init_struct.pin_bit_mask != 0)
+    {
+        gpio_config(&gpio_init_struct);
+    }
 
+#if LCD_DRIVER_MODE == LCD_DRIVER_SOFTWARE
     gpio_config_t gpio_input_struct = {
         .pin_bit_mask = 1ULL << LCD_NUM_SDO,
         .mode = GPIO_MODE_INPUT,
@@ -621,10 +790,14 @@ static void lcd_gpio_init(void)
 
     gpio_config(&gpio_input_struct);
 
-    LCD_RS(1);
     LCD_CS(1);
     LCD_MOSI(1);
     LCD_SCLK(1);
+#else
+    LCD_CS(1);
+    ESP_LOGI(TAG, "Hardware SPI: %d Hz, mode 3, GPIO-controlled CS",
+             LCD_SPI_CLOCK_HZ);
+#endif
 }
 
 static void lcd_send_init_cmds(void)
@@ -667,12 +840,30 @@ static void lcd_send_init_cmds(void)
 
 void lcd_init(void)
 {
+#if LCD_DRIVER_MODE == LCD_DRIVER_HARDWARE_SPI
+    ESP_LOGI(TAG, "LCD init: 3-wire hardware SPI, CS=%d SCK=%d SDA=%d",
+             LCD_NUM_CS, LCD_NUM_SCLK, LCD_NUM_MOSI);
+#else
+    ESP_LOGI(TAG, "LCD init: 3-wire software SPI, CS=%d SCK=%d SDA=%d",
+             LCD_NUM_CS, LCD_NUM_SCLK, LCD_NUM_MOSI);
+#endif
+
     lcd_self.dir = 0;
     lcd_self.rs = LCD_NUM_RS;
     lcd_self.cs = LCD_NUM_CS;
 
     lcd_gpio_init();
+#if LCD_DRIVER_MODE == LCD_DRIVER_HARDWARE_SPI
+    lcd_spi_device_init();
+#endif
     lcd_hard_reset();
     lcd_send_init_cmds();
-    lcd_display_dir(0);
+    lcd_display_dir(LCD_DEFAULT_DIR);
+
+#if LCD_DIAGNOSTIC_MODE
+    /* A visible red frame proves reset, 9-bit transfer and GRAM writes. */
+    ESP_LOGI(TAG, "LCD command initialization complete; writing red test frame");
+    lcd_clear(RED);
+    ESP_LOGI(TAG, "LCD red test frame complete");
+#endif
 }

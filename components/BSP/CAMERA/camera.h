@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "esp_camera.h"
+#include "esp_err.h"
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -40,7 +41,31 @@
 #define CAM_PWDN(level)  do { pca9555a_ov5640_pwdn_write((level)); } while (0)
 #define CAM_RST(level)   do { pca9555a_ov5640_reset_write((level)); } while (0)
 
-/* 函数声明 */
-uint8_t camera_init(void);                 /* 摄像头初始化 */
-void camera_show(uint16_t x, uint16_t y);  /* 摄像头显示 */
+#define CAMERA_DISPLAY_X         0
+#define CAMERA_DISPLAY_WIDTH     360
+#define CAMERA_DISPLAY_HEIGHT    240
+#define CAMERA_DISPLAY_BUFFER_SIZE \
+    (CAMERA_DISPLAY_WIDTH * CAMERA_DISPLAY_HEIGHT * 2)
+
+/*
+ * Set to 1 to display the embedded JPEG test card without using the sensor.
+ * Set to 0 to restore live camera capture.
+ */
+#define CAMERA_USE_TEST_FRAME    0
+
+esp_err_t camera_init(void);
+
+/*
+ * These frame APIs allow the same JPEG frame to be displayed and, later,
+ * uploaded before it is returned to the camera driver.
+ */
+camera_fb_t *camera_capture(void);
+void camera_release(camera_fb_t *frame);
+esp_err_t camera_display_frame(const camera_fb_t *frame);
+
+/* Capture one JPEG frame and display it at the lower-left corner of the LCD. */
+esp_err_t camera_show(void);
+
+/* Display the embedded 320x240 baseline JPEG through the same decode path. */
+esp_err_t camera_show_test_frame(void);
 #endif

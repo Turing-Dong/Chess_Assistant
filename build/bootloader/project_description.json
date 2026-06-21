@@ -19,7 +19,7 @@
     "phy_data_partition": "",
     "monitor_baud" :      "115200",
     "monitor_toolprefix": "xtensa-esp32s3-elf-",
-    "c_compiler":         "D:/ESP/Espressif/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe",
+    "c_compiler":         "D:/ESP/Espressif/tools/tools/xtensa-esp-elf/esp-13.2.0_20240530/xtensa-esp-elf/bin/xtensa-esp32s3-elf-gcc.exe",
     "config_environment" : {
         "COMPONENT_KCONFIGS" : "D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/efuse/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_common/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_hw_support/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_system/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/freertos/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/hal/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/log/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/newlib/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/soc/Kconfig;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/spi_flash/Kconfig",
         "COMPONENT_KCONFIGS_PROJBUILD" : "D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/bootloader/Kconfig.projbuild;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_app_format/Kconfig.projbuild;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esp_rom/Kconfig.projbuild;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/esptool_py/Kconfig.projbuild;D:/ESP/Espressif/frameworks/esp-idf-v5.3.1/components/partition_table/Kconfig.projbuild"

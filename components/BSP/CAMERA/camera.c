@@ -1,3 +1,4 @@
+#if 0
 #include "camera.h"
 
 
@@ -128,3 +129,4 @@ err:
     i = 0;
     fb = NULL;
 }
+#endif
