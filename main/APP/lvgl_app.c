@@ -10,6 +10,7 @@
 #include "freertos/queue.h"
 #include "freertos/task.h"
 #include "camera.h"
+#include "key.h"
 #include "lcd.h"
 #include "lvgl.h"
 
@@ -25,6 +26,27 @@
 #define CAMERA_IMAGE_BUFFER_SIZE   \
     (CAMERA_IMAGE_WIDTH * CAMERA_IMAGE_HEIGHT * sizeof(lv_color_t))
 #define CAMERA_BUFFER_COUNT        2
+#define CONNECTION_COMMAND_COUNT   4
+#define KEY_COMMAND_COUNT          8
+#define KEY_TASK_STACK_SIZE        (2 * 1024)
+#define KEY_TASK_PRIORITY          3
+#define KEY_VISUAL_PRESS_MS        120
+#define UI_BUTTON_COUNT            4
+
+#define CONNECTION_COLOR_OFFLINE   0x7A8793
+#define CONNECTION_COLOR_ONLINE    0x2196F3
+
+typedef enum
+{
+    CONNECTION_WIFI,
+    CONNECTION_BLUETOOTH,
+} connection_type_t;
+
+typedef struct
+{
+    connection_type_t type;
+    bool connected;
+} connection_command_t;
 
 static const char *TAG = "lvgl_app";
 
@@ -36,8 +58,14 @@ static lv_color_t *camera_buffers[CAMERA_BUFFER_COUNT];
 static lv_img_dsc_t camera_images[CAMERA_BUFFER_COUNT];
 static QueueHandle_t camera_free_queue;
 static QueueHandle_t camera_ready_queue;
+static QueueHandle_t connection_command_queue;
+static QueueHandle_t key_command_queue;
 static lv_obj_t *camera_image_object;
 static lv_obj_t *camera_status_label;
+static lv_obj_t *wifi_icon;
+static lv_obj_t *bluetooth_icon;
+static lv_obj_t *key_buttons[UI_BUTTON_COUNT];
+static uint32_t key_release_time[UI_BUTTON_COUNT];
 static uint32_t camera_displayed_frames;
 
 static void lvgl_tick_callback(void *argument)
@@ -207,6 +235,58 @@ static esp_err_t camera_preview_init(void)
     return ESP_OK;
 }
 
+static void key_task(void *argument)
+{
+    (void)argument;
+
+    while (true)
+    {
+        uint8_t key = key_scan(KEY_SCAN_SINGLE);
+
+        if (key >= KEY_PRES_1 && key <= KEY_PRES_4)
+        {
+            xQueueSend(key_command_queue, &key, 0);
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(20));
+    }
+}
+
+static esp_err_t key_control_init(void)
+{
+    key_command_queue = xQueueCreate(KEY_COMMAND_COUNT, sizeof(uint8_t));
+    if (key_command_queue == NULL)
+    {
+        return ESP_ERR_NO_MEM;
+    }
+
+    key_init();
+
+    BaseType_t task_created = xTaskCreatePinnedToCore(key_task,
+                                                      "key_control",
+                                                      KEY_TASK_STACK_SIZE,
+                                                      NULL,
+                                                      KEY_TASK_PRIORITY,
+                                                      NULL,
+                                                      0);
+    return task_created == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
+}
+
+static void key_button_event_callback(lv_event_t *event)
+{
+    uint32_t key_number = (uint32_t)(uintptr_t)lv_event_get_user_data(event);
+    ESP_LOGI(TAG, "KEY%lu clicked", (unsigned long)key_number);
+}
+
+static void connection_icon_set_state(lv_obj_t *icon, bool connected)
+{
+    lv_obj_set_style_text_color(
+        icon,
+        lv_color_hex(connected ? CONNECTION_COLOR_ONLINE
+                               : CONNECTION_COLOR_OFFLINE),
+        0);
+}
+
 static void lvgl_create_demo_screen(void)
 {
     lv_obj_t *screen = lv_scr_act();
@@ -218,6 +298,20 @@ static void lvgl_create_demo_screen(void)
     lv_label_set_text(title, "Chess Assistant");
     lv_obj_set_style_text_color(title, lv_color_hex(0xFFFFFF), 0);
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 18);
+
+    bluetooth_icon = lv_label_create(screen);
+    lv_label_set_text(bluetooth_icon, LV_SYMBOL_BLUETOOTH);
+    connection_icon_set_state(bluetooth_icon, false);
+
+    wifi_icon = lv_label_create(screen);
+    lv_label_set_text(wifi_icon, LV_SYMBOL_WIFI);
+    connection_icon_set_state(wifi_icon, false);
+    lv_obj_align(wifi_icon, LV_ALIGN_TOP_RIGHT, -14, 18);
+    lv_obj_align_to(bluetooth_icon,
+                    wifi_icon,
+                    LV_ALIGN_OUT_LEFT_MID,
+                    -10,
+                    0);
 
     lv_obj_t *camera_panel = lv_obj_create(screen);
     lv_obj_set_size(camera_panel, 328, 248);
@@ -233,20 +327,49 @@ static void lvgl_create_demo_screen(void)
     lv_obj_center(camera_image_object);
 
     lv_obj_t *status_panel = lv_obj_create(screen);
-    lv_obj_set_size(status_panel, 128, 248);
-    lv_obj_align(status_panel, LV_ALIGN_BOTTOM_RIGHT, -8, -8);
+    lv_obj_set_size(status_panel, 88, 248);
+    lv_obj_align_to(status_panel,
+                    camera_panel,
+                    LV_ALIGN_OUT_RIGHT_MID,
+                    8,
+                    0);
     lv_obj_set_style_bg_color(status_panel, lv_color_hex(0x1D3557), 0);
     lv_obj_set_style_border_width(status_panel, 0, 0);
     lv_obj_set_style_radius(status_panel, 8, 0);
+    lv_obj_set_style_pad_all(status_panel, 2, 0);
 
     camera_status_label = lv_label_create(status_panel);
     lv_label_set_text(camera_status_label,
-                      "LVGL 8.3\n\nCAMERA\nSTARTING\n\n320x240");
+                      "CAM\n\nWAIT\n\nF\n0");
     lv_obj_set_style_text_align(camera_status_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_color(camera_status_label,
                                 lv_color_hex(0xF1FAEE),
                                 0);
     lv_obj_center(camera_status_label);
+
+    for (uint8_t i = 0; i < UI_BUTTON_COUNT; i++)
+    {
+        key_buttons[i] = lv_btn_create(screen);
+        lv_obj_set_size(key_buttons[i], 32, 56);
+        lv_obj_align(key_buttons[i],
+                     LV_ALIGN_TOP_RIGHT,
+                     -8,
+                     64 + (i * 64));
+        lv_obj_set_style_bg_color(key_buttons[i],
+                                  lv_color_hex(0x1D6FA5),
+                                  LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(key_buttons[i],
+                                  lv_color_hex(0x45B7D1),
+                                  LV_STATE_PRESSED);
+        lv_obj_add_event_cb(key_buttons[i],
+                            key_button_event_callback,
+                            LV_EVENT_CLICKED,
+                            (void *)(uintptr_t)(i + 1));
+
+        lv_obj_t *label = lv_label_create(key_buttons[i]);
+        lv_label_set_text_fmt(label, "K%u", i + 1);
+        lv_obj_center(label);
+    }
 }
 
 static void lvgl_task(void *argument)
@@ -259,6 +382,46 @@ static void lvgl_task(void *argument)
     while (true)
     {
         uint8_t ready_buffer;
+        uint8_t pressed_key;
+        connection_command_t connection_command;
+        uint32_t now = lv_tick_get();
+
+        while (xQueueReceive(connection_command_queue,
+                             &connection_command,
+                             0) == pdTRUE)
+        {
+            if (connection_command.type == CONNECTION_WIFI)
+            {
+                connection_icon_set_state(wifi_icon,
+                                          connection_command.connected);
+            }
+            else
+            {
+                connection_icon_set_state(bluetooth_icon,
+                                          connection_command.connected);
+            }
+        }
+
+        while (xQueueReceive(key_command_queue,
+                             &pressed_key,
+                             0) == pdTRUE)
+        {
+            uint8_t button_index = pressed_key - KEY_PRES_1;
+
+            lv_obj_add_state(key_buttons[button_index], LV_STATE_PRESSED);
+            lv_event_send(key_buttons[button_index], LV_EVENT_CLICKED, NULL);
+            key_release_time[button_index] = now + KEY_VISUAL_PRESS_MS;
+        }
+
+        for (uint8_t i = 0; i < UI_BUTTON_COUNT; i++)
+        {
+            if (key_release_time[i] != 0 &&
+                (int32_t)(now - key_release_time[i]) >= 0)
+            {
+                lv_obj_clear_state(key_buttons[i], LV_STATE_PRESSED);
+                key_release_time[i] = 0;
+            }
+        }
 
         if (xQueueReceive(camera_ready_queue,
                           &ready_buffer,
@@ -274,7 +437,7 @@ static void lvgl_task(void *argument)
             displayed_buffer = (int8_t)ready_buffer;
             camera_displayed_frames++;
             lv_label_set_text_fmt(camera_status_label,
-                                  "LVGL 8.3\n\nCAMERA\nLIVE\n\n320x240\n\nFRAME\n%lu",
+                                  "CAM\n\nLIVE\n\nF\n%lu",
                                   (unsigned long)camera_displayed_frames);
 
             if (previous_buffer >= 0)
@@ -302,6 +465,13 @@ static void lvgl_task(void *argument)
 esp_err_t lvgl_app_start(void)
 {
     lv_init();
+
+    connection_command_queue = xQueueCreate(CONNECTION_COMMAND_COUNT,
+                                             sizeof(connection_command_t));
+    if (connection_command_queue == NULL)
+    {
+        return ESP_ERR_NO_MEM;
+    }
 
     esp_err_t error = lvgl_display_init();
     if (error != ESP_OK)
@@ -339,6 +509,16 @@ esp_err_t lvgl_app_start(void)
         return error;
     }
 
+    error = key_control_init();
+    if (error != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Key control initialization failed: %s",
+                 esp_err_to_name(error));
+        esp_timer_stop(tick_timer);
+        esp_timer_delete(tick_timer);
+        return error;
+    }
+
     BaseType_t task_created = xTaskCreatePinnedToCore(lvgl_task,
                                                       "lvgl",
                                                       LVGL_TASK_STACK_SIZE,
@@ -357,4 +537,31 @@ esp_err_t lvgl_app_start(void)
              lcd_self.width,
              lcd_self.height);
     return ESP_OK;
+}
+
+static esp_err_t connection_set_state(connection_type_t type, bool connected)
+{
+    if (connection_command_queue == NULL)
+    {
+        return ESP_ERR_INVALID_STATE;
+    }
+
+    connection_command_t command = {
+        .type = type,
+        .connected = connected,
+    };
+
+    return xQueueSend(connection_command_queue, &command, 0) == pdTRUE
+               ? ESP_OK
+               : ESP_ERR_TIMEOUT;
+}
+
+esp_err_t lvgl_app_set_wifi_connected(bool connected)
+{
+    return connection_set_state(CONNECTION_WIFI, connected);
+}
+
+esp_err_t lvgl_app_set_bluetooth_connected(bool connected)
+{
+    return connection_set_state(CONNECTION_BLUETOOTH, connected);
 }
