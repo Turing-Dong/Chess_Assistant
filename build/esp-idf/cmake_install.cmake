@@ -544,16 +544,21 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/main/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp32-camera/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/BSP/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/LVGL/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/main/cmake_install.cmake")
 endif()
 

@@ -49,8 +49,9 @@ typedef struct
     const camera_fb_t *frame;
     uint16_t source_width;
     uint16_t source_height;
-    uint16_t display_x;
-    uint16_t display_y;
+    uint16_t output_width;
+    uint16_t output_height;
+    bool output_big_endian;
     uint8_t *rgb565_frame;
 } camera_display_context_t;
 
@@ -115,8 +116,9 @@ static bool camera_jpeg_writer(void *arg,
             context->source_height = height;
 
             if (width == 0 || height == 0 ||
-                context->display_x + CAMERA_DISPLAY_WIDTH > lcd_self.width ||
-                context->display_y + CAMERA_DISPLAY_HEIGHT > lcd_self.height)
+                context->output_width == 0 ||
+                context->output_height == 0 ||
+                context->rgb565_frame == NULL)
             {
                 return false;
             }
@@ -130,20 +132,24 @@ static bool camera_jpeg_writer(void *arg,
      * its nearest source pixel and stored as RGB565 in the PSRAM display
      * buffer. The complete image is sent with one LCD window after decoding.
      */
-    for (uint16_t destination_y = 0; destination_y < CAMERA_DISPLAY_HEIGHT; destination_y++)
+    for (uint16_t destination_y = 0;
+         destination_y < context->output_height;
+         destination_y++)
     {
         uint16_t source_y = (uint32_t)destination_y * context->source_height /
-                            CAMERA_DISPLAY_HEIGHT;
+                            context->output_height;
 
         if (source_y < y || source_y >= y + height)
         {
             continue;
         }
 
-        for (uint16_t destination_x = 0; destination_x < CAMERA_DISPLAY_WIDTH; destination_x++)
+        for (uint16_t destination_x = 0;
+             destination_x < context->output_width;
+             destination_x++)
         {
             uint16_t source_x = (uint32_t)destination_x * context->source_width /
-                                CAMERA_DISPLAY_WIDTH;
+                                context->output_width;
 
             if (source_x < x || source_x >= x + width)
             {
@@ -158,14 +164,23 @@ static bool camera_jpeg_writer(void *arg,
             uint16_t rgb565 = ((uint16_t)(red & 0xF8) << 8) |
                               ((uint16_t)(green & 0xFC) << 3) |
                               (blue >> 3);
-            size_t destination_offset =
-                (((size_t)destination_y * CAMERA_DISPLAY_WIDTH) +
-                 destination_x) * 2;
+            size_t destination_pixel =
+                ((size_t)destination_y * context->output_width) +
+                destination_x;
 
-            context->rgb565_frame[destination_offset] =
-                (uint8_t)(rgb565 >> 8);
-            context->rgb565_frame[destination_offset + 1] =
-                (uint8_t)rgb565;
+            if (context->output_big_endian)
+            {
+                size_t destination_offset = destination_pixel * 2;
+                context->rgb565_frame[destination_offset] =
+                    (uint8_t)(rgb565 >> 8);
+                context->rgb565_frame[destination_offset + 1] =
+                    (uint8_t)rgb565;
+            }
+            else
+            {
+                ((uint16_t *)context->rgb565_frame)[destination_pixel] =
+                    rgb565;
+            }
         }
     }
 
@@ -271,8 +286,9 @@ esp_err_t camera_display_frame(const camera_fb_t *frame)
     int64_t start_time = esp_timer_get_time();
     camera_display_context_t context = {
         .frame = frame,
-        .display_x = CAMERA_DISPLAY_X,
-        .display_y = lcd_self.height - CAMERA_DISPLAY_HEIGHT,
+        .output_width = CAMERA_DISPLAY_WIDTH,
+        .output_height = CAMERA_DISPLAY_HEIGHT,
+        .output_big_endian = true,
         .rgb565_frame = camera_display_buffer,
     };
 
@@ -286,10 +302,11 @@ esp_err_t camera_display_frame(const camera_fb_t *frame)
         return error;
     }
 
-    lcd_set_window(context.display_x,
-                   context.display_y,
-                   context.display_x + CAMERA_DISPLAY_WIDTH - 1,
-                   context.display_y + CAMERA_DISPLAY_HEIGHT - 1);
+    uint16_t display_y = lcd_self.height - CAMERA_DISPLAY_HEIGHT;
+    lcd_set_window(CAMERA_DISPLAY_X,
+                   display_y,
+                   CAMERA_DISPLAY_X + CAMERA_DISPLAY_WIDTH - 1,
+                   display_y + CAMERA_DISPLAY_HEIGHT - 1);
     lcd_write_data(camera_display_buffer, CAMERA_DISPLAY_BUFFER_SIZE);
 
     displayed_frames++;
@@ -301,6 +318,37 @@ esp_err_t camera_display_frame(const camera_fb_t *frame)
     }
 
     return ESP_OK;
+}
+
+esp_err_t camera_decode_frame_rgb565(const camera_fb_t *frame,
+                                     uint16_t *output,
+                                     uint16_t output_width,
+                                     uint16_t output_height)
+{
+    if (frame == NULL || output == NULL ||
+        output_width == 0 || output_height == 0)
+    {
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    if (frame->format != PIXFORMAT_JPEG)
+    {
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
+    camera_display_context_t context = {
+        .frame = frame,
+        .output_width = output_width,
+        .output_height = output_height,
+        .output_big_endian = false,
+        .rgb565_frame = (uint8_t *)output,
+    };
+
+    return esp_jpg_decode(frame->len,
+                          JPG_SCALE_NONE,
+                          camera_jpeg_reader,
+                          camera_jpeg_writer,
+                          &context);
 }
 
 esp_err_t camera_show(void)

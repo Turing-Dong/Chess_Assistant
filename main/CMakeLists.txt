@@ -4,5 +4,9 @@ idf_component_register(
         "APP"
     INCLUDE_DIRS 
         "."
-        "APP")
+        "APP"
+    REQUIRES
+        BSP
+        LVGL
+        esp_timer)
 

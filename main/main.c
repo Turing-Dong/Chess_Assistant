@@ -30,6 +30,10 @@
 #include "esp_system.h"
 #include "nvs_flash.h"
 #include "app_tasks.h"
+#include "lvgl_app.h"
+
+/* LVGL owns the LCD after startup, so the legacy direct-draw tasks stay off. */
+#define freertos_demo() ((void)0)
 
 
 i2c_obj_t i2c0_master;
@@ -74,6 +78,12 @@ void app_main(void)
         printf("camera_init failed: %s\r\n", esp_err_to_name(ret));
     }
 #endif
+
+    ret = lvgl_app_start();
+    if (ret != ESP_OK)
+    {
+        printf("lvgl_app_start failed: %s\r\n", esp_err_to_name(ret));
+    }
 
     freertos_demo();    /* 运行FreeRTOS例程 */
 }

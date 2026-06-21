@@ -82,6 +82,7 @@ G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/s
 G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/touch_element/libtouch_element.a
 G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/usb/libusb.a
 G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
-G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/main/libmain.a
 G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/esp32-camera/libesp32-camera.a
 G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/BSP/libBSP.a
+G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/LVGL/libLVGL.a
+G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/main/libmain.a

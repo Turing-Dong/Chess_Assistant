@@ -62,6 +62,10 @@ esp_err_t camera_init(void);
 camera_fb_t *camera_capture(void);
 void camera_release(camera_fb_t *frame);
 esp_err_t camera_display_frame(const camera_fb_t *frame);
+esp_err_t camera_decode_frame_rgb565(const camera_fb_t *frame,
+                                     uint16_t *output,
+                                     uint16_t output_width,
+                                     uint16_t output_height);
 
 /* Capture one JPEG frame and display it at the lower-left corner of the LCD. */
 esp_err_t camera_show(void);
