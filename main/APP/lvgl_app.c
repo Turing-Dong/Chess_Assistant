@@ -32,9 +32,17 @@
 #define KEY_TASK_PRIORITY          3
 #define KEY_VISUAL_PRESS_MS        120
 #define UI_BUTTON_COUNT            4
+#define MOVE_PANEL_WIDTH           88
+#define MOVE_PANEL_HEIGHT          248
+#define MOVE_SECTION_WIDTH         84
+#define MOVE_SECTION_HEIGHT        120
+#define MOVE_COORDINATE_WIDTH      78
+#define MOVE_COORDINATE_HEIGHT     42
 
 #define CONNECTION_COLOR_OFFLINE   0x7A8793
 #define CONNECTION_COLOR_ONLINE    0x2196F3
+
+LV_FONT_DECLARE(lv_font_chess_16);
 
 typedef enum
 {
@@ -61,12 +69,10 @@ static QueueHandle_t camera_ready_queue;
 static QueueHandle_t connection_command_queue;
 static QueueHandle_t key_command_queue;
 static lv_obj_t *camera_image_object;
-static lv_obj_t *camera_status_label;
 static lv_obj_t *wifi_icon;
 static lv_obj_t *bluetooth_icon;
 static lv_obj_t *key_buttons[UI_BUTTON_COUNT];
 static uint32_t key_release_time[UI_BUTTON_COUNT];
-static uint32_t camera_displayed_frames;
 
 static void lvgl_tick_callback(void *argument)
 {
@@ -287,6 +293,56 @@ static void connection_icon_set_state(lv_obj_t *icon, bool connected)
         0);
 }
 
+static void create_coordinate_box(lv_obj_t *parent,
+                                  lv_align_t alignment,
+                                  lv_coord_t y_offset)
+{
+    lv_obj_t *coordinate_box = lv_obj_create(parent);
+    lv_obj_set_size(coordinate_box,
+                    MOVE_COORDINATE_WIDTH,
+                    MOVE_COORDINATE_HEIGHT);
+    lv_obj_align(coordinate_box, alignment, 0, y_offset);
+    lv_obj_set_style_bg_color(coordinate_box, lv_color_hex(0x142A46), 0);
+    lv_obj_set_style_border_color(coordinate_box, lv_color_hex(0x6EC6E8), 0);
+    lv_obj_set_style_border_width(coordinate_box, 1, 0);
+    lv_obj_set_style_radius(coordinate_box, 4, 0);
+    lv_obj_set_style_pad_all(coordinate_box, 0, 0);
+    lv_obj_clear_flag(coordinate_box, LV_OBJ_FLAG_SCROLLABLE);
+
+    lv_obj_t *coordinate_label = lv_label_create(coordinate_box);
+    lv_label_set_text(coordinate_label, "(0, 0)");
+    lv_obj_set_style_text_color(coordinate_label, lv_color_hex(0xF1FAEE), 0);
+    lv_obj_center(coordinate_label);
+}
+
+static void create_move_section(lv_obj_t *parent,
+                                lv_align_t alignment,
+                                const char *title_text,
+                                uint32_t accent_color)
+{
+    lv_obj_t *section = lv_obj_create(parent);
+    lv_obj_set_size(section, MOVE_SECTION_WIDTH, MOVE_SECTION_HEIGHT);
+    lv_obj_align(section, alignment, 0, 0);
+    lv_obj_set_style_bg_color(section, lv_color_hex(0x1D3557), 0);
+    lv_obj_set_style_border_color(section, lv_color_hex(accent_color), 0);
+    lv_obj_set_style_border_width(section, 1, 0);
+    lv_obj_set_style_radius(section, 6, 0);
+    lv_obj_set_style_pad_top(section, 24, 0);
+    lv_obj_set_style_pad_left(section, 2, 0);
+    lv_obj_set_style_pad_right(section, 2, 0);
+    lv_obj_set_style_pad_bottom(section, 2, 0);
+    lv_obj_clear_flag(section, LV_OBJ_FLAG_SCROLLABLE);
+
+    lv_obj_t *title = lv_label_create(section);
+    lv_label_set_text(title, title_text);
+    lv_obj_set_style_text_font(title, &lv_font_chess_16, 0);
+    lv_obj_set_style_text_color(title, lv_color_hex(accent_color), 0);
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, -22);
+
+    create_coordinate_box(section, LV_ALIGN_TOP_MID, 2);
+    create_coordinate_box(section, LV_ALIGN_BOTTOM_MID, -2);
+}
+
 static void lvgl_create_demo_screen(void)
 {
     lv_obj_t *screen = lv_scr_act();
@@ -296,8 +352,9 @@ static void lvgl_create_demo_screen(void)
 
     lv_obj_t *title = lv_label_create(screen);
     lv_label_set_text(title, "Chess Assistant");
+    lv_obj_set_style_text_font(title, &lv_font_montserrat_28, 0);
     lv_obj_set_style_text_color(title, lv_color_hex(0xFFFFFF), 0);
-    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 18);
+    lv_obj_align(title, LV_ALIGN_TOP_MID, 0, 4);
 
     bluetooth_icon = lv_label_create(screen);
     lv_label_set_text(bluetooth_icon, LV_SYMBOL_BLUETOOTH);
@@ -326,26 +383,27 @@ static void lvgl_create_demo_screen(void)
     camera_image_object = lv_img_create(camera_panel);
     lv_obj_center(camera_image_object);
 
-    lv_obj_t *status_panel = lv_obj_create(screen);
-    lv_obj_set_size(status_panel, 88, 248);
-    lv_obj_align_to(status_panel,
-                    camera_panel,
-                    LV_ALIGN_OUT_RIGHT_MID,
-                    8,
-                    0);
-    lv_obj_set_style_bg_color(status_panel, lv_color_hex(0x1D3557), 0);
-    lv_obj_set_style_border_width(status_panel, 0, 0);
-    lv_obj_set_style_radius(status_panel, 8, 0);
-    lv_obj_set_style_pad_all(status_panel, 2, 0);
+    lv_obj_t *move_panel = lv_obj_create(screen);
+    lv_obj_set_size(move_panel, MOVE_PANEL_WIDTH, MOVE_PANEL_HEIGHT);
+    lv_obj_align_to(move_panel,
+                     camera_panel,
+                     LV_ALIGN_OUT_RIGHT_MID,
+                     8,
+                     0);
+    lv_obj_set_style_bg_color(move_panel, lv_color_hex(0x101820), 0);
+    lv_obj_set_style_border_width(move_panel, 0, 0);
+    lv_obj_set_style_radius(move_panel, 8, 0);
+    lv_obj_set_style_pad_all(move_panel, 2, 0);
+    lv_obj_clear_flag(move_panel, LV_OBJ_FLAG_SCROLLABLE);
 
-    camera_status_label = lv_label_create(status_panel);
-    lv_label_set_text(camera_status_label,
-                      "CAM\n\nWAIT\n\nF\n0");
-    lv_obj_set_style_text_align(camera_status_label, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_set_style_text_color(camera_status_label,
-                                lv_color_hex(0xF1FAEE),
-                                0);
-    lv_obj_center(camera_status_label);
+    create_move_section(move_panel,
+                        LV_ALIGN_TOP_MID,
+                        "帅方走法",
+                        0xFF6B6B);
+    create_move_section(move_panel,
+                        LV_ALIGN_BOTTOM_MID,
+                        "将方走法",
+                        0x45B7D1);
 
     for (uint8_t i = 0; i < UI_BUTTON_COUNT; i++)
     {
@@ -435,10 +493,6 @@ static void lvgl_task(void *argument)
             lv_refr_now(NULL);
 
             displayed_buffer = (int8_t)ready_buffer;
-            camera_displayed_frames++;
-            lv_label_set_text_fmt(camera_status_label,
-                                  "CAM\n\nLIVE\n\nF\n%lu",
-                                  (unsigned long)camera_displayed_frames);
 
             if (previous_buffer >= 0)
             {

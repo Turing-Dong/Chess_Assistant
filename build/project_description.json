@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "05_Time_slice_scheduling",
-    "project_version":    "04df4e5-dirty",
+    "project_version":    "0e999ab-dirty",
     "project_path":       "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode",
     "idf_path":           "D:/ESP/Espressif/frameworks/esp-idf-v5.3.1",
     "build_dir":          "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build",
@@ -1225,7 +1225,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [],
             "file": "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/build/esp-idf/main/libmain.a",
-            "sources": [ "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/main.c", "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/APP/app_tasks.c", "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/APP/lvgl_app.c" ],
+            "sources": [ "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/main.c", "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/APP/app_tasks.c", "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/APP/lvgl_app.c", "G:/1_Personal_File/chessAssistant/gitHub_Code/ChessAssistantCode/main/APP/lv_font_chess_16.c" ],
             "include_dirs": [ ".", "APP" ]
         },
         "mbedtls": {
