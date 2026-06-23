@@ -123,7 +123,7 @@ void led_task(void *pvParameters)
     while (1)
     {
         LED_TOGGLE();
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 

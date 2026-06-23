@@ -41,6 +41,7 @@
 
 #define CONNECTION_COLOR_OFFLINE   0x7A8793
 #define CONNECTION_COLOR_ONLINE    0x2196F3
+#define WIFI_COLOR_ONLINE          0x2ECC71
 
 LV_FONT_DECLARE(lv_font_chess_16);
 
@@ -284,11 +285,13 @@ static void key_button_event_callback(lv_event_t *event)
     ESP_LOGI(TAG, "KEY%lu clicked", (unsigned long)key_number);
 }
 
-static void connection_icon_set_state(lv_obj_t *icon, bool connected)
+static void connection_icon_set_state(lv_obj_t *icon,
+                                      bool connected,
+                                      uint32_t online_color)
 {
     lv_obj_set_style_text_color(
         icon,
-        lv_color_hex(connected ? CONNECTION_COLOR_ONLINE
+        lv_color_hex(connected ? online_color
                                : CONNECTION_COLOR_OFFLINE),
         0);
 }
@@ -358,11 +361,13 @@ static void lvgl_create_demo_screen(void)
 
     bluetooth_icon = lv_label_create(screen);
     lv_label_set_text(bluetooth_icon, LV_SYMBOL_BLUETOOTH);
-    connection_icon_set_state(bluetooth_icon, false);
+    connection_icon_set_state(bluetooth_icon,
+                              false,
+                              CONNECTION_COLOR_ONLINE);
 
     wifi_icon = lv_label_create(screen);
     lv_label_set_text(wifi_icon, LV_SYMBOL_WIFI);
-    connection_icon_set_state(wifi_icon, false);
+    connection_icon_set_state(wifi_icon, false, WIFI_COLOR_ONLINE);
     lv_obj_align(wifi_icon, LV_ALIGN_TOP_RIGHT, -14, 18);
     lv_obj_align_to(bluetooth_icon,
                     wifi_icon,
@@ -451,12 +456,14 @@ static void lvgl_task(void *argument)
             if (connection_command.type == CONNECTION_WIFI)
             {
                 connection_icon_set_state(wifi_icon,
-                                          connection_command.connected);
+                                          connection_command.connected,
+                                          WIFI_COLOR_ONLINE);
             }
             else
             {
                 connection_icon_set_state(bluetooth_icon,
-                                          connection_command.connected);
+                                          connection_command.connected,
+                                          CONNECTION_COLOR_ONLINE);
             }
         }
 

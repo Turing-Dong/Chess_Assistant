@@ -29,14 +29,47 @@
 #include "pca9555a.h"
 #include "esp_system.h"
 #include "nvs_flash.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "app_tasks.h"
 #include "lvgl_app.h"
+#include "wifi_app.h"
 
 /* LVGL owns the LCD after startup, so the legacy direct-draw tasks stay off. */
 #define freertos_demo() ((void)0)
 
+#define LED_HEARTBEAT_INTERVAL_MS       1000
+#define LED_HEARTBEAT_TASK_STACK_SIZE   (2 * 1024)
+#define LED_HEARTBEAT_TASK_PRIORITY     2
+
 
 i2c_obj_t i2c0_master;
+
+static void led_heartbeat_task(void *argument)
+{
+    (void)argument;
+
+    while (1)
+    {
+        LED_TOGGLE();
+        vTaskDelay(pdMS_TO_TICKS(LED_HEARTBEAT_INTERVAL_MS));
+    }
+}
+
+static void led_heartbeat_start(void)
+{
+    BaseType_t task_created = xTaskCreatePinnedToCore(led_heartbeat_task,
+                                                      "led_heartbeat",
+                                                      LED_HEARTBEAT_TASK_STACK_SIZE,
+                                                      NULL,
+                                                      LED_HEARTBEAT_TASK_PRIORITY,
+                                                      NULL,
+                                                      1);
+    if (task_created != pdPASS)
+    {
+        printf("led_heartbeat task create failed\r\n");
+    }
+}
 
 /**
  * @brief       程序入口
@@ -70,6 +103,7 @@ void app_main(void)
         vTaskDelay(pdMS_TO_TICKS(500));
     }
 #endif
+    led_heartbeat_start();
 #if !CAMERA_USE_TEST_FRAME
     ret = camera_init();
 
@@ -83,6 +117,14 @@ void app_main(void)
     if (ret != ESP_OK)
     {
         printf("lvgl_app_start failed: %s\r\n", esp_err_to_name(ret));
+    }
+    else
+    {
+        ret = wifi_app_start();
+        if (ret != ESP_OK)
+        {
+            printf("wifi_app_start failed: %s\r\n", esp_err_to_name(ret));
+        }
     }
 
     freertos_demo();    /* 运行FreeRTOS例程 */
