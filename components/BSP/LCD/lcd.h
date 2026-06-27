@@ -56,7 +56,7 @@
 #define LCD_DIR_PORTRAIT_REVERSE     1
 #define LCD_DIR_LANDSCAPE            2
 #define LCD_DIR_LANDSCAPE_REVERSE    3
-#define LCD_DEFAULT_DIR              LCD_DIR_LANDSCAPE
+#define LCD_DEFAULT_DIR              LCD_DIR_LANDSCAPE_REVERSE
 
 #define WHITE           0xFFFF
 #define BLACK           0x0000
