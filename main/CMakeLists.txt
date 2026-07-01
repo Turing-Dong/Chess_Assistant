@@ -2,8 +2,13 @@ idf_component_register(
     SRCS
         "main.c"
         "APP/app_tasks.c"
+        "APP/device_identity.c"
+        "APP/image_result.c"
+        "APP/image_task.c"
         "APP/lvgl_app.c"
         "APP/lv_font_chess_16.c"
+        "APP/oss_client.c"
+        "APP/time_sync.c"
         "APP/wifi_app.c"
     INCLUDE_DIRS 
         "."
@@ -11,8 +16,11 @@ idf_component_register(
     REQUIRES
         BSP
         LVGL
+        esp_http_client
         esp_timer
         esp_wifi
         esp_netif
-        esp_event)
+        esp_event
+        json
+        mbedtls)
 

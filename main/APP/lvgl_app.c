@@ -10,9 +10,12 @@
 #include "freertos/queue.h"
 #include "freertos/task.h"
 #include "camera.h"
+#include "device_identity.h"
+#include "image_task.h"
 #include "key.h"
 #include "lcd.h"
 #include "lvgl.h"
+#include "wifi_app.h"
 
 #define LVGL_TASK_STACK_SIZE       (8 * 1024)
 #define LVGL_TASK_PRIORITY         5
@@ -31,6 +34,8 @@
 #define KEY_TASK_STACK_SIZE        (2 * 1024)
 #define KEY_TASK_PRIORITY          3
 #define KEY_VISUAL_PRESS_MS        120
+#define IMAGE_UPLOAD_TASK_STACK_SIZE  (12 * 1024)
+#define IMAGE_UPLOAD_TASK_PRIORITY    4
 #define UI_BUTTON_COUNT            4
 #define MOVE_PANEL_WIDTH           88
 #define MOVE_PANEL_HEIGHT          248
@@ -74,6 +79,9 @@ static lv_obj_t *wifi_icon;
 static lv_obj_t *bluetooth_icon;
 static lv_obj_t *key_buttons[UI_BUTTON_COUNT];
 static uint32_t key_release_time[UI_BUTTON_COUNT];
+static device_identity_t image_upload_identity;
+static bool image_upload_identity_ready;
+static TaskHandle_t image_upload_task_handle;
 
 static void lvgl_tick_callback(void *argument)
 {
@@ -279,10 +287,92 @@ static esp_err_t key_control_init(void)
     return task_created == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
 }
 
+static esp_err_t image_upload_identity_init_once(void)
+{
+    if (image_upload_identity_ready)
+    {
+        return ESP_OK;
+    }
+
+    esp_err_t error = device_identity_init(&image_upload_identity);
+    if (error != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Unable to initialize image upload identity: %s",
+                 esp_err_to_name(error));
+        return error;
+    }
+
+    image_upload_identity_ready = true;
+    ESP_LOGI(TAG, "Image upload identity: %s",
+             image_upload_identity.device_id);
+    return ESP_OK;
+}
+
+static void image_upload_task(void *argument)
+{
+    (void)argument;
+
+    ESP_LOGI(TAG, "KEY1 image upload started");
+    esp_err_t error = image_task_process_one_frame(&image_upload_identity);
+    if (error == ESP_OK)
+    {
+        ESP_LOGI(TAG, "KEY1 image upload completed");
+    }
+    else
+    {
+        ESP_LOGE(TAG, "KEY1 image upload failed: %s",
+                 esp_err_to_name(error));
+    }
+
+    image_upload_task_handle = NULL;
+    vTaskDelete(NULL);
+}
+
+static void image_upload_request_start(void)
+{
+    if (!wifi_app_is_connected())
+    {
+        ESP_LOGW(TAG, "KEY1 ignored: Wi-Fi is not connected");
+        return;
+    }
+
+    if (image_upload_task_handle != NULL ||
+        image_task_get_state() != IMAGE_TASK_STATE_IDLE)
+    {
+        ESP_LOGW(TAG, "KEY1 ignored: image upload is already running");
+        return;
+    }
+
+    esp_err_t error = image_upload_identity_init_once();
+    if (error != ESP_OK)
+    {
+        return;
+    }
+
+    BaseType_t task_created = xTaskCreatePinnedToCore(
+        image_upload_task,
+        "image_upload",
+        IMAGE_UPLOAD_TASK_STACK_SIZE,
+        NULL,
+        IMAGE_UPLOAD_TASK_PRIORITY,
+        &image_upload_task_handle,
+        0);
+    if (task_created != pdPASS)
+    {
+        image_upload_task_handle = NULL;
+        ESP_LOGE(TAG, "Unable to create image upload task");
+    }
+}
+
 static void key_button_event_callback(lv_event_t *event)
 {
     uint32_t key_number = (uint32_t)(uintptr_t)lv_event_get_user_data(event);
     ESP_LOGI(TAG, "KEY%lu clicked", (unsigned long)key_number);
+
+    if (key_number == 1U)
+    {
+        image_upload_request_start();
+    }
 }
 
 static void connection_icon_set_state(lv_obj_t *icon,

@@ -33,7 +33,7 @@ typedef enum
 static const char *TAG = "wifi_app";
 static QueueHandle_t wifi_event_queue;
 static TimerHandle_t wifi_beep_timer;
-static bool wifi_connected;
+static volatile bool wifi_connected;
 
 static void wifi_beep_timer_callback(TimerHandle_t timer)
 {
@@ -338,4 +338,27 @@ esp_err_t wifi_app_start(void)
         ESP_LOGI(TAG, "Wi-Fi station initialized");
     }
     return error;
+}
+
+bool wifi_app_is_connected(void)
+{
+    return wifi_connected;
+}
+
+esp_err_t wifi_app_wait_connected(TickType_t timeout_ticks)
+{
+    TickType_t start_tick = xTaskGetTickCount();
+
+    while (!wifi_app_is_connected())
+    {
+        if (timeout_ticks != portMAX_DELAY &&
+            (xTaskGetTickCount() - start_tick) >= timeout_ticks)
+        {
+            return ESP_ERR_TIMEOUT;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(100));
+    }
+
+    return ESP_OK;
 }
