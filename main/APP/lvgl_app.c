@@ -30,7 +30,9 @@
 #define CAMERA_IMAGE_BUFFER_SIZE   \
     (CAMERA_IMAGE_WIDTH * CAMERA_IMAGE_HEIGHT * sizeof(lv_color_t))
 #define CAMERA_BUFFER_COUNT        3
+#define CAMERA_PREVIEW_FRAME_INTERVAL_MS 20
 #define CONNECTION_COMMAND_COUNT   4
+#define IMAGE_RESULT_COMMAND_COUNT 1
 #define KEY_COMMAND_COUNT          8
 #define KEY_TASK_STACK_SIZE        (2 * 1024)
 #define KEY_TASK_PRIORITY          3
@@ -74,11 +76,13 @@ static lv_img_dsc_t camera_images[CAMERA_BUFFER_COUNT];
 static QueueHandle_t camera_free_queue;
 static QueueHandle_t camera_ready_queue;
 static QueueHandle_t connection_command_queue;
+static QueueHandle_t image_result_queue;
 static QueueHandle_t key_command_queue;
 static lv_obj_t *camera_image_object;
 static lv_obj_t *wifi_icon;
 static lv_obj_t *bluetooth_icon;
 static lv_obj_t *key_buttons[UI_BUTTON_COUNT];
+static lv_obj_t *coordinate_labels[IMAGE_POINT_COUNT];
 static uint32_t key_release_time[UI_BUTTON_COUNT];
 static device_identity_t image_upload_identity;
 static bool image_upload_identity_ready;
@@ -261,6 +265,8 @@ static void camera_task(void *argument)
                 vTaskDelay(pdMS_TO_TICKS(20));
             }
         }
+
+        vTaskDelay(pdMS_TO_TICKS(CAMERA_PREVIEW_FRAME_INTERVAL_MS));
     }
 }
 
@@ -435,6 +441,22 @@ static void key_button_event_callback(lv_event_t *event)
     }
 }
 
+static void image_result_callback(const image_process_result_t *result,
+                                  void *user_data)
+{
+    (void)user_data;
+
+    if (result == NULL || !result->valid || image_result_queue == NULL)
+    {
+        return;
+    }
+
+    if (xQueueOverwrite(image_result_queue, result) != pdTRUE)
+    {
+        ESP_LOGW(TAG, "Unable to queue image result for LCD update");
+    }
+}
+
 static void connection_icon_set_state(lv_obj_t *icon,
                                       bool connected,
                                       uint32_t online_color)
@@ -446,9 +468,9 @@ static void connection_icon_set_state(lv_obj_t *icon,
         0);
 }
 
-static void create_coordinate_box(lv_obj_t *parent,
-                                  lv_align_t alignment,
-                                  lv_coord_t y_offset)
+static lv_obj_t *create_coordinate_box(lv_obj_t *parent,
+                                       lv_align_t alignment,
+                                       lv_coord_t y_offset)
 {
     lv_obj_t *coordinate_box = lv_obj_create(parent);
     lv_obj_set_size(coordinate_box,
@@ -466,12 +488,16 @@ static void create_coordinate_box(lv_obj_t *parent,
     lv_label_set_text(coordinate_label, "(0, 0)");
     lv_obj_set_style_text_color(coordinate_label, lv_color_hex(0xF1FAEE), 0);
     lv_obj_center(coordinate_label);
+
+    return coordinate_label;
 }
 
 static void create_move_section(lv_obj_t *parent,
                                 lv_align_t alignment,
                                 const char *title_text,
-                                uint32_t accent_color)
+                                uint32_t accent_color,
+                                image_point_index_t start_point,
+                                image_point_index_t end_point)
 {
     lv_obj_t *section = lv_obj_create(parent);
     lv_obj_set_size(section, MOVE_SECTION_WIDTH, MOVE_SECTION_HEIGHT);
@@ -492,8 +518,54 @@ static void create_move_section(lv_obj_t *parent,
     lv_obj_set_style_text_color(title, lv_color_hex(accent_color), 0);
     lv_obj_align(title, LV_ALIGN_TOP_MID, 0, -22);
 
-    create_coordinate_box(section, LV_ALIGN_TOP_MID, 2);
-    create_coordinate_box(section, LV_ALIGN_BOTTOM_MID, -2);
+    coordinate_labels[start_point] = create_coordinate_box(section,
+                                                           LV_ALIGN_TOP_MID,
+                                                           2);
+    coordinate_labels[end_point] = create_coordinate_box(section,
+                                                         LV_ALIGN_BOTTOM_MID,
+                                                         -2);
+}
+
+static void update_coordinate_label(image_point_index_t index,
+                                    const image_process_result_t *result)
+{
+    if (index >= IMAGE_POINT_COUNT ||
+        coordinate_labels[index] == NULL ||
+        result == NULL)
+    {
+        return;
+    }
+
+    const image_point_t *point = &result->points[index];
+    lv_label_set_text_fmt(coordinate_labels[index],
+                          "(%ld, %ld)",
+                          (long)point->x,
+                          (long)point->y);
+    lv_obj_center(coordinate_labels[index]);
+}
+
+static void lcd_coordinates_update(const image_process_result_t *result)
+{
+    if (result == NULL || !result->valid)
+    {
+        return;
+    }
+
+    update_coordinate_label(IMAGE_POINT_PLAYER1_START, result);
+    update_coordinate_label(IMAGE_POINT_PLAYER1_END, result);
+    update_coordinate_label(IMAGE_POINT_PLAYER2_START, result);
+    update_coordinate_label(IMAGE_POINT_PLAYER2_END, result);
+
+    ESP_LOGI(TAG,
+             "LCD coordinates updated: P1_START=(%ld,%ld), P1_END=(%ld,%ld), P2_START=(%ld,%ld), P2_END=(%ld,%ld)",
+             (long)result->points[IMAGE_POINT_PLAYER1_START].x,
+             (long)result->points[IMAGE_POINT_PLAYER1_START].y,
+             (long)result->points[IMAGE_POINT_PLAYER1_END].x,
+             (long)result->points[IMAGE_POINT_PLAYER1_END].y,
+             (long)result->points[IMAGE_POINT_PLAYER2_START].x,
+             (long)result->points[IMAGE_POINT_PLAYER2_START].y,
+             (long)result->points[IMAGE_POINT_PLAYER2_END].x,
+             (long)result->points[IMAGE_POINT_PLAYER2_END].y);
 }
 
 static void lvgl_create_demo_screen(void)
@@ -554,11 +626,15 @@ static void lvgl_create_demo_screen(void)
     create_move_section(move_panel,
                         LV_ALIGN_TOP_MID,
                         "帅方走法",
-                        0xFF6B6B);
+                        0xFF6B6B,
+                        IMAGE_POINT_PLAYER1_START,
+                        IMAGE_POINT_PLAYER1_END);
     create_move_section(move_panel,
                         LV_ALIGN_BOTTOM_MID,
                         "将方走法",
-                        0x45B7D1);
+                        0x45B7D1,
+                        IMAGE_POINT_PLAYER2_START,
+                        IMAGE_POINT_PLAYER2_END);
 
     for (uint8_t i = 0; i < UI_BUTTON_COUNT; i++)
     {
@@ -597,6 +673,7 @@ static void lvgl_task(void *argument)
         uint8_t ready_buffer;
         uint8_t pressed_key;
         connection_command_t connection_command;
+        image_process_result_t process_result;
         uint32_t now = lv_tick_get();
 
         while (xQueueReceive(connection_command_queue,
@@ -615,6 +692,13 @@ static void lvgl_task(void *argument)
                                           connection_command.connected,
                                           CONNECTION_COLOR_ONLINE);
             }
+        }
+
+        while (xQueueReceive(image_result_queue,
+                             &process_result,
+                             0) == pdTRUE)
+        {
+            lcd_coordinates_update(&process_result);
         }
 
         while (xQueueReceive(key_command_queue,
@@ -691,6 +775,14 @@ esp_err_t lvgl_app_start(void)
     {
         return ESP_ERR_NO_MEM;
     }
+
+    image_result_queue = xQueueCreate(IMAGE_RESULT_COMMAND_COUNT,
+                                      sizeof(image_process_result_t));
+    if (image_result_queue == NULL)
+    {
+        return ESP_ERR_NO_MEM;
+    }
+    image_task_set_result_callback(image_result_callback, NULL);
 
     esp_err_t error = lvgl_display_init();
     if (error != ESP_OK)

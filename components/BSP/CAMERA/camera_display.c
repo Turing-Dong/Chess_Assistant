@@ -16,6 +16,12 @@ static SemaphoreHandle_t camera_mutex;
 static uint8_t *camera_display_buffer;
 static uint32_t displayed_frames;
 
+#define CAMERA_INIT_ATTEMPTS       2
+#define CAMERA_PWDN_RESET_MS       20
+#define CAMERA_PWDN_STABLE_MS      80
+#define CAMERA_RESET_ASSERT_MS     50
+#define CAMERA_RESET_STABLE_MS     200
+
 extern const uint8_t camera_test_jpg_start[] asm("_binary_camera_test_jpg_start");
 extern const uint8_t camera_test_jpg_end[] asm("_binary_camera_test_jpg_end");
 
@@ -36,7 +42,7 @@ static camera_config_t camera_config = {
     .pin_vsync = CAM_PIN_VSYNC,
     .pin_href = CAM_PIN_HREF,
     .pin_pclk = CAM_PIN_PCLK,
-    .xclk_freq_hz = 24000000,
+    .xclk_freq_hz = 20000000,
     .ledc_timer = LEDC_TIMER_0,
     .ledc_channel = LEDC_CHANNEL_0,
     .fb_location = CAMERA_FB_IN_PSRAM,
@@ -108,6 +114,25 @@ static esp_err_t camera_mutex_init(void)
     }
 
     return ESP_OK;
+}
+
+static void camera_hardware_reset(void)
+{
+    if (CAM_PIN_PWDN == GPIO_NUM_NC)
+    {
+        CAM_PWDN(1);
+        vTaskDelay(pdMS_TO_TICKS(CAMERA_PWDN_RESET_MS));
+        CAM_PWDN(0);
+        vTaskDelay(pdMS_TO_TICKS(CAMERA_PWDN_STABLE_MS));
+    }
+
+    if (CAM_PIN_RESET == GPIO_NUM_NC)
+    {
+        CAM_RST(0);
+        vTaskDelay(pdMS_TO_TICKS(CAMERA_RESET_ASSERT_MS));
+        CAM_RST(1);
+        vTaskDelay(pdMS_TO_TICKS(CAMERA_RESET_STABLE_MS));
+    }
 }
 
 static size_t camera_jpeg_reader(void *arg, size_t index, uint8_t *buffer, size_t length)
@@ -227,21 +252,24 @@ esp_err_t camera_init(void)
         return ESP_OK;
     }
 
-    if (CAM_PIN_PWDN == GPIO_NUM_NC)
+    esp_err_t error = ESP_FAIL;
+    for (uint8_t attempt = 1; attempt <= CAMERA_INIT_ATTEMPTS; attempt++)
     {
-        CAM_PWDN(0);
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
+        camera_hardware_reset();
+        error = esp_camera_init(&camera_config);
+        if (error == ESP_OK)
+        {
+            break;
+        }
 
-    if (CAM_PIN_RESET == GPIO_NUM_NC)
-    {
-        CAM_RST(0);
-        vTaskDelay(pdMS_TO_TICKS(20));
-        CAM_RST(1);
-        vTaskDelay(pdMS_TO_TICKS(20));
+        ESP_LOGW(TAG,
+                 "Camera initialization attempt %u/%u failed: %s",
+                 (unsigned)attempt,
+                 (unsigned)CAMERA_INIT_ATTEMPTS,
+                 esp_err_to_name(error));
+        esp_camera_deinit();
+        vTaskDelay(pdMS_TO_TICKS(200));
     }
-
-    esp_err_t error = esp_camera_init(&camera_config);
 
     if (error != ESP_OK)
     {
