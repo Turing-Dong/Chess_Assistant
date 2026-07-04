@@ -29,13 +29,13 @@
 #define CAMERA_IMAGE_HEIGHT        240
 #define CAMERA_IMAGE_BUFFER_SIZE   \
     (CAMERA_IMAGE_WIDTH * CAMERA_IMAGE_HEIGHT * sizeof(lv_color_t))
-#define CAMERA_BUFFER_COUNT        2
+#define CAMERA_BUFFER_COUNT        3
 #define CONNECTION_COMMAND_COUNT   4
 #define KEY_COMMAND_COUNT          8
 #define KEY_TASK_STACK_SIZE        (2 * 1024)
 #define KEY_TASK_PRIORITY          3
 #define KEY_VISUAL_PRESS_MS        120
-#define IMAGE_UPLOAD_TASK_STACK_SIZE  (12 * 1024)
+#define IMAGE_UPLOAD_TASK_STACK_SIZE  (16 * 1024)
 #define IMAGE_UPLOAD_TASK_PRIORITY    4
 #define UI_BUTTON_COUNT            4
 #define MOVE_PANEL_WIDTH           88
@@ -87,6 +87,7 @@ static uint32_t camera_capture_fail_count;
 static uint32_t camera_capture_ok_count;
 static uint32_t camera_preview_decode_count;
 static uint32_t camera_preview_display_count;
+static uint32_t camera_preview_drop_count;
 
 static void lvgl_tick_callback(void *argument)
 {
@@ -235,7 +236,31 @@ static void camera_task(void *argument)
                      (unsigned long)camera_preview_decode_count);
         }
 
-        xQueueSend(camera_ready_queue, &buffer_index, portMAX_DELAY);
+        if (xQueueSend(camera_ready_queue, &buffer_index, 0) != pdTRUE)
+        {
+            uint8_t dropped_buffer;
+
+            if (xQueueReceive(camera_ready_queue,
+                              &dropped_buffer,
+                              0) == pdTRUE)
+            {
+                camera_preview_drop_count++;
+                if (camera_preview_drop_count == 1U ||
+                    camera_preview_drop_count % 10U == 0U)
+                {
+                    ESP_LOGW(TAG,
+                             "Camera preview dropped %lu stale frames",
+                             (unsigned long)camera_preview_drop_count);
+                }
+                xQueueSend(camera_free_queue, &dropped_buffer, portMAX_DELAY);
+            }
+
+            if (xQueueSend(camera_ready_queue, &buffer_index, 0) != pdTRUE)
+            {
+                xQueueSend(camera_free_queue, &buffer_index, portMAX_DELAY);
+                vTaskDelay(pdMS_TO_TICKS(20));
+            }
+        }
     }
 }
 
@@ -276,7 +301,7 @@ static esp_err_t camera_preview_init(void)
                                                       NULL,
                                                       CAMERA_TASK_PRIORITY,
                                                       NULL,
-                                                      0);
+                                                      1);
     if (task_created != pdPASS)
     {
         return ESP_ERR_NO_MEM;
@@ -622,7 +647,6 @@ static void lvgl_task(void *argument)
             lv_img_set_src(camera_image_object,
                            &camera_images[ready_buffer]);
             lv_obj_center(camera_image_object);
-            lv_refr_now(NULL);
 
             camera_preview_display_count++;
             if (camera_preview_display_count == 1U ||

@@ -223,34 +223,34 @@ esp_err_t image_result_parse_and_validate(const char *json_text,
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
-                                       "top_left",
+                                       "player1_start",
                                        result->image_width,
                                        result->image_height,
-                                       &result->points[IMAGE_POINT_TOP_LEFT]);
+                                       &result->points[IMAGE_POINT_PLAYER1_START]);
     }
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
-                                       "top_right",
+                                       "player1_end",
                                        result->image_width,
                                        result->image_height,
-                                       &result->points[IMAGE_POINT_TOP_RIGHT]);
+                                       &result->points[IMAGE_POINT_PLAYER1_END]);
     }
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
-                                       "bottom_right",
+                                       "player2_start",
                                        result->image_width,
                                        result->image_height,
-                                       &result->points[IMAGE_POINT_BOTTOM_RIGHT]);
+                                       &result->points[IMAGE_POINT_PLAYER2_START]);
     }
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
-                                       "bottom_left",
+                                       "player2_end",
                                        result->image_width,
                                        result->image_height,
-                                       &result->points[IMAGE_POINT_BOTTOM_LEFT]);
+                                       &result->points[IMAGE_POINT_PLAYER2_END]);
     }
 
     result->valid = (error == ESP_OK);
@@ -258,15 +258,15 @@ esp_err_t image_result_parse_and_validate(const char *json_text,
     if (error == ESP_OK)
     {
         ESP_LOGI(TAG,
-                 "Result ok: TL=(%ld,%ld), TR=(%ld,%ld), BR=(%ld,%ld), BL=(%ld,%ld), confidence=%.3f",
-                 (long)result->points[IMAGE_POINT_TOP_LEFT].x,
-                 (long)result->points[IMAGE_POINT_TOP_LEFT].y,
-                 (long)result->points[IMAGE_POINT_TOP_RIGHT].x,
-                 (long)result->points[IMAGE_POINT_TOP_RIGHT].y,
-                 (long)result->points[IMAGE_POINT_BOTTOM_RIGHT].x,
-                 (long)result->points[IMAGE_POINT_BOTTOM_RIGHT].y,
-                 (long)result->points[IMAGE_POINT_BOTTOM_LEFT].x,
-                 (long)result->points[IMAGE_POINT_BOTTOM_LEFT].y,
+                 "Result ok: P1_START=(%ld,%ld), P1_END=(%ld,%ld), P2_START=(%ld,%ld), P2_END=(%ld,%ld), confidence=%.3f",
+                 (long)result->points[IMAGE_POINT_PLAYER1_START].x,
+                 (long)result->points[IMAGE_POINT_PLAYER1_START].y,
+                 (long)result->points[IMAGE_POINT_PLAYER1_END].x,
+                 (long)result->points[IMAGE_POINT_PLAYER1_END].y,
+                 (long)result->points[IMAGE_POINT_PLAYER2_START].x,
+                 (long)result->points[IMAGE_POINT_PLAYER2_START].y,
+                 (long)result->points[IMAGE_POINT_PLAYER2_END].x,
+                 (long)result->points[IMAGE_POINT_PLAYER2_END].y,
                  (double)result->confidence);
     }
     else

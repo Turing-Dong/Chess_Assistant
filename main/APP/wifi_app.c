@@ -22,6 +22,7 @@
 #define WIFI_TASK_PRIORITY     4
 #define WIFI_EVENT_QUEUE_SIZE  8
 #define WIFI_BEEP_TIME_MS      1000
+#define WIFI_RSSI_WEAK_DBM     -80
 
 typedef enum
 {
@@ -34,6 +35,7 @@ static const char *TAG = "wifi_app";
 static QueueHandle_t wifi_event_queue;
 static TimerHandle_t wifi_beep_timer;
 static volatile bool wifi_connected;
+static uint32_t wifi_disconnect_count;
 
 static void wifi_beep_timer_callback(TimerHandle_t timer)
 {
@@ -107,9 +109,11 @@ static void wifi_event_handler(void *argument,
         wifi_connected = false;
         wifi_beep_stop();
         wifi_set_icon(false);
-        ESP_LOGW(TAG, "Disconnected from %s, reason=%u",
+        wifi_disconnect_count++;
+        ESP_LOGW(TAG, "Disconnected from %s, reason=%u, count=%lu",
                  WIFI_TARGET_SSID,
-                 event != NULL ? event->reason : 0);
+                 event != NULL ? event->reason : 0,
+                 (unsigned long)wifi_disconnect_count);
         wifi_post_event(WIFI_APP_EVENT_DISCONNECTED);
     }
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
@@ -191,6 +195,10 @@ static esp_err_t wifi_scan_and_connect(void)
              WIFI_TARGET_SSID,
              ap_record.rssi,
              ap_record.primary);
+    if (ap_record.rssi < WIFI_RSSI_WEAK_DBM)
+    {
+        ESP_LOGW(TAG, "Wi-Fi signal is weak: RSSI=%d", ap_record.rssi);
+    }
 
     wifi_config_t station_config = {0};
     memcpy(station_config.sta.ssid,
@@ -202,6 +210,7 @@ static esp_err_t wifi_scan_and_connect(void)
     station_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
     station_config.sta.pmf_cfg.capable = true;
     station_config.sta.pmf_cfg.required = false;
+    station_config.sta.channel = ap_record.primary;
 
     error = esp_wifi_set_config(WIFI_IF_STA, &station_config);
     if (error != ESP_OK)
@@ -330,6 +339,13 @@ esp_err_t wifi_app_start(void)
     if (error != ESP_OK)
     {
         return error;
+    }
+
+    error = esp_wifi_set_ps(WIFI_PS_NONE);
+    if (error != ESP_OK)
+    {
+        ESP_LOGW(TAG, "Unable to disable Wi-Fi power save: %s",
+                 esp_err_to_name(error));
     }
 
     error = esp_wifi_start();

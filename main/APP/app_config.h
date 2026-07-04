@@ -16,7 +16,7 @@
 
 #define OSS_UPLOAD_RETRY_COUNT           3U
 #define OSS_UPLOAD_RETRY_BASE_DELAY_MS   2000U
-#define IMAGE_SUCCESS_BEEP_MS            1000U
+#define IMAGE_SUCCESS_BEEP_MS            500U
 
 #define RESULT_POLL_INTERVAL_MS          1000U
 #define RESULT_WAIT_TIMEOUT_MS           30000U

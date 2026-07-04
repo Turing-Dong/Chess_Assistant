@@ -38,11 +38,9 @@
 /* LVGL owns the LCD after startup, so the legacy direct-draw tasks stay off. */
 #define freertos_demo() ((void)0)
 
-#define LED_HEARTBEAT_INTERVAL_MS       1000
+#define LED_HEARTBEAT_INTERVAL_MS       200
 #define LED_HEARTBEAT_TASK_STACK_SIZE   (2 * 1024)
 #define LED_HEARTBEAT_TASK_PRIORITY     2
-
-
 i2c_obj_t i2c0_master;
 
 static void led_heartbeat_task(void *argument)

@@ -8,6 +8,7 @@
 #include "beep.h"
 #include "camera.h"
 #include "cJSON.h"
+#include "esp_heap_caps.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
@@ -373,6 +374,9 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
     image_process_result_t process_result = {0};
     uint16_t image_width = 0U;
     uint16_t image_height = 0U;
+    camera_fb_t *frame = NULL;
+    uint8_t *image_copy = NULL;
+    size_t image_length = 0U;
 
     image_task_set_state(IMAGE_TASK_STATE_CAPTURE);
 
@@ -401,7 +405,7 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
 
     ESP_LOGI(TAG, "Frame created: %s", frame_id);
 
-    camera_fb_t *frame = camera_capture();
+    frame = camera_capture();
     if (frame == NULL)
     {
         error = ESP_FAIL;
@@ -411,18 +415,36 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
     if (frame->buf == NULL || frame->len == 0U ||
         frame->format != PIXFORMAT_JPEG)
     {
-        camera_release(frame);
         error = ESP_ERR_INVALID_STATE;
         goto exit;
     }
 
     image_width = (uint16_t)frame->width;
     image_height = (uint16_t)frame->height;
+    image_length = frame->len;
     ESP_LOGI(TAG,
              "Captured image: %ux%u, %u bytes",
              image_width,
              image_height,
-             (unsigned)frame->len);
+             (unsigned)image_length);
+
+    image_copy = heap_caps_malloc(image_length,
+                                  MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    if (image_copy == NULL)
+    {
+        image_copy = heap_caps_malloc(image_length, MALLOC_CAP_8BIT);
+    }
+    if (image_copy == NULL)
+    {
+        ESP_LOGE(TAG, "Unable to allocate %u-byte image upload buffer",
+                 (unsigned)image_length);
+        error = ESP_ERR_NO_MEM;
+        goto exit;
+    }
+
+    memcpy(image_copy, frame->buf, image_length);
+    camera_release(frame);
+    frame = NULL;
 
     error = oss_build_image_url(identity->device_id,
                                 frame_id,
@@ -432,11 +454,9 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
     {
         image_task_set_state(IMAGE_TASK_STATE_UPLOAD_IMAGE);
         error = image_task_upload_jpeg_with_retry(image_url,
-                                                  frame->buf,
-                                                  frame->len);
+                                                  image_copy,
+                                                  image_length);
     }
-
-    camera_release(frame);
 
     if (error != ESP_OK)
     {
@@ -504,6 +524,18 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
     }
 
 exit:
+    if (frame != NULL)
+    {
+        camera_release(frame);
+        frame = NULL;
+    }
+
+    if (image_copy != NULL)
+    {
+        heap_caps_free(image_copy);
+        image_copy = NULL;
+    }
+
     if (error != ESP_OK &&
         image_task_state != IMAGE_TASK_STATE_TIMEOUT &&
         image_task_state != IMAGE_TASK_STATE_RESULT_FAILED)

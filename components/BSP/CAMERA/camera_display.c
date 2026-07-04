@@ -7,9 +7,12 @@
 #include "esp_jpg_decode.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 
 static const char *TAG = "camera_bsp";
 static bool camera_initialized;
+static SemaphoreHandle_t camera_mutex;
 static uint8_t *camera_display_buffer;
 static uint32_t displayed_frames;
 
@@ -87,6 +90,23 @@ static esp_err_t camera_display_buffer_init(void)
 
     ESP_LOGI(TAG, "Allocated %u-byte RGB565 display buffer in PSRAM",
              (unsigned)CAMERA_DISPLAY_BUFFER_SIZE);
+    return ESP_OK;
+}
+
+static esp_err_t camera_mutex_init(void)
+{
+    if (camera_mutex != NULL)
+    {
+        return ESP_OK;
+    }
+
+    camera_mutex = xSemaphoreCreateMutex();
+    if (camera_mutex == NULL)
+    {
+        ESP_LOGE(TAG, "Failed to create camera mutex");
+        return ESP_ERR_NO_MEM;
+    }
+
     return ESP_OK;
 }
 
@@ -253,6 +273,13 @@ esp_err_t camera_init(void)
         sensor->set_vflip(sensor, 1);
     }
 
+    error = camera_mutex_init();
+    if (error != ESP_OK)
+    {
+        esp_camera_deinit();
+        return error;
+    }
+
     camera_initialized = true;
     ESP_LOGI(TAG, "Camera initialized in QVGA JPEG mode");
 
@@ -266,14 +293,38 @@ camera_fb_t *camera_capture(void)
         return NULL;
     }
 
-    return esp_camera_fb_get();
+    if (camera_mutex_init() != ESP_OK)
+    {
+        return NULL;
+    }
+
+    if (xSemaphoreTake(camera_mutex, pdMS_TO_TICKS(1000)) != pdTRUE)
+    {
+        ESP_LOGW(TAG, "Timed out waiting for camera");
+        return NULL;
+    }
+
+    camera_fb_t *frame = esp_camera_fb_get();
+    if (frame == NULL)
+    {
+        xSemaphoreGive(camera_mutex);
+    }
+
+    return frame;
 }
 
 void camera_release(camera_fb_t *frame)
 {
-    if (frame != NULL)
+    if (frame == NULL)
     {
-        esp_camera_fb_return(frame);
+        return;
+    }
+
+    esp_camera_fb_return(frame);
+
+    if (camera_mutex != NULL)
+    {
+        xSemaphoreGive(camera_mutex);
     }
 }
 
