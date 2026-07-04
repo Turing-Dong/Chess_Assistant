@@ -55,6 +55,19 @@ typedef struct
     uint8_t *rgb565_frame;
 } camera_display_context_t;
 
+static jpg_scale_t camera_select_decode_scale(const camera_fb_t *frame,
+                                              uint16_t output_width,
+                                              uint16_t output_height)
+{
+    if (frame->width >= output_width * 2U &&
+        frame->height >= output_height * 2U)
+    {
+        return JPG_SCALE_2X;
+    }
+
+    return JPG_SCALE_NONE;
+}
+
 static esp_err_t camera_display_buffer_init(void)
 {
     if (camera_display_buffer != NULL)
@@ -293,7 +306,9 @@ esp_err_t camera_display_frame(const camera_fb_t *frame)
     };
 
     error = esp_jpg_decode(frame->len,
-                           JPG_SCALE_NONE,
+                           camera_select_decode_scale(frame,
+                                                      CAMERA_DISPLAY_WIDTH,
+                                                      CAMERA_DISPLAY_HEIGHT),
                            camera_jpeg_reader,
                            camera_jpeg_writer,
                            &context);
@@ -345,7 +360,9 @@ esp_err_t camera_decode_frame_rgb565(const camera_fb_t *frame,
     };
 
     return esp_jpg_decode(frame->len,
-                          JPG_SCALE_NONE,
+                          camera_select_decode_scale(frame,
+                                                     output_width,
+                                                     output_height),
                           camera_jpeg_reader,
                           camera_jpeg_writer,
                           &context);

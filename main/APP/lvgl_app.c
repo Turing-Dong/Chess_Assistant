@@ -24,6 +24,7 @@
 #define LVGL_FLUSH_BUFFER_BYTES    4096
 #define CAMERA_TASK_STACK_SIZE     (8 * 1024)
 #define CAMERA_TASK_PRIORITY       4
+/* VGA capture frames are scaled down to this preview size for the LCD panel. */
 #define CAMERA_IMAGE_WIDTH         320
 #define CAMERA_IMAGE_HEIGHT        240
 #define CAMERA_IMAGE_BUFFER_SIZE   \
@@ -82,6 +83,10 @@ static uint32_t key_release_time[UI_BUTTON_COUNT];
 static device_identity_t image_upload_identity;
 static bool image_upload_identity_ready;
 static TaskHandle_t image_upload_task_handle;
+static uint32_t camera_capture_fail_count;
+static uint32_t camera_capture_ok_count;
+static uint32_t camera_preview_decode_count;
+static uint32_t camera_preview_display_count;
 
 static void lvgl_tick_callback(void *argument)
 {
@@ -179,9 +184,30 @@ static void camera_task(void *argument)
         camera_fb_t *frame = camera_capture();
         if (frame == NULL)
         {
+            camera_capture_fail_count++;
+            if (camera_capture_fail_count == 1U ||
+                camera_capture_fail_count % 10U == 0U)
+            {
+                ESP_LOGW(TAG,
+                         "Camera capture failed %lu times",
+                         (unsigned long)camera_capture_fail_count);
+            }
             xQueueSend(camera_free_queue, &buffer_index, portMAX_DELAY);
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
+        }
+
+        camera_capture_ok_count++;
+        if (camera_capture_ok_count == 1U ||
+            camera_capture_ok_count % 10U == 0U)
+        {
+            ESP_LOGI(TAG,
+                     "Camera captured %lu frames: %ux%u len=%u format=%d",
+                     (unsigned long)camera_capture_ok_count,
+                     (unsigned)frame->width,
+                     (unsigned)frame->height,
+                     (unsigned)frame->len,
+                     frame->format);
         }
 
         esp_err_t error = camera_decode_frame_rgb565(
@@ -198,6 +224,15 @@ static void camera_task(void *argument)
             xQueueSend(camera_free_queue, &buffer_index, portMAX_DELAY);
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
+        }
+
+        camera_preview_decode_count++;
+        if (camera_preview_decode_count == 1U ||
+            camera_preview_decode_count % 10U == 0U)
+        {
+            ESP_LOGI(TAG,
+                     "Camera preview decoded %lu frames",
+                     (unsigned long)camera_preview_decode_count);
         }
 
         xQueueSend(camera_ready_queue, &buffer_index, portMAX_DELAY);
@@ -588,6 +623,15 @@ static void lvgl_task(void *argument)
                            &camera_images[ready_buffer]);
             lv_obj_center(camera_image_object);
             lv_refr_now(NULL);
+
+            camera_preview_display_count++;
+            if (camera_preview_display_count == 1U ||
+                camera_preview_display_count % 10U == 0U)
+            {
+                ESP_LOGI(TAG,
+                         "Camera preview displayed %lu frames",
+                         (unsigned long)camera_preview_display_count);
+            }
 
             displayed_buffer = (int8_t)ready_buffer;
 

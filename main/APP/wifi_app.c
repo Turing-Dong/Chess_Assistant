@@ -15,8 +15,8 @@
 #include "freertos/timers.h"
 #include "lvgl_app.h"
 
-#define WIFI_TARGET_SSID       "WIFI"
-#define WIFI_TARGET_PASSWORD   "88888888"
+#define WIFI_TARGET_SSID       "Tenda_3D12A0"
+#define WIFI_TARGET_PASSWORD   "15024423610"
 #define WIFI_RETRY_DELAY_MS    5000
 #define WIFI_TASK_STACK_SIZE   (4 * 1024)
 #define WIFI_TASK_PRIORITY     4

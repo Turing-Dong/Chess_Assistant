@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# ESP-IDF build output
+build/
+
 # Object files
 *.o
 *.ko

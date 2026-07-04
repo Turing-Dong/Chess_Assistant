@@ -7,10 +7,16 @@
 
 #include "app_config.h"
 #include "esp_crt_bundle.h"
+#include "esp_heap_caps.h"
 #include "esp_http_client.h"
 #include "esp_log.h"
 
 static const char *TAG = "oss_client";
+
+#define OSS_HTTP_RX_BUFFER_SIZE 1024
+#define OSS_HTTP_PUT_TX_BUFFER_SIZE 2048
+#define OSS_HTTP_GET_TX_BUFFER_SIZE 512
+#define OSS_HTTP_WRITE_CHUNK_SIZE 2048U
 
 typedef struct
 {
@@ -19,6 +25,15 @@ typedef struct
     size_t length;
     bool overflow;
 } oss_response_buffer_t;
+
+static void oss_log_internal_heap(const char *stage)
+{
+    ESP_LOGI(TAG,
+             "%s internal heap: free=%u, largest=%u",
+             stage,
+             (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
+             (unsigned)heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL));
+}
 
 static esp_err_t oss_snprintf(char *buffer,
                               size_t buffer_size,
@@ -179,8 +194,8 @@ static esp_err_t oss_put_buffer(const char *url,
         .method = HTTP_METHOD_PUT,
         .crt_bundle_attach = esp_crt_bundle_attach,
         .timeout_ms = (int)timeout_ms,
-        .buffer_size = 2048,
-        .buffer_size_tx = 4096,
+        .buffer_size = OSS_HTTP_RX_BUFFER_SIZE,
+        .buffer_size_tx = OSS_HTTP_PUT_TX_BUFFER_SIZE,
         .keep_alive_enable = false,
     };
 
@@ -202,16 +217,21 @@ static esp_err_t oss_put_buffer(const char *url,
 
     if (error == ESP_OK)
     {
+        oss_log_internal_heap("Before HTTPS PUT open");
         error = esp_http_client_open(client, (int)data_length);
+        if (error != ESP_OK)
+        {
+            oss_log_internal_heap("After failed HTTPS PUT open");
+        }
     }
 
     size_t written = 0U;
     while (error == ESP_OK && written < data_length)
     {
         size_t chunk = data_length - written;
-        if (chunk > 4096U)
+        if (chunk > OSS_HTTP_WRITE_CHUNK_SIZE)
         {
-            chunk = 4096U;
+            chunk = OSS_HTTP_WRITE_CHUNK_SIZE;
         }
 
         int write_result = esp_http_client_write(
@@ -248,6 +268,10 @@ static esp_err_t oss_put_buffer(const char *url,
         ESP_LOGI(TAG, "PUT complete, HTTP status=%d, bytes=%u",
                  status_code,
                  (unsigned)data_length);
+    }
+    else
+    {
+        oss_log_internal_heap("After failed HTTPS PUT");
     }
 
     esp_http_client_cleanup(client);
@@ -306,8 +330,8 @@ esp_err_t oss_get_json(const char *url,
         .user_data = &response,
         .crt_bundle_attach = esp_crt_bundle_attach,
         .timeout_ms = OSS_DOWNLOAD_TIMEOUT_MS,
-        .buffer_size = 2048,
-        .buffer_size_tx = 1024,
+        .buffer_size = OSS_HTTP_RX_BUFFER_SIZE,
+        .buffer_size_tx = OSS_HTTP_GET_TX_BUFFER_SIZE,
         .keep_alive_enable = false,
     };
 
@@ -322,7 +346,12 @@ esp_err_t oss_get_json(const char *url,
                                                  "no-cache");
     if (error == ESP_OK)
     {
+        oss_log_internal_heap("Before HTTPS GET perform");
         error = esp_http_client_perform(client);
+        if (error != ESP_OK)
+        {
+            oss_log_internal_heap("After failed HTTPS GET perform");
+        }
     }
 
     *http_status = esp_http_client_get_status_code(client);

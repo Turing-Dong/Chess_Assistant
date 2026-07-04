@@ -26,6 +26,8 @@ static const char *TAG = "ov5640";
 
 //#define REG_DEBUG_ON
 
+#define OV5640_JPEG_PCLK_DIV 4
+
 static int read_reg(uint8_t slv_addr, const uint16_t reg){
     int ret = SCCB_Read16(slv_addr, reg);
 #ifdef REG_DEBUG_ON
@@ -439,8 +441,8 @@ static int set_framesize(sensor_t *sensor, framesize_t framesize)
         } else if(framesize < FRAMESIZE_XGA){
             sys_mul = 180;
         }
-        ret = set_pll(sensor, false, sys_mul, 4, 2, false, 2, true, 4);
-        //Set PLL: bypass: 0, multiplier: sys_mul, sys_div: 4, pre_div: 2, root_2x: 0, pclk_root_div: 2, pclk_manual: 1, pclk_div: 4
+        ret = set_pll(sensor, false, sys_mul, 4, 2, false, 2, true, OV5640_JPEG_PCLK_DIV);
+        //Set PLL: bypass: 0, multiplier: sys_mul, sys_div: 4, pre_div: 2, root_2x: 0, pclk_root_div: 2, pclk_manual: 1, pclk_div: OV5640_JPEG_PCLK_DIV
     } else {
         //ret = set_pll(sensor, false, 8, 1, 1, false, 1, true, 4);
         if (framesize > FRAMESIZE_HVGA) {

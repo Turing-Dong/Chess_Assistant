@@ -5,6 +5,7 @@
 
 #include "esp_log.h"
 #include "esp_sntp.h"
+#include "sdkconfig.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -34,13 +35,22 @@ esp_err_t system_time_sync(uint32_t timeout_ms)
 {
     if (system_time_is_valid())
     {
+        time_t now = 0;
+        time(&now);
+        ESP_LOGI(TAG, "System time already valid: %lld", (long long)now);
         return ESP_OK;
     }
 
     if (!esp_sntp_enabled())
     {
         esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
-        esp_sntp_setservername(0, "pool.ntp.org");
+        esp_sntp_setservername(0, "ntp.aliyun.com");
+#if CONFIG_LWIP_SNTP_MAX_SERVERS > 1
+        esp_sntp_setservername(1, "cn.pool.ntp.org");
+#endif
+#if CONFIG_LWIP_SNTP_MAX_SERVERS > 2
+        esp_sntp_setservername(2, "pool.ntp.org");
+#endif
         esp_sntp_init();
     }
     else
@@ -53,7 +63,9 @@ esp_err_t system_time_sync(uint32_t timeout_ms)
     {
         if (system_time_is_valid())
         {
-            ESP_LOGI(TAG, "System time synchronized");
+            time_t now = 0;
+            time(&now);
+            ESP_LOGI(TAG, "System time synchronized: %lld", (long long)now);
             return ESP_OK;
         }
 

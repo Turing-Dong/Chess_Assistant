@@ -39,6 +39,8 @@
 
 static const char *TAG = "s3 ll_cam";
 
+#define CAMERA_PCLK_INVERT 0
+
 static void IRAM_ATTR ll_cam_vsync_isr(void *arg)
 {
     //DBG_PIN_SET(1);
@@ -264,7 +266,7 @@ esp_err_t ll_cam_config(cam_obj_t *cam, const camera_config_t *config)
     LCD_CAM.cam_ctrl1.val = 0;
     LCD_CAM.cam_ctrl1.cam_rec_data_bytelen = LCD_CAM_DMA_NODE_BUFFER_MAX_SIZE - 1; // Cannot be assigned to 0, and it is easy to overflow
     LCD_CAM.cam_ctrl1.cam_line_int_num = 0; // The number of hsyncs that generate hs interrupts
-    LCD_CAM.cam_ctrl1.cam_clk_inv = 0;
+    LCD_CAM.cam_ctrl1.cam_clk_inv = CAMERA_PCLK_INVERT;
     LCD_CAM.cam_ctrl1.cam_vsync_filter_en = 1;
     LCD_CAM.cam_ctrl1.cam_2byte_en = 0;
     LCD_CAM.cam_ctrl1.cam_de_inv = 0;
