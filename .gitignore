@@ -1,6 +1,19 @@
 # Prerequisites
 *.d
 
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Local secrets
+.env
+*.env.local
+cloud/local_oss_ai_worker/.env
+cloud/local_oss_ai_worker/.venv/
+cloud/local_oss_ai_worker/debug/
+cloud/local_oss_ai_worker/worker_run*.log
+cloud/local_oss_ai_worker/.oss_ai_worker_state.json
+
 # ESP-IDF build output
 build/
 

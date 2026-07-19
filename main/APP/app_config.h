@@ -4,11 +4,12 @@
 #define OSS_BASE_URL \
     "https://esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com"
 
+#define DEVICE_ID_PREFIX                 "chess"
 #define DEVICE_ID_BUFFER_SIZE            32U
 #define FRAME_ID_BUFFER_SIZE             80U
 #define SESSION_ID_BUFFER_SIZE           16U
 #define OSS_URL_BUFFER_SIZE              512U
-#define RESULT_JSON_BUFFER_SIZE          2048U
+#define RESULT_JSON_BUFFER_SIZE          8192U
 #define MANIFEST_JSON_BUFFER_SIZE        1024U
 
 #define OSS_UPLOAD_TIMEOUT_MS            30000U
@@ -22,7 +23,10 @@
 #define RESULT_WAIT_TIMEOUT_MS           30000U
 
 #define IMAGE_UPLOAD_PERIOD_MS           30000U
-#define IMAGE_RESULT_MIN_CONFIDENCE      0.80F
+#define IMAGE_RESULT_MIN_CONFIDENCE      0.50F
+
+#define XIANGQI_BOARD_FILES              9U
+#define XIANGQI_BOARD_RANKS              10U
 
 #define DEVICE_HEARTBEAT_PERIOD_MS       30000U
 #define DEVICE_FIRMWARE_VERSION          "1.0.0"

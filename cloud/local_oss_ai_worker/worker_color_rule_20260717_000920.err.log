@@ -1,0 +1,14 @@
+2026-07-17 00:09:21,031 INFO oss_ai_worker: Worker started. bucket=esp32-chess-assistant device_ids=(none) discover_devices=True region=cn-hangzhou
+2026-07-17 00:09:21,114 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:09:51,661 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:10:21,928 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:10:52,313 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:11:22,867 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:11:53,076 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:12:23,599 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:12:54,205 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:13:24,785 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:13:55,365 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:14:26,067 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:14:56,451 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:15:26,612 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0

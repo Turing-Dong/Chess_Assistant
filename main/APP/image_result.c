@@ -65,8 +65,6 @@ static esp_err_t image_result_get_u16(cJSON *root,
 
 static esp_err_t image_result_get_point(cJSON *points,
                                         const char *name,
-                                        uint16_t image_width,
-                                        uint16_t image_height,
                                         image_point_t *point)
 {
     cJSON *point_json = cJSON_GetObjectItemCaseSensitive(points, name);
@@ -84,8 +82,8 @@ static esp_err_t image_result_get_point(cJSON *points,
     int32_t py = (int32_t)y->valuedouble;
 
     if (px < 0 || py < 0 ||
-        px >= (int32_t)image_width ||
-        py >= (int32_t)image_height)
+        px >= (int32_t)XIANGQI_BOARD_FILES ||
+        py >= (int32_t)XIANGQI_BOARD_RANKS)
     {
         return ESP_ERR_INVALID_RESPONSE;
     }
@@ -224,32 +222,24 @@ esp_err_t image_result_parse_and_validate(const char *json_text,
     {
         error = image_result_get_point(points,
                                        "player1_start",
-                                       result->image_width,
-                                       result->image_height,
                                        &result->points[IMAGE_POINT_PLAYER1_START]);
     }
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
                                        "player1_end",
-                                       result->image_width,
-                                       result->image_height,
                                        &result->points[IMAGE_POINT_PLAYER1_END]);
     }
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
                                        "player2_start",
-                                       result->image_width,
-                                       result->image_height,
                                        &result->points[IMAGE_POINT_PLAYER2_START]);
     }
     if (error == ESP_OK)
     {
         error = image_result_get_point(points,
                                        "player2_end",
-                                       result->image_width,
-                                       result->image_height,
                                        &result->points[IMAGE_POINT_PLAYER2_END]);
     }
 

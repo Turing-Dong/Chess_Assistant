@@ -47,7 +47,7 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
     .fb_location = CAMERA_FB_IN_PSRAM,
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_QVGA,
+    .frame_size = FRAMESIZE_HD,
     .jpeg_quality = 12,
     .fb_count = 2,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
@@ -309,7 +309,7 @@ esp_err_t camera_init(void)
     }
 
     camera_initialized = true;
-    ESP_LOGI(TAG, "Camera initialized in QVGA JPEG mode");
+    ESP_LOGI(TAG, "Camera initialized in HD 1280x720 JPEG mode");
 
     return ESP_OK;
 }

@@ -14,7 +14,7 @@ typedef struct
     uint32_t sequence;
 } device_identity_t;
 
-/* Stable per board: esp32-XXXXXX from the Wi-Fi STA MAC suffix. */
+/* Stable per board: DEVICE_ID_PREFIX plus the full Wi-Fi STA MAC. */
 esp_err_t device_identity_generate_device_id(char *device_id,
                                              size_t device_id_size);
 

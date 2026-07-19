@@ -1,0 +1,202 @@
+{
+  "confidence": 0.8,
+  "orientation": {
+    "bottom_side": "shuai",
+    "top_side": "jiang"
+  },
+  "pieces": [
+    {
+      "side": "shuai",
+      "name": "shuai",
+      "x": 4,
+      "y": 0
+    },
+    {
+      "side": "shuai",
+      "name": "che",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "side": "shuai",
+      "name": "pao",
+      "x": 0,
+      "y": 2
+    },
+    {
+      "side": "shuai",
+      "name": "pao",
+      "x": 2,
+      "y": 5
+    },
+    {
+      "side": "shuai",
+      "name": "zu",
+      "x": 2,
+      "y": 6
+    },
+    {
+      "side": "shuai",
+      "name": "zu",
+      "x": 3,
+      "y": 7
+    },
+    {
+      "side": "shuai",
+      "name": "zu",
+      "x": 5,
+      "y": 7
+    },
+    {
+      "side": "jiang",
+      "name": "jiang",
+      "x": 4,
+      "y": 9
+    },
+    {
+      "side": "jiang",
+      "name": "che",
+      "x": 1,
+      "y": 9
+    },
+    {
+      "side": "jiang",
+      "name": "pao",
+      "x": 6,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "ma",
+      "x": 7,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "ma",
+      "x": 8,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "xiang",
+      "x": 2,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "xiang",
+      "x": 6,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "shi",
+      "x": 3,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "shi",
+      "x": 5,
+      "y": 2
+    },
+    {
+      "side": "jiang",
+      "name": "zu",
+      "x": 6,
+      "y": 6
+    },
+    {
+      "side": "jiang",
+      "name": "zu",
+      "x": 7,
+      "y": 5
+    }
+  ],
+  "recommended_moves": {
+    "shuai": {
+      "from": {
+        "x": 4,
+        "y": 0
+      },
+      "to": {
+        "x": 4,
+        "y": 1
+      }
+    },
+    "jiang": {
+      "from": {
+        "x": 4,
+        "y": 9
+      },
+      "to": {
+        "x": 4,
+        "y": 8
+      }
+    }
+  },
+  "coordinate_system": "player_local",
+  "player_sides": {
+    "player1": "shuai",
+    "player2": "jiang"
+  },
+  "points": {
+    "player1_start": {
+      "x": 4,
+      "y": 0
+    },
+    "player1_end": {
+      "x": 4,
+      "y": 1
+    },
+    "player2_start": {
+      "x": 4,
+      "y": 0
+    },
+    "player2_end": {
+      "x": 4,
+      "y": 1
+    }
+  },
+  "canonical_points": {
+    "player1_start": {
+      "x": 4,
+      "y": 0
+    },
+    "player1_end": {
+      "x": 4,
+      "y": 1
+    },
+    "player2_start": {
+      "x": 4,
+      "y": 9
+    },
+    "player2_end": {
+      "x": 4,
+      "y": 8
+    }
+  },
+  "moves": {
+    "player1": {
+      "from": {
+        "x": 4,
+        "y": 0
+      },
+      "to": {
+        "x": 4,
+        "y": 1
+      }
+    },
+    "player2": {
+      "from": {
+        "x": 4,
+        "y": 0
+      },
+      "to": {
+        "x": 4,
+        "y": 1
+      }
+    }
+  }
+}

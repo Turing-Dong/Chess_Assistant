@@ -1,0 +1,263 @@
+2026-07-15 23:37:21,119 INFO oss_ai_worker: Worker started. bucket=esp32-chess-assistant device_ids=(none) discover_devices=True region=cn-hangzhou
+2026-07-15 23:37:21,788 ERROR oss_ai_worker: Device discovery failed
+urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:1002)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\urllib3\util\retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\http.py", line 47, in do_request
+    return Response(self.session.request(req.method, req.url,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\adapters.py", line 727, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\worker.py", line 742, in main
+    discovered_device_ids = discover_device_ids(bucket)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\worker.py", line 256, in discover_device_ids
+    for obj in oss2.ObjectIterator(bucket, prefix="devices/"):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 40, in __next__
+    self.fetch_with_retry()
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 48, in fetch_with_retry
+    self.is_truncated, self.next_marker = self._fetch()
+                                          ^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 109, in _fetch
+    result = self.bucket.list_objects(prefix=self.prefix,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 783, in list_objects
+    resp = self.__do_bucket('GET',
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 3395, in __do_bucket
+    return self._do(method, self.bucket_name, '', **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 237, in _do
+    resp = self.session.do_request(req, timeout=self.timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\http.py", line 55, in do_request
+    raise RequestError(e)
+oss2.exceptions.RequestError: {'status': -2, 'x-oss-request-id': '', 'details': "RequestError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))"}
+2026-07-15 23:37:21,794 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:22,794 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:23,795 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:24,796 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:25,796 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:26,797 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:27,798 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:28,798 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:29,801 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:30,802 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:31,802 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:32,803 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:33,804 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:34,805 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:35,805 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:36,806 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:37,806 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:38,807 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:39,807 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:40,808 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:41,808 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:42,809 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:43,810 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:44,810 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:45,811 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:46,811 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:47,812 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:48,812 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:49,813 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:50,814 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:51,946 ERROR oss_ai_worker: Device discovery failed
+urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:1002)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\urllib3\util\retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\http.py", line 47, in do_request
+    return Response(self.session.request(req.method, req.url,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\adapters.py", line 727, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\worker.py", line 742, in main
+    discovered_device_ids = discover_device_ids(bucket)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\worker.py", line 256, in discover_device_ids
+    for obj in oss2.ObjectIterator(bucket, prefix="devices/"):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 40, in __next__
+    self.fetch_with_retry()
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 48, in fetch_with_retry
+    self.is_truncated, self.next_marker = self._fetch()
+                                          ^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 109, in _fetch
+    result = self.bucket.list_objects(prefix=self.prefix,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 783, in list_objects
+    resp = self.__do_bucket('GET',
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 3395, in __do_bucket
+    return self._do(method, self.bucket_name, '', **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 237, in _do
+    resp = self.session.do_request(req, timeout=self.timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\http.py", line 55, in do_request
+    raise RequestError(e)
+oss2.exceptions.RequestError: {'status': -2, 'x-oss-request-id': '', 'details': "RequestError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))"}
+2026-07-15 23:37:51,949 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:52,950 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:53,950 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:54,951 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:55,952 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:56,953 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:57,953 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:58,954 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:37:59,955 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:00,956 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:01,957 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:02,957 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:03,958 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:04,959 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:05,959 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:06,960 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:07,960 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:08,961 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:09,961 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:10,962 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:11,962 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:12,963 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:13,963 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:14,964 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:15,965 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:16,965 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:17,966 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:18,983 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:19,984 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:20,991 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:22,116 ERROR oss_ai_worker: Device discovery failed
+urllib3.exceptions.SSLError: EOF occurred in violation of protocol (_ssl.c:1002)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\urllib3\util\retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\http.py", line 47, in do_request
+    return Response(self.session.request(req.method, req.url,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\requests\adapters.py", line 727, in send
+    raise SSLError(e, request=request)
+requests.exceptions.SSLError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\worker.py", line 742, in main
+    discovered_device_ids = discover_device_ids(bucket)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\worker.py", line 256, in discover_device_ids
+    for obj in oss2.ObjectIterator(bucket, prefix="devices/"):
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 40, in __next__
+    self.fetch_with_retry()
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 48, in fetch_with_retry
+    self.is_truncated, self.next_marker = self._fetch()
+                                          ^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\iterators.py", line 109, in _fetch
+    result = self.bucket.list_objects(prefix=self.prefix,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 783, in list_objects
+    resp = self.__do_bucket('GET',
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 3395, in __do_bucket
+    return self._do(method, self.bucket_name, '', **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\api.py", line 237, in _do
+    resp = self.session.do_request(req, timeout=self.timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "G:\1_Personal_File\chessAssistant\gitHub_Code\ChessAssistantCode\cloud\local_oss_ai_worker\.venv\Lib\site-packages\oss2\http.py", line 55, in do_request
+    raise RequestError(e)
+oss2.exceptions.RequestError: {'status': -2, 'x-oss-request-id': '', 'details': "RequestError: HTTPSConnectionPool(host='esp32-chess-assistant.oss-cn-hangzhou.aliyuncs.com', port=443): Max retries exceeded with url: /?prefix=devices%2F&delimiter=&marker=&max-keys=100&encoding-type=url (Caused by SSLError(SSLEOFError(8, 'EOF occurred in violation of protocol (_ssl.c:1002)')))"}
+2026-07-15 23:38:22,118 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:23,120 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:24,121 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:25,122 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:26,124 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:27,125 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:28,126 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:29,128 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:30,129 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:31,129 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:32,130 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:33,131 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:34,131 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:35,133 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:36,133 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:37,134 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:38,135 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:39,136 WARNING oss_ai_worker: No devices to poll.
+2026-07-15 23:38:40,136 WARNING oss_ai_worker: No devices to poll.

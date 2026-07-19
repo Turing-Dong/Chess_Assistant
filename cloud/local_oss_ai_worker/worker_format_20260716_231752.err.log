@@ -1,0 +1,115 @@
+2026-07-16 23:17:53,260 INFO oss_ai_worker: Worker started. bucket=esp32-chess-assistant device_ids=(none) discover_devices=True region=cn-hangzhou
+2026-07-16 23:17:53,476 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:18:23,673 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:18:53,949 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:19:24,073 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:19:54,131 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:20:24,997 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:20:55,045 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:21:25,106 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:21:56,042 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:22:26,049 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:22:57,005 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:23:27,027 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:23:57,100 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:24:27,252 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:24:57,355 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:25:28,259 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:25:58,259 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:26:29,260 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:27:00,238 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:27:30,490 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:28:00,793 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:28:30,862 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:29:01,850 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:29:32,776 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:30:02,879 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:30:33,217 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:31:03,440 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:31:34,488 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:32:05,397 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:32:36,366 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:33:07,227 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:33:37,266 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:34:08,300 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:34:38,466 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:35:08,759 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:35:38,933 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:36:09,182 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:36:39,301 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:37:09,316 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:37:39,430 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:38:09,535 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:38:39,678 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:39:09,832 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:39:40,673 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:40:11,113 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:40:42,048 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:41:12,212 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:41:42,362 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:42:12,434 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:42:43,466 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:43:13,590 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:43:43,719 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:44:14,569 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:44:44,765 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:45:14,990 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:45:45,121 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:46:15,372 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:46:46,204 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:47:17,126 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:47:48,000 INFO oss_ai_worker: Discovered 3 device(s): chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:48:19,021 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:48:19,032 INFO oss_ai_worker: New frame detected: device_id=chess-441BF68B2D54 frame_id=chess-441BF68B2D54-088BFFAD-000001 sequence=1 image_key=devices/chess-441BF68B2D54/requests/chess-441BF68B2D54-088BFFAD-000001.jpg
+2026-07-16 23:48:19,045 INFO oss_ai_worker: Processing image locally, bytes=52870, size=1280x720, ai_key_configured=True
+2026-07-16 23:48:19,046 INFO oss_ai_worker: Calling Qwen vision model=qwen3-vl-plus image_size=1280x720 bytes=52870
+2026-07-16 23:48:23,145 INFO oss_ai_worker: Result written: device_id=chess-441BF68B2D54 result_key=devices/chess-441BF68B2D54/results/chess-441BF68B2D54-088BFFAD-000001.json
+2026-07-16 23:48:49,193 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:49:19,397 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:49:49,578 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:50:20,391 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:50:51,003 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:51:21,544 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:51:51,652 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:52:22,174 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:52:52,521 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:53:22,887 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:53:53,610 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:54:24,025 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:54:54,602 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:55:25,221 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:55:55,846 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:56:26,447 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:56:57,115 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:57:27,555 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:57:39,021 INFO oss_ai_worker: New frame detected: device_id=chess-441BF68B2D54 frame_id=chess-441BF68B2D54-088BFFAD-000004 sequence=4 image_key=devices/chess-441BF68B2D54/requests/chess-441BF68B2D54-088BFFAD-000004.jpg
+2026-07-16 23:57:39,035 INFO oss_ai_worker: Processing image locally, bytes=62767, size=1280x720, ai_key_configured=True
+2026-07-16 23:57:39,035 INFO oss_ai_worker: Calling Qwen vision model=qwen3-vl-plus image_size=1280x720 bytes=62767
+2026-07-16 23:57:42,248 INFO oss_ai_worker: Result written: device_id=chess-441BF68B2D54 result_key=devices/chess-441BF68B2D54/results/chess-441BF68B2D54-088BFFAD-000004.json
+2026-07-16 23:57:58,166 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:58:29,019 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:58:59,691 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:59:30,395 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-16 23:59:31,478 INFO oss_ai_worker: New frame detected: device_id=chess-441BF68B2D54 frame_id=chess-441BF68B2D54-088BFFAD-000006 sequence=6 image_key=devices/chess-441BF68B2D54/requests/chess-441BF68B2D54-088BFFAD-000006.jpg
+2026-07-16 23:59:31,501 INFO oss_ai_worker: Processing image locally, bytes=55296, size=1280x720, ai_key_configured=True
+2026-07-16 23:59:31,501 INFO oss_ai_worker: Calling Qwen vision model=qwen3-vl-plus image_size=1280x720 bytes=55296
+2026-07-16 23:59:46,101 INFO oss_ai_worker: Result written: device_id=chess-441BF68B2D54 result_key=devices/chess-441BF68B2D54/results/chess-441BF68B2D54-088BFFAD-000006.json
+2026-07-17 00:00:00,885 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:00:31,520 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:01:01,925 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:01:32,127 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:02:02,326 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:02:32,550 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:03:03,211 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:03:33,818 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:04:04,337 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:04:34,516 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:05:04,638 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:05:35,134 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:06:05,599 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:06:36,192 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:07:06,543 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:07:36,942 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:08:07,495 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:08:38,161 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0
+2026-07-17 00:09:08,781 INFO oss_ai_worker: Discovered 4 device(s): chess-441BF68B2D54,chess-441BF6C3F8D0,esp32-8B2D54,esp32-C3F8D0

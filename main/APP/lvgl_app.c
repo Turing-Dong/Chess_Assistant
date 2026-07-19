@@ -24,7 +24,7 @@
 #define LVGL_FLUSH_BUFFER_BYTES    4096
 #define CAMERA_TASK_STACK_SIZE     (8 * 1024)
 #define CAMERA_TASK_PRIORITY       4
-/* VGA capture frames are scaled down to this preview size for the LCD panel. */
+/* Captured JPEG frames are scaled down to this preview size for the LCD panel. */
 #define CAMERA_IMAGE_WIDTH         320
 #define CAMERA_IMAGE_HEIGHT        240
 #define CAMERA_IMAGE_BUFFER_SIZE   \
