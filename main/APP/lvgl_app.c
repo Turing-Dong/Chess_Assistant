@@ -37,7 +37,7 @@
 #define KEY_TASK_STACK_SIZE        (2 * 1024)
 #define KEY_TASK_PRIORITY          3
 #define KEY_VISUAL_PRESS_MS        120
-#define IMAGE_UPLOAD_TASK_STACK_SIZE  (16 * 1024)
+#define IMAGE_UPLOAD_TASK_STACK_SIZE  (24 * 1024)
 #define IMAGE_UPLOAD_TASK_PRIORITY    4
 #define UI_BUTTON_COUNT            4
 #define MOVE_PANEL_WIDTH           88
@@ -178,6 +178,12 @@ static void camera_task(void *argument)
     while (true)
     {
         uint8_t buffer_index;
+
+        if (camera_upload_capture_is_active())
+        {
+            vTaskDelay(pdMS_TO_TICKS(100));
+            continue;
+        }
 
         if (xQueueReceive(camera_free_queue,
                           &buffer_index,
@@ -415,6 +421,13 @@ static void image_upload_request_start(void)
         return;
     }
 
+    ESP_LOGI(TAG,
+             "Creating image upload task: stack=%u free_heap=%u min_free_heap=%u internal_free=%u",
+             (unsigned)IMAGE_UPLOAD_TASK_STACK_SIZE,
+             (unsigned)esp_get_free_heap_size(),
+             (unsigned)esp_get_minimum_free_heap_size(),
+             (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL));
+
     BaseType_t task_created = xTaskCreatePinnedToCore(
         image_upload_task,
         "image_upload",
@@ -426,7 +439,11 @@ static void image_upload_request_start(void)
     if (task_created != pdPASS)
     {
         image_upload_task_handle = NULL;
-        ESP_LOGE(TAG, "Unable to create image upload task");
+        ESP_LOGE(TAG,
+                 "Unable to create image upload task: free_heap=%u min_free_heap=%u internal_free=%u",
+                 (unsigned)esp_get_free_heap_size(),
+                 (unsigned)esp_get_minimum_free_heap_size(),
+                 (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL));
     }
 }
 

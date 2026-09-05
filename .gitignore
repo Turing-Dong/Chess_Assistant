@@ -11,8 +11,12 @@ __pycache__/
 cloud/local_oss_ai_worker/.env
 cloud/local_oss_ai_worker/.venv/
 cloud/local_oss_ai_worker/debug/
+cloud/local_oss_ai_worker/manual_tests/
 cloud/local_oss_ai_worker/worker_run*.log
+cloud/local_oss_ai_worker/worker_*.log
 cloud/local_oss_ai_worker/.oss_ai_worker_state.json
+tmp_worker_verify/
+debug_logs/
 
 # ESP-IDF build output
 build/

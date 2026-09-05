@@ -2,6 +2,7 @@
 #define __CAMERA_H__
 
 #include "esp_log.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,6 +61,8 @@ esp_err_t camera_init(void);
  * uploaded before it is returned to the camera driver.
  */
 camera_fb_t *camera_capture(void);
+camera_fb_t *camera_capture_for_upload(void);
+bool camera_upload_capture_is_active(void);
 void camera_release(camera_fb_t *frame);
 esp_err_t camera_display_frame(const camera_fb_t *frame);
 esp_err_t camera_decode_frame_rgb565(const camera_fb_t *frame,

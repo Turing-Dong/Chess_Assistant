@@ -15,15 +15,25 @@ static bool camera_initialized;
 static SemaphoreHandle_t camera_mutex;
 static uint8_t *camera_display_buffer;
 static uint32_t displayed_frames;
+static framesize_t camera_current_frame_size = FRAMESIZE_FHD;
+static volatile bool camera_upload_capture_active;
+static camera_fb_t *camera_upload_frame;
 
 #define CAMERA_INIT_ATTEMPTS       2
 #define CAMERA_PWDN_RESET_MS       20
 #define CAMERA_PWDN_STABLE_MS      80
 #define CAMERA_RESET_ASSERT_MS     50
 #define CAMERA_RESET_STABLE_MS     200
+#define CAMERA_PREVIEW_FRAME_SIZE  FRAMESIZE_HD
+#define CAMERA_UPLOAD_FRAME_SIZE   FRAMESIZE_FHD
+#define CAMERA_FRAME_SIZE_SWITCH_DELAY_MS 150
+#define CAMERA_PREVIEW_MUTEX_TIMEOUT_MS 1000
+#define CAMERA_UPLOAD_MUTEX_TIMEOUT_MS 8000
 
 extern const uint8_t camera_test_jpg_start[] asm("_binary_camera_test_jpg_start");
 extern const uint8_t camera_test_jpg_end[] asm("_binary_camera_test_jpg_end");
+
+static void camera_hardware_reset(void);
 
 static camera_config_t camera_config = {
     .pin_pwdn = CAM_PIN_PWDN,
@@ -47,7 +57,8 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
     .fb_location = CAMERA_FB_IN_PSRAM,
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_HD,
+    /* Allocate buffers for 1920x1080; preview switches down after init. */
+    .frame_size = CAMERA_UPLOAD_FRAME_SIZE,
     .jpeg_quality = 12,
     .fb_count = 2,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
@@ -63,6 +74,121 @@ typedef struct
     bool output_big_endian;
     uint8_t *rgb565_frame;
 } camera_display_context_t;
+
+static const char *camera_frame_size_name(framesize_t frame_size)
+{
+    switch (frame_size)
+    {
+    case FRAMESIZE_HD:
+        return "HD 1280x720";
+    case FRAMESIZE_FHD:
+        return "FHD 1920x1080";
+    default:
+        return "custom";
+    }
+}
+
+static esp_err_t camera_set_frame_size_locked(framesize_t frame_size, bool *changed)
+{
+    if (changed != NULL)
+    {
+        *changed = false;
+    }
+
+    if (camera_current_frame_size == frame_size)
+    {
+        return ESP_OK;
+    }
+
+    sensor_t *sensor = esp_camera_sensor_get();
+    if (sensor == NULL)
+    {
+        return ESP_FAIL;
+    }
+
+    int result = sensor->set_framesize(sensor, frame_size);
+    if (result != 0)
+    {
+        ESP_LOGE(TAG, "Failed to switch camera to %s",
+                 camera_frame_size_name(frame_size));
+        return ESP_FAIL;
+    }
+
+    camera_current_frame_size = frame_size;
+    if (changed != NULL)
+    {
+        *changed = true;
+    }
+    vTaskDelay(pdMS_TO_TICKS(CAMERA_FRAME_SIZE_SWITCH_DELAY_MS));
+    ESP_LOGI(TAG, "Camera frame size switched to %s",
+             camera_frame_size_name(frame_size));
+    return ESP_OK;
+}
+
+static esp_err_t camera_apply_sensor_settings(void)
+{
+    sensor_t *sensor = esp_camera_sensor_get();
+
+    if (sensor == NULL)
+    {
+        return ESP_FAIL;
+    }
+
+    sensor->set_brightness(sensor, 0);
+    sensor->set_contrast(sensor, 0);
+    sensor->set_saturation(sensor, 0);
+    sensor->set_hmirror(sensor, 0);
+
+    if (sensor->id.PID == OV3660_PID)
+    {
+        sensor->set_vflip(sensor, 1);
+        sensor->set_brightness(sensor, 1);
+        sensor->set_saturation(sensor, -2);
+    }
+    else if (sensor->id.PID == OV5640_PID)
+    {
+        sensor->set_vflip(sensor, 1);
+    }
+
+    return ESP_OK;
+}
+
+static esp_err_t camera_recover_locked(const char *reason)
+{
+    ESP_LOGW(TAG, "Recovering camera after %s", reason);
+
+    esp_camera_deinit();
+    camera_initialized = false;
+    camera_current_frame_size = CAMERA_UPLOAD_FRAME_SIZE;
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    camera_hardware_reset();
+    esp_err_t error = esp_camera_init(&camera_config);
+    if (error != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Camera reinit failed: %s", esp_err_to_name(error));
+        return error;
+    }
+
+    error = camera_apply_sensor_settings();
+    if (error != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Camera sensor restore failed: %s", esp_err_to_name(error));
+        esp_camera_deinit();
+        return error;
+    }
+
+    error = camera_set_frame_size_locked(CAMERA_PREVIEW_FRAME_SIZE, NULL);
+    if (error != ESP_OK)
+    {
+        esp_camera_deinit();
+        return error;
+    }
+
+    camera_initialized = true;
+    ESP_LOGI(TAG, "Camera recovered to %s", camera_frame_size_name(CAMERA_PREVIEW_FRAME_SIZE));
+    return ESP_OK;
+}
 
 static jpg_scale_t camera_select_decode_scale(const camera_fb_t *frame,
                                               uint16_t output_width,
@@ -277,28 +403,11 @@ esp_err_t camera_init(void)
         return error;
     }
 
-    sensor_t *sensor = esp_camera_sensor_get();
-
-    if (sensor == NULL)
+    error = camera_apply_sensor_settings();
+    if (error != ESP_OK)
     {
         esp_camera_deinit();
-        return ESP_FAIL;
-    }
-
-    sensor->set_brightness(sensor, 0);
-    sensor->set_contrast(sensor, 0);
-    sensor->set_saturation(sensor, 0);
-    sensor->set_hmirror(sensor, 0);
-
-    if (sensor->id.PID == OV3660_PID)
-    {
-        sensor->set_vflip(sensor, 1);
-        sensor->set_brightness(sensor, 1);
-        sensor->set_saturation(sensor, -2);
-    }
-    else if (sensor->id.PID == OV5640_PID)
-    {
-        sensor->set_vflip(sensor, 1);
+        return error;
     }
 
     error = camera_mutex_init();
@@ -308,13 +417,31 @@ esp_err_t camera_init(void)
         return error;
     }
 
+    if (xSemaphoreTake(camera_mutex, pdMS_TO_TICKS(1000)) != pdTRUE)
+    {
+        esp_camera_deinit();
+        return ESP_ERR_TIMEOUT;
+    }
+    error = camera_set_frame_size_locked(CAMERA_PREVIEW_FRAME_SIZE, NULL);
+    xSemaphoreGive(camera_mutex);
+    if (error != ESP_OK)
+    {
+        esp_camera_deinit();
+        return error;
+    }
+
     camera_initialized = true;
-    ESP_LOGI(TAG, "Camera initialized in HD 1280x720 JPEG mode");
+    ESP_LOGI(TAG,
+             "Camera initialized: preview=%s upload=%s JPEG mode",
+             camera_frame_size_name(CAMERA_PREVIEW_FRAME_SIZE),
+             camera_frame_size_name(CAMERA_UPLOAD_FRAME_SIZE));
 
     return ESP_OK;
 }
 
-camera_fb_t *camera_capture(void)
+static camera_fb_t *camera_capture_with_frame_size(framesize_t frame_size,
+                                                  uint32_t mutex_timeout_ms,
+                                                  bool for_upload)
 {
     if (!camera_initialized)
     {
@@ -326,19 +453,78 @@ camera_fb_t *camera_capture(void)
         return NULL;
     }
 
-    if (xSemaphoreTake(camera_mutex, pdMS_TO_TICKS(1000)) != pdTRUE)
+    if (!for_upload && camera_upload_capture_active)
+    {
+        return NULL;
+    }
+
+    if (for_upload)
+    {
+        camera_upload_capture_active = true;
+        camera_upload_frame = NULL;
+    }
+
+    if (xSemaphoreTake(camera_mutex, pdMS_TO_TICKS(mutex_timeout_ms)) != pdTRUE)
     {
         ESP_LOGW(TAG, "Timed out waiting for camera");
+        if (for_upload)
+        {
+            camera_upload_capture_active = false;
+        }
+        return NULL;
+    }
+
+    bool frame_size_changed = false;
+    esp_err_t error = camera_set_frame_size_locked(frame_size,
+                                                  &frame_size_changed);
+    if (error != ESP_OK)
+    {
+        if (for_upload)
+        {
+            camera_set_frame_size_locked(CAMERA_PREVIEW_FRAME_SIZE, NULL);
+            camera_upload_capture_active = false;
+        }
+        xSemaphoreGive(camera_mutex);
         return NULL;
     }
 
     camera_fb_t *frame = esp_camera_fb_get();
     if (frame == NULL)
     {
+        if (for_upload)
+        {
+            camera_recover_locked("FHD frame capture timeout");
+            camera_upload_capture_active = false;
+        }
         xSemaphoreGive(camera_mutex);
+        return NULL;
+    }
+
+    if (for_upload)
+    {
+        camera_upload_frame = frame;
     }
 
     return frame;
+}
+
+camera_fb_t *camera_capture(void)
+{
+    return camera_capture_with_frame_size(CAMERA_PREVIEW_FRAME_SIZE,
+                                          CAMERA_PREVIEW_MUTEX_TIMEOUT_MS,
+                                          false);
+}
+
+camera_fb_t *camera_capture_for_upload(void)
+{
+    return camera_capture_with_frame_size(CAMERA_UPLOAD_FRAME_SIZE,
+                                          CAMERA_UPLOAD_MUTEX_TIMEOUT_MS,
+                                          true);
+}
+
+bool camera_upload_capture_is_active(void)
+{
+    return camera_upload_capture_active;
 }
 
 void camera_release(camera_fb_t *frame)
@@ -348,7 +534,20 @@ void camera_release(camera_fb_t *frame)
         return;
     }
 
+    bool upload_frame = (frame == camera_upload_frame);
+
     esp_camera_fb_return(frame);
+
+    if (upload_frame)
+    {
+        camera_upload_frame = NULL;
+        esp_err_t error = camera_set_frame_size_locked(CAMERA_PREVIEW_FRAME_SIZE, NULL);
+        if (error != ESP_OK)
+        {
+            camera_recover_locked("failed to return to preview frame size");
+        }
+        camera_upload_capture_active = false;
+    }
 
     if (camera_mutex != NULL)
     {

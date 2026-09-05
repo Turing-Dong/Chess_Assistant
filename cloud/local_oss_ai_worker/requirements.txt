@@ -1,1 +1,3 @@
 oss2
+Pillow
+opencv-python-headless

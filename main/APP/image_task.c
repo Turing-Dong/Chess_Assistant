@@ -405,7 +405,7 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
 
     ESP_LOGI(TAG, "Frame created: %s", frame_id);
 
-    frame = camera_capture();
+    frame = camera_capture_for_upload();
     if (frame == NULL)
     {
         error = ESP_FAIL;
