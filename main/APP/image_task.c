@@ -489,6 +489,13 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
         goto exit;
     }
 
+#if IMAGE_TRAINING_MODE_ENABLED
+    ESP_LOGI(TAG,
+             "Training mode: frame uploaded, skipping result polling: %s",
+             frame_id);
+    goto exit;
+#endif
+
     error = oss_build_result_url(identity->device_id,
                                  frame_id,
                                  result_url,

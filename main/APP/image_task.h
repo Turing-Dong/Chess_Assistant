@@ -38,7 +38,8 @@ esp_err_t image_task_build_manifest_json(const device_identity_t *identity,
 /*
  * Processes exactly one frame:
  * capture JPEG -> upload image -> upload latest.json -> poll result JSON.
- * The camera buffer is released immediately after the JPEG upload finishes.
+ * Result polling is skipped when IMAGE_TRAINING_MODE_ENABLED is enabled.
+ * The camera buffer is copied and released before the JPEG upload starts.
  */
 esp_err_t image_task_process_one_frame(device_identity_t *identity);
 

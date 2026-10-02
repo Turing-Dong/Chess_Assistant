@@ -24,9 +24,18 @@
 #define LVGL_FLUSH_BUFFER_BYTES    4096
 #define CAMERA_TASK_STACK_SIZE     (8 * 1024)
 #define CAMERA_TASK_PRIORITY       4
-/* Captured JPEG frames are scaled down to this preview size for the LCD panel. */
+/*
+ * Keep 8 px margins around the panel. The FHD camera frame is center-cropped
+ * to 1080x1080 and reduced to this square preview during JPEG decoding.
+ */
+#if (LCD_DEFAULT_DIR == LCD_DIR_PORTRAIT) || \
+    (LCD_DEFAULT_DIR == LCD_DIR_PORTRAIT_REVERSE)
+/* Two 8 px screen margins plus the panel's 8 px border/padding overhead. */
+#define CAMERA_IMAGE_WIDTH         (LCD_WIDTH - 24)
+#else
 #define CAMERA_IMAGE_WIDTH         320
-#define CAMERA_IMAGE_HEIGHT        240
+#endif
+#define CAMERA_IMAGE_HEIGHT        CAMERA_IMAGE_WIDTH
 #define CAMERA_IMAGE_BUFFER_SIZE   \
     (CAMERA_IMAGE_WIDTH * CAMERA_IMAGE_HEIGHT * sizeof(lv_color_t))
 #define CAMERA_BUFFER_COUNT        3
@@ -39,12 +48,17 @@
 #define KEY_VISUAL_PRESS_MS        120
 #define IMAGE_UPLOAD_TASK_STACK_SIZE  (24 * 1024)
 #define IMAGE_UPLOAD_TASK_PRIORITY    4
-#define UI_BUTTON_COUNT            4
-#define MOVE_PANEL_WIDTH           88
-#define MOVE_PANEL_HEIGHT          248
-#define MOVE_SECTION_WIDTH         84
+#define UI_BUTTON_COUNT            1
+/* Set the corresponding option to 1 to restore temporarily hidden UI. */
+#define UI_SHOW_STATUS_BAR         1
+#define UI_SHOW_MOVE_PANELS        1
+#define UI_SHOW_K1_BUTTON          0
+#define MOVE_PANEL_WIDTH           (CAMERA_IMAGE_WIDTH + 8)
+#define MOVE_PANEL_HEIGHT          (MOVE_SECTION_HEIGHT + 4)
+/* Two columns, with 2px outer padding and an 8px gap. */
+#define MOVE_SECTION_WIDTH         ((MOVE_PANEL_WIDTH - 12) / 2)
 #define MOVE_SECTION_HEIGHT        120
-#define MOVE_COORDINATE_WIDTH      78
+#define MOVE_COORDINATE_WIDTH      (MOVE_SECTION_WIDTH - 6)
 #define MOVE_COORDINATE_HEIGHT     42
 
 #define CONNECTION_COLOR_OFFLINE   0x7A8793
@@ -221,11 +235,14 @@ static void camera_task(void *argument)
                      frame->format);
         }
 
+        int64_t decode_start = esp_timer_get_time();
         esp_err_t error = camera_decode_frame_rgb565(
             frame,
             (uint16_t *)camera_buffers[buffer_index],
             CAMERA_IMAGE_WIDTH,
             CAMERA_IMAGE_HEIGHT);
+        uint32_t decode_time_ms =
+            (uint32_t)((esp_timer_get_time() - decode_start) / 1000);
         camera_release(frame);
 
         if (error != ESP_OK)
@@ -242,8 +259,9 @@ static void camera_task(void *argument)
             camera_preview_decode_count % 10U == 0U)
         {
             ESP_LOGI(TAG,
-                     "Camera preview decoded %lu frames",
-                     (unsigned long)camera_preview_decode_count);
+                     "Camera preview decoded %lu frames, latest=%lu ms",
+                     (unsigned long)camera_preview_decode_count,
+                     (unsigned long)decode_time_ms);
         }
 
         if (xQueueSend(camera_ready_queue, &buffer_index, 0) != pdTRUE)
@@ -330,7 +348,7 @@ static void key_task(void *argument)
     {
         uint8_t key = key_scan(KEY_SCAN_SINGLE);
 
-        if (key >= KEY_PRES_1 && key <= KEY_PRES_4)
+        if (key == KEY_PRES_1)
         {
             xQueueSend(key_command_queue, &key, 0);
         }
@@ -539,8 +557,15 @@ static void create_move_section(lv_obj_t *parent,
                                                            LV_ALIGN_TOP_MID,
                                                            2);
     coordinate_labels[end_point] = create_coordinate_box(section,
-                                                         LV_ALIGN_BOTTOM_MID,
-                                                         -2);
+                                                          LV_ALIGN_BOTTOM_MID,
+                                                          -2);
+
+    lv_obj_t *direction_arrow = lv_label_create(section);
+    lv_label_set_text(direction_arrow, LV_SYMBOL_DOWN);
+    lv_obj_set_style_text_color(direction_arrow,
+                                lv_color_hex(accent_color),
+                                0);
+    lv_obj_align(direction_arrow, LV_ALIGN_CENTER, 0, 0);
 }
 
 static void update_coordinate_label(image_point_index_t index,
@@ -614,9 +639,48 @@ static void lvgl_create_demo_screen(void)
                     -10,
                     0);
 
+    /* Reserve the actual icon widths before choosing the title font. */
+    lv_obj_update_layout(screen);
+    lv_coord_t title_width = lv_obj_get_x(bluetooth_icon) - 14 - 10;
+    if (title_width < 1)
+    {
+        title_width = 1;
+    }
+    lv_point_t title_size;
+    lv_txt_get_size(&title_size, lv_label_get_text(title),
+                    &lv_font_montserrat_28, 0, 0, LV_COORD_MAX,
+                    LV_TEXT_FLAG_NONE);
+    lv_obj_set_style_text_font(title,
+                               title_size.x <= title_width
+                                   ? &lv_font_montserrat_28 : LV_FONT_DEFAULT,
+                               0);
+    lv_label_set_long_mode(title, LV_LABEL_LONG_DOT);
+    lv_obj_set_width(title, title_width);
+    lv_obj_set_style_text_align(title, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_align_to(title, bluetooth_icon, LV_ALIGN_OUT_LEFT_MID, -10, 0);
+
+    if (!UI_SHOW_STATUS_BAR)
+    {
+        lv_obj_add_flag(title, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(wifi_icon, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(bluetooth_icon, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    lv_coord_t preview_top = 8;
+    if (UI_SHOW_STATUS_BAR)
+    {
+        lv_obj_update_layout(screen);
+        lv_coord_t status_bottom = lv_obj_get_y(title) + lv_obj_get_height(title);
+        status_bottom = LV_MAX(status_bottom,
+                               lv_obj_get_y(wifi_icon) + lv_obj_get_height(wifi_icon));
+        status_bottom = LV_MAX(status_bottom,
+                               lv_obj_get_y(bluetooth_icon) + lv_obj_get_height(bluetooth_icon));
+        preview_top = status_bottom + 4;
+    }
+
     lv_obj_t *camera_panel = lv_obj_create(screen);
-    lv_obj_set_size(camera_panel, 328, 248);
-    lv_obj_align(camera_panel, LV_ALIGN_BOTTOM_LEFT, 8, -8);
+    lv_obj_set_size(camera_panel, CAMERA_IMAGE_WIDTH + 8, CAMERA_IMAGE_HEIGHT + 8);
+    lv_obj_align(camera_panel, LV_ALIGN_TOP_LEFT, 8, preview_top);
     lv_obj_set_style_bg_color(camera_panel, lv_color_hex(0x111111), 0);
     lv_obj_set_style_border_color(camera_panel, lv_color_hex(0x45B7D1), 0);
     lv_obj_set_style_border_width(camera_panel, 2, 0);
@@ -631,9 +695,9 @@ static void lvgl_create_demo_screen(void)
     lv_obj_set_size(move_panel, MOVE_PANEL_WIDTH, MOVE_PANEL_HEIGHT);
     lv_obj_align_to(move_panel,
                      camera_panel,
-                     LV_ALIGN_OUT_RIGHT_MID,
-                     8,
-                     0);
+                     LV_ALIGN_OUT_BOTTOM_LEFT,
+                     0,
+                     8);
     lv_obj_set_style_bg_color(move_panel, lv_color_hex(0x101820), 0);
     lv_obj_set_style_border_width(move_panel, 0, 0);
     lv_obj_set_style_radius(move_panel, 8, 0);
@@ -641,17 +705,22 @@ static void lvgl_create_demo_screen(void)
     lv_obj_clear_flag(move_panel, LV_OBJ_FLAG_SCROLLABLE);
 
     create_move_section(move_panel,
-                        LV_ALIGN_TOP_MID,
+                        LV_ALIGN_TOP_LEFT,
                         "帅方走法",
                         0xFF6B6B,
                         IMAGE_POINT_PLAYER1_START,
                         IMAGE_POINT_PLAYER1_END);
     create_move_section(move_panel,
-                        LV_ALIGN_BOTTOM_MID,
+                        LV_ALIGN_TOP_RIGHT,
                         "将方走法",
                         0x45B7D1,
                         IMAGE_POINT_PLAYER2_START,
                         IMAGE_POINT_PLAYER2_END);
+
+    if (!UI_SHOW_MOVE_PANELS)
+    {
+        lv_obj_add_flag(move_panel, LV_OBJ_FLAG_HIDDEN);
+    }
 
     for (uint8_t i = 0; i < UI_BUTTON_COUNT; i++)
     {
@@ -675,6 +744,11 @@ static void lvgl_create_demo_screen(void)
         lv_obj_t *label = lv_label_create(key_buttons[i]);
         lv_label_set_text_fmt(label, "K%u", i + 1);
         lv_obj_center(label);
+
+        if (!UI_SHOW_K1_BUTTON)
+        {
+            lv_obj_add_flag(key_buttons[i], LV_OBJ_FLAG_HIDDEN);
+        }
     }
 }
 
@@ -723,6 +797,11 @@ static void lvgl_task(void *argument)
                              0) == pdTRUE)
         {
             uint8_t button_index = pressed_key - KEY_PRES_1;
+
+            if (button_index >= UI_BUTTON_COUNT)
+            {
+                continue;
+            }
 
             lv_obj_add_state(key_buttons[button_index], LV_STATE_PRESSED);
             lv_event_send(key_buttons[button_index], LV_EVENT_CLICKED, NULL);

@@ -120,25 +120,31 @@ static void lcd_write_data_hardware(const uint8_t *data, int len)
     while (len > 0)
     {
         int chunk = (len > LCD_SPI_DATA_CHUNK) ? LCD_SPI_DATA_CHUNK : len;
-        size_t bit_index = 0;
-        size_t packed_bytes = ((size_t)chunk * 9 + 7) / 8;
-
-        memset(lcd_spi_tx_buf, 0, packed_bytes);
+        size_t packed_index = 0;
+        uint32_t pending = 0;
+        uint8_t pending_bits = 0;
 
         for (int i = 0; i < chunk; i++)
         {
-            uint16_t serial_word = 0x100U | data[i];
+            pending = (pending << 9) | (0x100U | data[i]);
+            pending_bits += 9;
 
-            for (int bit = 8; bit >= 0; bit--)
+            while (pending_bits >= 8)
             {
-                if (serial_word & (1U << bit))
-                {
-                    lcd_spi_tx_buf[bit_index >> 3] |=
-                        (uint8_t)(1U << (7 - (bit_index & 7)));
-                }
+                pending_bits -= 8;
+                lcd_spi_tx_buf[packed_index++] =
+                    (uint8_t)(pending >> pending_bits);
 
-                bit_index++;
+                pending = pending_bits == 0
+                              ? 0
+                              : pending & ((1U << pending_bits) - 1U);
             }
+        }
+
+        if (pending_bits != 0)
+        {
+            lcd_spi_tx_buf[packed_index] =
+                (uint8_t)(pending << (8U - pending_bits));
         }
 
         spi_transaction_t transaction = {

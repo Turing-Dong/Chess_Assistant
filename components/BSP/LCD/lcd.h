@@ -36,7 +36,7 @@
 #define LCD_NUM_SDO     GPIO_NUM_13
 
 /* Verified hardware SPI clock for the 3-wire 9-bit interface. */
-#define LCD_SPI_CLOCK_HZ    (8 * 1000 * 1000)
+#define LCD_SPI_CLOCK_HZ    (10 * 1000 * 1000)
 #define LCD_SPI_DATA_CHUNK  1024
 #define LCD_SPI_BULK_MIN_BYTES  32
 
@@ -56,7 +56,8 @@
 #define LCD_DIR_PORTRAIT_REVERSE     1
 #define LCD_DIR_LANDSCAPE            2
 #define LCD_DIR_LANDSCAPE_REVERSE    3
-#define LCD_DEFAULT_DIR              LCD_DIR_LANDSCAPE_REVERSE
+/* 90 degrees clockwise from the previous LANDSCAPE_REVERSE orientation. */
+#define LCD_DEFAULT_DIR              LCD_DIR_PORTRAIT_REVERSE
 
 #define WHITE           0xFFFF
 #define BLACK           0x0000

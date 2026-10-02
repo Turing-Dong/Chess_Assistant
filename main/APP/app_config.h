@@ -20,7 +20,14 @@
 #define IMAGE_SUCCESS_BEEP_MS            500U
 
 #define RESULT_POLL_INTERVAL_MS          1000U
-#define RESULT_WAIT_TIMEOUT_MS           120000U
+#define RESULT_WAIT_TIMEOUT_MS           480000U
+
+/*
+ * Training mode:
+ * 0 - upload one frame and wait for its inference result (normal mode).
+ * 1 - upload the JPEG and latest.json, then immediately allow the next frame.
+ */
+#define IMAGE_TRAINING_MODE_ENABLED      0
 
 #define IMAGE_UPLOAD_PERIOD_MS           30000U
 #define IMAGE_RESULT_MIN_CONFIDENCE      0.50F
