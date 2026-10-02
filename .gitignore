@@ -10,13 +10,18 @@ __pycache__/
 *.env.local
 cloud/local_oss_ai_worker/.env
 cloud/local_oss_ai_worker/.venv/
+cloud/local_oss_ai_worker/.venv-paddleocr/
 cloud/local_oss_ai_worker/debug/
+cloud/local_oss_ai_worker/debug_no_rectify/
 cloud/local_oss_ai_worker/manual_tests/
 cloud/local_oss_ai_worker/worker_run*.log
 cloud/local_oss_ai_worker/worker_*.log
 cloud/local_oss_ai_worker/.oss_ai_worker_state.json
+cloud/local_oss_ai_worker/.oss_ai_worker_state.*.json
+tmp/
 tmp_worker_verify/
 debug_logs/
+training_dataset/
 
 # ESP-IDF build output
 build/
