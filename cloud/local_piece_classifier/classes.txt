@@ -1,0 +1,15 @@
+red_shuai
+black_jiang
+red_shi
+black_shi
+red_xiang
+black_xiang
+red_ma
+black_ma
+red_che
+black_che
+red_pao
+black_pao
+red_bing
+black_zu
+

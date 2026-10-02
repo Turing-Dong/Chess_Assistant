@@ -1,0 +1,127 @@
+# PaddleClas configuration for 14-class Xiangqi piece-character classification.
+Global:
+  checkpoints: null
+  pretrained_model: null
+  output_dir: ./output/xiangqi_pplcnet_x1_0
+  device: gpu
+  save_interval: 5
+  eval_during_train: true
+  eval_interval: 1
+  epochs: 100
+  print_batch_step: 5
+  use_visualdl: true
+  image_shape: [3, 160, 160]
+  save_inference_dir: ./output/xiangqi_pplcnet_x1_0/inference
+  seed: 20261001
+
+Arch:
+  name: PPLCNet_x1_0
+  pretrained: true
+  use_ssld: true
+  class_num: 14
+  use_last_conv: false
+
+Loss:
+  Train:
+    - CELoss:
+        weight: 1.0
+        epsilon: 0.1
+  Eval:
+    - CELoss:
+        weight: 1.0
+
+Optimizer:
+  name: Momentum
+  momentum: 0.9
+  lr:
+    name: Cosine
+    learning_rate: 0.01
+    warmup_epoch: 5
+  regularizer:
+    name: L2
+    coeff: 0.00003
+
+DataLoader:
+  Train:
+    dataset:
+      name: ImageNetDataset
+      image_root: ../../training_dataset/piece_character_dataset/images/needs_review
+      cls_label_path: ../../training_dataset/piece_character_dataset/paddleclas/train_list.txt
+      transform_ops:
+        - DecodeImage:
+            to_rgb: true
+            channel_first: false
+        - RandCropImage:
+            size: 160
+            scale: [0.82, 1.0]
+            ratio: [0.9, 1.1]
+        - ColorJitter:
+            brightness: 0.15
+            contrast: 0.15
+            saturation: 0.10
+            hue: 0.03
+        - NormalizeImage:
+            scale: 1.0/255.0
+            mean: [0.485, 0.456, 0.406]
+            std: [0.229, 0.224, 0.225]
+            order: ''
+    sampler:
+      name: DistributedBatchSampler
+      batch_size: 32
+      drop_last: false
+      shuffle: true
+    loader:
+      num_workers: 0
+      use_shared_memory: false
+  Eval:
+    dataset:
+      name: ImageNetDataset
+      image_root: ../../training_dataset/piece_character_dataset/images/needs_review
+      cls_label_path: ../../training_dataset/piece_character_dataset/paddleclas/val_list.txt
+      transform_ops:
+        - DecodeImage:
+            to_rgb: true
+            channel_first: false
+        - ResizeImage:
+            size: [160, 160]
+        - NormalizeImage:
+            scale: 1.0/255.0
+            mean: [0.485, 0.456, 0.406]
+            std: [0.229, 0.224, 0.225]
+            order: ''
+    sampler:
+      name: DistributedBatchSampler
+      batch_size: 32
+      drop_last: false
+      shuffle: false
+    loader:
+      num_workers: 0
+      use_shared_memory: false
+
+Infer:
+  infer_imgs: ../../training_dataset/piece_character_dataset/images/needs_review
+  batch_size: 1
+  transforms:
+    - DecodeImage:
+        to_rgb: true
+        channel_first: false
+    - ResizeImage:
+        size: [160, 160]
+    - NormalizeImage:
+        scale: 1.0/255.0
+        mean: [0.485, 0.456, 0.406]
+        std: [0.229, 0.224, 0.225]
+        order: ''
+    - ToCHWImage:
+  PostProcess:
+    name: Topk
+    topk: 3
+    class_id_map_file: ../../training_dataset/piece_character_dataset/paddleclas/label_list.txt
+
+Metric:
+  Train:
+    - TopkAcc:
+        topk: [1, 3]
+  Eval:
+    - TopkAcc:
+        topk: [1, 3]
