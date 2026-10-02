@@ -1,8 +1,10 @@
 import argparse
 import base64
+import copy
 import io
 import json
 import logging
+import math
 import os
 import re
 import signal
@@ -30,6 +32,15 @@ try:
 except ImportError:
     cv2 = None
 
+try:
+    from local_piece_classifier import (
+        classify_candidates as classify_candidates_locally,
+        enabled as local_piece_classifier_enabled,
+    )
+except ImportError:
+    classify_candidates_locally = None
+    local_piece_classifier_enabled = None
+
 
 DEFAULT_REGION = "cn-hangzhou"
 DEFAULT_AI_PROVIDER = "openai"
@@ -41,9 +52,12 @@ BOARD_FILES = 9
 BOARD_RANKS = 10
 AI_MAX_ATTEMPTS = 2
 AI_REVIEW_MAX_ATTEMPTS = 1
-DEFAULT_BOARD_MARGIN_X = 0.06
-DEFAULT_BOARD_MARGIN_TOP = 0.08
-DEFAULT_BOARD_MARGIN_BOTTOM = 0.08
+# Leave enough space outside the detected board frame for pieces whose centers
+# sit on the outer ranks/files. These values were tuned against the camera's
+# oblique 1920x1080 capture; tighter margins clipped or weakened edge circles.
+DEFAULT_BOARD_MARGIN_X = 0.07
+DEFAULT_BOARD_MARGIN_TOP = 0.12
+DEFAULT_BOARD_MARGIN_BOTTOM = 0.12
 # The playable 9x10 intersection frame is inset from the detected outer board
 # frame. These defaults match the canonical rectified board layout.
 DEFAULT_BOARD_GRID_LEFT = 0.117
@@ -56,6 +70,12 @@ DEFAULT_RECTIFIED_BOARD_WIDTH = 1080
 DEFAULT_RECTIFIED_BOARD_HEIGHT = 1215
 PLAYER1_SIDE = "shuai"
 PLAYER2_SIDE = "jiang"
+# Xiangqi text color is a stable side signal for this device: red pieces are
+# the Shuai side and black pieces are the Jiang side.
+COLOR_SIDE_HINTS = {
+    "red": PLAYER1_SIDE,
+    "black": PLAYER2_SIDE,
+}
 # These characters identify the text color directly, even when the crop-level
 # visual color estimate is weak or affected by lighting and compression.
 CHARACTER_COLOR_HINTS = {
@@ -69,6 +89,20 @@ CHARACTER_COLOR_HINTS = {
     "將": "black",
     "士": "black",
     "卒": "black",
+}
+# Exact side-specific glyphs are stronger evidence than a visual color guess.
+# 馬/马, 車/车 and 炮/砲 are intentionally absent because both sides use them.
+CHARACTER_SIDE_HINTS = {
+    "帅": PLAYER1_SIDE,
+    "帥": PLAYER1_SIDE,
+    "仕": PLAYER1_SIDE,
+    "相": PLAYER1_SIDE,
+    "兵": PLAYER1_SIDE,
+    "将": PLAYER2_SIDE,
+    "將": PLAYER2_SIDE,
+    "士": PLAYER2_SIDE,
+    "象": PLAYER2_SIDE,
+    "卒": PLAYER2_SIDE,
 }
 COLOR_ANCHOR_CHARACTER_HINTS = {
     "相": "red",
@@ -730,19 +764,14 @@ def _refine_grid_crop_with_circle_centers(image_body, rough_crop, image_width, i
         return rough_crop, {"status": "opencv_unavailable"}
 
     try:
-        detection_body, suppression_metadata = suppress_board_grid_lines(
+        circles, detection_metadata = detect_piece_circles_fused(
             image_body,
-            board_crop=rough_crop,
-        )
-        circles = detect_piece_circles(
-            detection_body,
-            suppress_grid_lines=False,
             board_crop=rough_crop,
         )
         if not circles:
             return rough_crop, {
                 "status": "circle_detection_empty",
-                "suppression": suppression_metadata,
+                "circle_detection": detection_metadata,
             }
 
         left, top, right, bottom = rough_crop
@@ -793,6 +822,7 @@ def _refine_grid_crop_with_circle_centers(image_body, rough_crop, image_width, i
             },
             "rough_crop": [round(float(value), 2) for value in rough_crop],
             "refined_crop": [round(float(value), 2) for value in refined_crop],
+            "circle_detection": detection_metadata,
         }
     except Exception as exc:
         LOGGER.exception("Grid crop circle-center refinement failed")
@@ -877,13 +907,25 @@ def detect_rectified_grid_crop(image_body):
         right = x_grid["end"]
         top = y_grid["start"]
         bottom = y_grid["end"]
-        min_width = image_width * 0.45
-        min_height = image_height * 0.55
+        min_width_ratio = max(
+            0.10,
+            min(0.95, float(os.getenv("CHESS_GRID_CROP_MIN_WIDTH_RATIO", "0.45"))),
+        )
+        min_height_ratio = max(
+            0.10,
+            min(0.95, float(os.getenv("CHESS_GRID_CROP_MIN_HEIGHT_RATIO", "0.55"))),
+        )
+        min_width = image_width * min_width_ratio
+        min_height = image_height * min_height_ratio
         if right - left < min_width or bottom - top < min_height:
             metadata.update(
                 {
                     "status": "grid_too_small",
                     "crop": [round(left, 2), round(top, 2), round(right, 2), round(bottom, 2)],
+                    "minimum_width": round(float(min_width), 2),
+                    "minimum_height": round(float(min_height), 2),
+                    "minimum_width_ratio": min_width_ratio,
+                    "minimum_height_ratio": min_height_ratio,
                 }
             )
             return None, metadata
@@ -1180,6 +1222,13 @@ def _detect_board_quad_from_lines(edges, width, height):
         if len(horizontal) < 2 or len(vertical) < 2:
             return None
 
+        clipped_board_quad = _detect_bottom_clipped_board_quad(
+            horizontal,
+            vertical,
+            width,
+            height,
+        )
+
         top_candidates = [item for item in horizontal if item["mid_y"] <= height * 0.45]
         bottom_candidates = [item for item in horizontal if item["mid_y"] >= height * 0.55]
         left_candidates = [item for item in vertical if item["mid_x"] <= width * 0.45]
@@ -1196,11 +1245,11 @@ def _detect_board_quad_from_lines(edges, width, height):
         right = max(right_candidates, key=lambda item: (item["mid_x"], item["length"]))
 
         if top["mid_y"] > height * 0.22:
-            return None
+            return clipped_board_quad
         if left["mid_x"] > width * 0.22:
-            return None
+            return clipped_board_quad
         if right["mid_x"] < width * 0.78:
-            return None
+            return clipped_board_quad
 
         top_left = _line_intersection(top["line"], left["line"])
         top_right = _line_intersection(top["line"], right["line"])
@@ -1211,28 +1260,120 @@ def _detect_board_quad_from_lines(edges, width, height):
             bottom_left = _lower_line_endpoint(left["line"])
             bottom_right = _lower_line_endpoint(right["line"])
             if min(bottom_left[1], bottom_right[1]) < height * 0.65:
-                return None
+                return clipped_board_quad
 
         corners = [top_left, top_right, bottom_right, bottom_left]
         if any(corner is None for corner in corners):
-            return None
+            return clipped_board_quad
 
         clipped = []
         tolerance = max(width, height) * 0.08
         for x_value, y_value in corners:
             if x_value < -tolerance or x_value > width + tolerance:
-                return None
+                return clipped_board_quad
             if y_value < -tolerance or y_value > height + tolerance:
-                return None
+                return clipped_board_quad
             clipped.append((min(max(x_value, 0.0), float(width - 1)), min(max(y_value, 0.0), float(height - 1))))
 
         quad = _order_quad_points(clipped)
         area = abs(float(cv2.contourArea(quad)))
         if area < width * height * float(os.getenv("CHESS_BOARD_MIN_AREA_RATIO", "0.18")):
-            return None
+            return clipped_board_quad
         return [(float(x), float(y)) for x, y in quad]
     except Exception:
         LOGGER.exception("OpenCV board line detection failed")
+        return None
+
+
+def _detect_bottom_clipped_board_quad(horizontal, vertical, width, height):
+    """Recover a board whose lower frame is outside the camera image.
+
+    The normal line detector expects four visible outer edges. Handheld captures
+    often crop the bottom frame while retaining the top edge and both long side
+    edges. In that case, select the side pair that is covered by the same top
+    segment and has the near-square Xiangqi-board aspect, then extend those side
+    lines to the image bottom.
+    """
+    if cv2 is None:
+        return None
+
+    try:
+        top_candidates = [
+            item
+            for item in horizontal
+            if item["mid_y"] <= height * 0.30
+            and item["length"] >= width * 0.35
+        ]
+        side_candidates = [
+            item
+            for item in vertical
+            if item["length"] >= height * 0.52
+        ]
+        if not top_candidates or len(side_candidates) < 2:
+            return None
+
+        bottom_line = (0.0, float(height - 1), float(width - 1), float(height - 1))
+        best_quad = None
+        best_score = -1.0
+        segment_tolerance = width * 0.06
+        target_aspect = float(os.getenv("CHESS_CLIPPED_BOARD_TARGET_ASPECT", "0.90"))
+        min_aspect = float(os.getenv("CHESS_CLIPPED_BOARD_MIN_ASPECT", "0.65"))
+        max_aspect = float(os.getenv("CHESS_CLIPPED_BOARD_MAX_ASPECT", "1.20"))
+
+        for top in top_candidates:
+            top_segment_left = min(top["line"][0], top["line"][2])
+            top_segment_right = max(top["line"][0], top["line"][2])
+            for left in side_candidates:
+                for right in side_candidates:
+                    if left is right or left["mid_x"] >= right["mid_x"]:
+                        continue
+                    top_left = _line_intersection(top["line"], left["line"])
+                    top_right = _line_intersection(top["line"], right["line"])
+                    bottom_left = _line_intersection(bottom_line, left["line"])
+                    bottom_right = _line_intersection(bottom_line, right["line"])
+                    corners = [top_left, top_right, bottom_right, bottom_left]
+                    if any(corner is None for corner in corners):
+                        continue
+                    if top_left[0] >= top_right[0] or bottom_left[0] >= bottom_right[0]:
+                        continue
+                    if (
+                        top_left[0] < top_segment_left - segment_tolerance
+                        or top_right[0] > top_segment_right + segment_tolerance
+                    ):
+                        continue
+                    if top_left[1] > height * 0.32 or top_right[1] > height * 0.32:
+                        continue
+
+                    quad = _order_quad_points(corners)
+                    lengths = _quad_side_lengths(quad)
+                    board_width = (lengths[0] + lengths[2]) / 2.0
+                    board_height = (lengths[1] + lengths[3]) / 2.0
+                    if board_width <= 1.0 or board_height <= 1.0:
+                        continue
+                    aspect = board_width / board_height
+                    if not min_aspect <= aspect <= max_aspect:
+                        continue
+                    area = abs(float(cv2.contourArea(quad)))
+                    if area < width * height * float(
+                        os.getenv("CHESS_BOARD_MIN_AREA_RATIO", "0.18")
+                    ):
+                        continue
+                    center_x = float(sum(point[0] for point in corners) / 4.0)
+                    center_error = abs(center_x - width / 2.0) / max(width / 2.0, 1.0)
+                    aspect_error = abs(aspect - target_aspect) / max(target_aspect, 0.1)
+                    score = area * max(0.20, 1.0 - center_error) * max(
+                        0.35,
+                        1.0 - aspect_error,
+                    )
+                    if score > best_score:
+                        best_quad = quad
+                        best_score = score
+
+        if best_quad is None:
+            return None
+        return [(float(x), float(y)) for x, y in best_quad]
+    except Exception:
+        LOGGER.exception("OpenCV bottom-clipped board detection failed")
         return None
 
 
@@ -1391,9 +1532,42 @@ def rectify_board_image(image_body):
         output_height = max(360, output_height)
 
         src = _order_quad_points(quad)
-        margin_x = max(0.02, min(0.20, float(DEFAULT_BOARD_MARGIN_X)))
-        margin_top = max(0.02, min(0.20, float(DEFAULT_BOARD_MARGIN_TOP)))
-        margin_bottom = max(0.02, min(0.20, float(DEFAULT_BOARD_MARGIN_BOTTOM)))
+        margin_x = max(
+            0.02,
+            min(
+                0.20,
+                float(
+                    os.getenv(
+                        "CHESS_RECTIFIED_BOARD_MARGIN_X",
+                        str(DEFAULT_BOARD_MARGIN_X),
+                    )
+                ),
+            ),
+        )
+        margin_top = max(
+            0.02,
+            min(
+                0.20,
+                float(
+                    os.getenv(
+                        "CHESS_RECTIFIED_BOARD_MARGIN_TOP",
+                        str(DEFAULT_BOARD_MARGIN_TOP),
+                    )
+                ),
+            ),
+        )
+        margin_bottom = max(
+            0.02,
+            min(
+                0.20,
+                float(
+                    os.getenv(
+                        "CHESS_RECTIFIED_BOARD_MARGIN_BOTTOM",
+                        str(DEFAULT_BOARD_MARGIN_BOTTOM),
+                    )
+                ),
+            ),
+        )
         dst = np.asarray(
             [
                 [margin_x * float(output_width - 1), margin_top * float(output_height - 1)],
@@ -1437,6 +1611,11 @@ def rectify_board_image(image_body):
                     round(float(dst[2][0]), 2),
                     round(float(dst[2][1]), 2),
                 ],
+                "rectified_board_margins": {
+                    "x": margin_x,
+                    "top": margin_top,
+                    "bottom": margin_bottom,
+                },
                 "source_board_corners": [
                     {"x": round(float(x), 2), "y": round(float(y), 2)}
                     for x, y in quad
@@ -2162,6 +2341,15 @@ def filter_piece_circle_candidates(image_body, circles, board_crop=None):
         min_center_dark_ratio = float(os.getenv("CHESS_CIRCLE_MIN_CENTER_DARK_RATIO", "0.12"))
         min_body_dark_ratio = float(os.getenv("CHESS_CIRCLE_MIN_BODY_DARK_RATIO", "0.20"))
         max_empty_body_std = float(os.getenv("CHESS_CIRCLE_MAX_EMPTY_BODY_STD", "36"))
+        max_dark_region_gray = float(
+            os.getenv("CHESS_CIRCLE_MAX_DARK_REGION_GRAY", "105")
+        )
+        min_dark_region_body_ratio = float(
+            os.getenv("CHESS_CIRCLE_MIN_DARK_REGION_BODY_RATIO", "0.60")
+        )
+        max_dark_region_narrow_ring_coverage = float(
+            os.getenv("CHESS_CIRCLE_MAX_DARK_REGION_NARROW_RING_COVERAGE", "0.67")
+        )
         radius_outlier_filter_enabled = parse_bool_env(
             os.getenv("CHESS_CIRCLE_FILTER_RADIUS_OUTLIERS", "true")
         )
@@ -2189,6 +2377,17 @@ def filter_piece_circle_candidates(image_body, circles, board_crop=None):
         min_narrow_ring_edge_coverage = float(
             os.getenv("CHESS_CIRCLE_MIN_NARROW_RING_EDGE_COVERAGE", "0.70")
         )
+        min_outside_crop_ring_coverage = float(
+            os.getenv("CHESS_CIRCLE_MIN_OUTSIDE_CROP_RING_COVERAGE", "0.70")
+        )
+        require_grid_alignment = parse_bool_env(
+            os.getenv("CHESS_CIRCLE_REQUIRE_GRID_ALIGNMENT", "true")
+        )
+        max_grid_offset_ratio = float(
+            os.getenv("CHESS_CIRCLE_MAX_GRID_OFFSET_RATIO", "0.44")
+        )
+        grid_spacing_x = (right - left) / float(BOARD_FILES - 1)
+        grid_spacing_y = (bottom - top) / float(BOARD_RANKS - 1)
         radius_values = [
             float(circle.get("radius", 0.0))
             for circle in circles
@@ -2261,12 +2460,44 @@ def filter_piece_circle_candidates(image_body, circles, board_crop=None):
                 if not has_ring_evidence:
                     continue
                 rescue_reasons.append("radius_outlier_with_ring_evidence")
-            boundary_margin = max(6.0, radius * float(os.getenv("CHESS_CIRCLE_CROP_EDGE_MARGIN_RATIO", "0.60")))
+            boundary_margin = max(
+                6.0,
+                radius * float(
+                    os.getenv("CHESS_CIRCLE_CROP_EDGE_MARGIN_RATIO", "1.05")
+                ),
+            )
             if (
                 cx < left - boundary_margin
                 or cx > right + boundary_margin
                 or cy < top - boundary_margin
                 or cy > bottom + boundary_margin
+            ):
+                continue
+            center_outside_board_crop = (
+                cx < left or cx > right or cy < top or cy > bottom
+            )
+            if (
+                center_outside_board_crop
+                and narrow_ring_edge_coverage < min_outside_crop_ring_coverage
+            ):
+                continue
+            nearest_grid_x = max(
+                0,
+                min(BOARD_FILES - 1, round((cx - left) / grid_spacing_x)),
+            )
+            nearest_grid_y = max(
+                0,
+                min(BOARD_RANKS - 1, round((cy - top) / grid_spacing_y)),
+            )
+            grid_offset_x = abs(
+                cx - (left + nearest_grid_x * grid_spacing_x)
+            ) / grid_spacing_x
+            grid_offset_y = abs(
+                cy - (top + nearest_grid_y * grid_spacing_y)
+            ) / grid_spacing_y
+            if require_grid_alignment and (
+                grid_offset_x > max_grid_offset_ratio
+                or grid_offset_y > max_grid_offset_ratio
             ):
                 continue
 
@@ -2300,6 +2531,18 @@ def filter_piece_circle_candidates(image_body, circles, board_crop=None):
             center_dark_ratio = float(np.mean(center_gray < 120))
             body_dark_ratio = float(np.mean(body_gray < 135))
             body_std = float(np.std(body_gray))
+            looks_like_dark_board_or_text = (
+                median_gray <= max_dark_region_gray
+                and body_dark_ratio >= min_dark_region_body_ratio
+                and narrow_ring_edge_coverage
+                < max_dark_region_narrow_ring_coverage
+            )
+            # Exposure can push the whole piece body below the old fixed gray
+            # threshold. Reject a dark patch only when it also lacks a nearly
+            # complete narrow circular rim; real wooden pieces remain strongly
+            # outlined even in this underexposed case.
+            if looks_like_dark_board_or_text:
+                continue
             looks_like_shadow_or_grid = (
                 center_dark_ratio < min_center_dark_ratio
                 and body_dark_ratio < min_body_dark_ratio
@@ -2319,6 +2562,27 @@ def filter_piece_circle_candidates(image_body, circles, board_crop=None):
             item["appearance_ring_edge_coverage"] = round(ring_edge_coverage, 3)
             item["appearance_narrow_ring_edge_coverage"] = round(
                 narrow_ring_edge_coverage,
+                3,
+            )
+            item["grid_offset_x"] = round(grid_offset_x, 3)
+            item["grid_offset_y"] = round(grid_offset_y, 3)
+            brightness_score = min(1.0, max(0.0, (median_gray - 70.0) / 110.0))
+            body_score = min(1.0, max(0.0, 1.0 - body_dark_ratio))
+            ring_score = min(
+                1.0,
+                max(0.0, (ring_edge_coverage + narrow_ring_edge_coverage) / 2.0),
+            )
+            radius_score = 1.0
+            if median_radius > 0:
+                radius_score = min(
+                    1.0,
+                    max(0.0, 1.0 - abs(radius - median_radius) / median_radius),
+                )
+            item["appearance_quality"] = round(
+                brightness_score * 0.25
+                + body_score * 0.30
+                + ring_score * 0.20
+                + radius_score * 0.25,
                 3,
             )
             if rescue_reasons:
@@ -2352,7 +2616,7 @@ def detect_piece_circles(image_body, suppress_grid_lines=True, board_crop=None):
         max_radius = int(os.getenv("CHESS_CIRCLE_MAX_RADIUS", str(max(min_radius + 8, round(min_dim * 0.049)))))
         min_dist = int(os.getenv("CHESS_CIRCLE_MIN_DIST", str(max(24, round(min_dim * 0.055)))))
         param1 = int(os.getenv("CHESS_CIRCLE_PARAM1", "80"))
-        param2 = int(os.getenv("CHESS_CIRCLE_PARAM2", "30"))
+        param2 = int(os.getenv("CHESS_CIRCLE_PARAM2", "26"))
         circles = cv2.HoughCircles(
             blurred,
             cv2.HOUGH_GRADIENT,
@@ -2381,12 +2645,160 @@ def detect_piece_circles(image_body, suppress_grid_lines=True, board_crop=None):
         max_candidates = int(
             os.getenv("CHESS_OPENCV_MAX_CANDIDATES", str(DEFAULT_MAX_VISIBLE_PIECES))
         )
-        if max_candidates > 0:
-            detected = detected[:max_candidates]
+        if max_candidates > 0 and len(detected) > max_candidates:
+            # HoughCircles does not promise an order by confidence. Keeping the
+            # first N after a y/x sort made false circles near the river displace
+            # real pieces at the bottom edge. Select by appearance first, then
+            # restore stable visual ordering and IDs for prompts/debug output.
+            detected = sorted(
+                detected,
+                key=lambda circle: (
+                    float(circle.get("appearance_quality", 0.0)),
+                    float(circle.get("appearance_narrow_ring_edge_coverage", 0.0)),
+                    float(circle.get("radius", 0.0)),
+                ),
+                reverse=True,
+            )[:max_candidates]
+        detected.sort(key=lambda circle: (circle["cy"], circle["cx"]))
+        for index, circle in enumerate(detected):
+            circle["circle_id"] = index
         return detected
     except Exception:
         LOGGER.exception("Piece circle detection failed")
         return []
+
+
+def _circle_candidates_match(first, second):
+    first_radius = max(1.0, float(first.get("radius", 0.0)))
+    second_radius = max(1.0, float(second.get("radius", 0.0)))
+    radius_ratio = min(first_radius, second_radius) / max(first_radius, second_radius)
+    min_radius_ratio = float(
+        os.getenv("CHESS_CIRCLE_FUSION_MIN_RADIUS_RATIO", "0.60")
+    )
+    if radius_ratio < min_radius_ratio:
+        return False
+
+    distance = (
+        (float(first["cx"]) - float(second["cx"])) ** 2
+        + (float(first["cy"]) - float(second["cy"])) ** 2
+    ) ** 0.5
+    max_distance_ratio = float(
+        os.getenv("CHESS_CIRCLE_FUSION_MAX_DISTANCE_RATIO", "0.65")
+    )
+    return distance <= max(8.0, min(first_radius, second_radius) * max_distance_ratio)
+
+
+def fuse_piece_circle_candidates(direct_candidates, suppressed_candidates):
+    """Fuse original-color and grid-suppressed detections without losing color evidence."""
+    fused = []
+    for candidate in direct_candidates:
+        item = dict(candidate)
+        item["detection_sources"] = ["rectified_color"]
+        fused.append(item)
+
+    for candidate in suppressed_candidates:
+        matches = [item for item in fused if _circle_candidates_match(item, candidate)]
+        if matches:
+            match = min(
+                matches,
+                key=lambda item: (
+                    (float(item["cx"]) - float(candidate["cx"])) ** 2
+                    + (float(item["cy"]) - float(candidate["cy"])) ** 2
+                ),
+            )
+            sources = list(match.get("detection_sources", []))
+            if "grid_suppressed" not in sources:
+                sources.append("grid_suppressed")
+            match["detection_sources"] = sources
+            match["suppressed_cx"] = round(float(candidate["cx"]), 2)
+            match["suppressed_cy"] = round(float(candidate["cy"]), 2)
+            match["suppressed_radius"] = round(float(candidate.get("radius", 0.0)), 2)
+            match["appearance_quality"] = max(
+                float(match.get("appearance_quality", 0.0)),
+                float(candidate.get("appearance_quality", 0.0)),
+            )
+            match["appearance_narrow_ring_edge_coverage"] = max(
+                float(match.get("appearance_narrow_ring_edge_coverage", 0.0)),
+                float(candidate.get("appearance_narrow_ring_edge_coverage", 0.0)),
+            )
+            continue
+
+        item = dict(candidate)
+        item["detection_sources"] = ["grid_suppressed"]
+        fused.append(item)
+
+    if parse_bool_env(os.getenv("CHESS_CIRCLE_FILTER_WEAK_SINGLE_SOURCE", "true")):
+        max_single_source_grid_offset = float(
+            os.getenv("CHESS_CIRCLE_SINGLE_SOURCE_MAX_GRID_OFFSET", "0.40")
+        )
+        fused = [
+            circle
+            for circle in fused
+            if not (
+                len(circle.get("detection_sources", [])) == 1
+                and max(
+                    float(circle.get("grid_offset_x", 0.0)),
+                    float(circle.get("grid_offset_y", 0.0)),
+                ) > max_single_source_grid_offset
+            )
+        ]
+
+    max_candidates = int(
+        os.getenv("CHESS_OPENCV_MAX_CANDIDATES", str(DEFAULT_MAX_VISIBLE_PIECES))
+    )
+    if max_candidates > 0 and len(fused) > max_candidates:
+        fused = sorted(
+            fused,
+            key=lambda circle: (
+                len(circle.get("detection_sources", [])),
+                float(circle.get("appearance_quality", 0.0)),
+                float(circle.get("appearance_narrow_ring_edge_coverage", 0.0)),
+                float(circle.get("radius", 0.0)),
+            ),
+            reverse=True,
+        )[:max_candidates]
+
+    fused.sort(key=lambda circle: (circle["cy"], circle["cx"]))
+    for index, circle in enumerate(fused):
+        circle["circle_id"] = index
+    return fused
+
+
+def detect_piece_circles_fused(image_body, board_crop=None):
+    """Detect on the rectified color image and optionally add a suppressed-grid pass."""
+    direct_candidates = detect_piece_circles(
+        image_body,
+        suppress_grid_lines=False,
+        board_crop=board_crop,
+    )
+    if not parse_bool_env(os.getenv("CHESS_OPENCV_DUAL_CIRCLE_DETECTION", "true")):
+        for candidate in direct_candidates:
+            candidate["detection_sources"] = ["rectified_color"]
+        return direct_candidates, {
+            "status": "direct_only",
+            "direct_count": len(direct_candidates),
+            "suppressed_count": 0,
+            "fused_count": len(direct_candidates),
+            "suppression": {"status": "not_run"},
+        }
+
+    suppressed_body, suppression_metadata = suppress_board_grid_lines(
+        image_body,
+        board_crop=board_crop,
+    )
+    suppressed_candidates = detect_piece_circles(
+        suppressed_body,
+        suppress_grid_lines=False,
+        board_crop=board_crop,
+    )
+    fused = fuse_piece_circle_candidates(direct_candidates, suppressed_candidates)
+    return fused, {
+        "status": "dual_fused",
+        "direct_count": len(direct_candidates),
+        "suppressed_count": len(suppressed_candidates),
+        "fused_count": len(fused),
+        "suppression": suppression_metadata,
+    }
 
 
 def _candidate_crop_box(image, circle):
@@ -2444,6 +2856,14 @@ def create_candidate_crop_sheet(image_body, circles):
         crop = image.crop((left, top, right, bottom))
         original_crop_width = max(1, right - left)
         original_crop_height = max(1, bottom - top)
+        marker_source_x = cx - left
+        marker_source_y = cy - top
+        rotation_degrees = int(circle.get("crop_rotation_degrees", 0) or 0) % 360
+        if rotation_degrees == 180:
+            transpose = getattr(Image, "Transpose", Image)
+            crop = crop.transpose(transpose.ROTATE_180)
+            marker_source_x = original_crop_width - 1 - marker_source_x
+            marker_source_y = original_crop_height - 1 - marker_source_y
         crop.thumbnail(
             (tile_size - 2 * padding, tile_size - label_height - 2 * padding),
             resample=resampling,
@@ -2453,8 +2873,8 @@ def create_candidate_crop_sheet(image_body, circles):
         sheet.paste(crop, (paste_x, paste_y))
         scale_x = crop.width / original_crop_width
         scale_y = crop.height / original_crop_height
-        marker_cx = paste_x + (cx - left) * scale_x
-        marker_cy = paste_y + (cy - top) * scale_y
+        marker_cx = paste_x + marker_source_x * scale_x
+        marker_cy = paste_y + marker_source_y * scale_y
         marker_radius = max(8.0, radius * min(scale_x, scale_y))
         draw.ellipse(
             (
@@ -2488,12 +2908,18 @@ def save_candidate_crop_images(debug_path, safe_frame_id, image_body, circles):
         image = Image.open(io.BytesIO(image_body)).convert("RGB")
         crop_dir = debug_path / f"{safe_frame_id}.candidate_crops"
         crop_dir.mkdir(parents=True, exist_ok=True)
+        for stale_crop in crop_dir.glob("candidate_*.jpg"):
+            stale_crop.unlink()
         metadata = []
         for index, circle in enumerate(circles):
             left, top, right, bottom = _candidate_crop_box(image, circle)
             if right <= left or bottom <= top:
                 continue
             crop = image.crop((left, top, right, bottom))
+            rotation_degrees = int(circle.get("crop_rotation_degrees", 0) or 0) % 360
+            if rotation_degrees == 180:
+                transpose = getattr(Image, "Transpose", Image)
+                crop = crop.transpose(transpose.ROTATE_180)
             circle_id = int(circle.get("circle_id", index))
             filename = (
                 f"candidate_{circle_id:03d}_"
@@ -2509,6 +2935,7 @@ def save_candidate_crop_images(debug_path, safe_frame_id, image_body, circles):
                     "radius": round(float(circle.get("radius", 0.0)), 2),
                     "board_x": circle.get("board_x"),
                     "board_y": circle.get("board_y"),
+                    "crop_rotation_degrees": rotation_degrees,
                     "crop_box": [left, top, right, bottom],
                 }
             )
@@ -2522,9 +2949,31 @@ def save_candidate_crop_images(debug_path, safe_frame_id, image_body, circles):
         return None
 
 
-def annotate_circle_candidates_with_board_points(circles, image_width, image_height, board_crop=None):
-    orientation = {"bottom_side": PLAYER1_SIDE, "top_side": PLAYER2_SIDE}
+def annotate_circle_candidates_with_board_points(
+    circles,
+    image_width,
+    image_height,
+    board_crop=None,
+    orientation=None,
+):
+    orientation = normalize_orientation(
+        orientation or {"bottom_side": PLAYER1_SIDE, "top_side": PLAYER2_SIDE}
+    )
+    if (
+        orientation["bottom_side"] not in (PLAYER1_SIDE, PLAYER2_SIDE)
+        or orientation["top_side"] not in (PLAYER1_SIDE, PLAYER2_SIDE)
+        or orientation["bottom_side"] == orientation["top_side"]
+    ):
+        orientation = {"bottom_side": PLAYER1_SIDE, "top_side": PLAYER2_SIDE}
     annotated = []
+    left, top, right, bottom = parse_board_crop(
+        image_width,
+        image_height,
+        board_crop=board_crop,
+    )
+    file_spacing = max(1.0, (right - left) / float(BOARD_FILES - 1))
+    rank_spacing = max(1.0, (bottom - top) / float(BOARD_RANKS - 1))
+    snap_limit = float(os.getenv("CHESS_CANDIDATE_GRID_SNAP_MAX_OFFSET", "0.44"))
     for circle in circles:
         item = dict(circle)
         try:
@@ -2538,10 +2987,306 @@ def annotate_circle_candidates_with_board_points(circles, image_width, image_hei
             )
             item["board_x"] = point["x"]
             item["board_y"] = point["y"]
+            grid_cx, grid_cy = canonical_point_to_pixel(
+                point,
+                orientation,
+                image_width,
+                image_height,
+                board_crop=board_crop,
+            )
+            offset_x = abs(float(circle["cx"]) - grid_cx) / file_spacing
+            offset_y = abs(float(circle["cy"]) - grid_cy) / rank_spacing
+            item["grid_cx"] = round(float(grid_cx), 2)
+            item["grid_cy"] = round(float(grid_cy), 2)
+            item["grid_offset_x"] = round(offset_x, 3)
+            item["grid_offset_y"] = round(offset_y, 3)
+            item["grid_snap_status"] = (
+                "snapped" if max(offset_x, offset_y) <= snap_limit else "uncertain"
+            )
         except Exception as exc:
             item["board_error"] = str(exc)
+            item["grid_snap_status"] = "failed"
         annotated.append(item)
-    return annotated
+
+    if not parse_bool_env(
+        os.getenv("CHESS_CANDIDATE_DEDUPLICATE_GRID_POINTS", "true")
+    ):
+        return annotated
+
+    grouped = {}
+    passthrough = []
+    for item in annotated:
+        if (
+            item.get("grid_snap_status") != "snapped"
+            or "board_x" not in item
+            or "board_y" not in item
+        ):
+            passthrough.append(item)
+            continue
+        key = (int(item["board_x"]), int(item["board_y"]))
+        grouped.setdefault(key, []).append(item)
+
+    deduplicated = list(passthrough)
+    for candidates in grouped.values():
+        winner_source = max(
+            candidates,
+            key=lambda candidate: (
+                len(set(candidate.get("detection_sources", []))),
+                -max(
+                    float(candidate.get("grid_offset_x", 1.0)),
+                    float(candidate.get("grid_offset_y", 1.0)),
+                ),
+                float(candidate.get("appearance_quality", 0.0)),
+                float(candidate.get("appearance_narrow_ring_edge_coverage", 0.0)),
+            ),
+        )
+        winner = dict(winner_source)
+        rejected_ids = [
+            int(candidate["circle_id"])
+            for candidate in candidates
+            if candidate is not winner_source and candidate.get("circle_id") is not None
+        ]
+        if rejected_ids:
+            winner["grid_duplicate_rejected_circle_ids"] = rejected_ids
+        deduplicated.append(winner)
+
+    deduplicated.sort(key=lambda circle: (circle["cy"], circle["cx"]))
+    return deduplicated
+
+
+def _grid_roi_occupancy_features(image, grid_cx, grid_cy, expected_radius):
+    """Measure whether a canonical grid point contains a physical piece disk."""
+    import numpy as np
+
+    roi_half = max(16, int(round(expected_radius * 1.48)))
+    padded = cv2.copyMakeBorder(
+        image,
+        roi_half,
+        roi_half,
+        roi_half,
+        roi_half,
+        cv2.BORDER_REFLECT_101,
+    )
+    px = int(round(float(grid_cx))) + roi_half
+    py = int(round(float(grid_cy))) + roi_half
+    roi = padded[
+        py - roi_half:py + roi_half + 1,
+        px - roi_half:px + roi_half + 1,
+    ]
+    if roi.size == 0:
+        return None
+
+    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+    lab = cv2.cvtColor(roi, cv2.COLOR_BGR2LAB)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    gradient_x = cv2.Sobel(blurred, cv2.CV_32F, 1, 0, ksize=3)
+    gradient_y = cv2.Sobel(blurred, cv2.CV_32F, 0, 1, ksize=3)
+    gradient = cv2.magnitude(gradient_x, gradient_y)
+
+    yy, xx = np.indices(gray.shape)
+    distance = np.sqrt((xx - roi_half) ** 2 + (yy - roi_half) ** 2)
+    inner_mask = distance <= expected_radius * 0.62
+    body_mask = distance <= expected_radius * 0.88
+    rim_mask = (
+        (distance >= expected_radius * 0.78)
+        & (distance <= expected_radius * 1.12)
+    )
+    outer_mask = (
+        (distance >= expected_radius * 1.12)
+        & (distance <= expected_radius * 1.38)
+    )
+    if not all(mask.any() for mask in (inner_mask, body_mask, rim_mask, outer_mask)):
+        return None
+
+    inner_l = float(np.median(lab[:, :, 0][inner_mask]))
+    body_l = float(np.median(lab[:, :, 0][body_mask]))
+    outer_l = float(np.median(lab[:, :, 0][outer_mask]))
+    inner_std = float(np.std(gray[inner_mask]))
+    rim_gradient = float(np.percentile(gradient[rim_mask], 75))
+    bright_body_ratio = float(np.mean(lab[:, :, 0][body_mask] > 125))
+    contrast = body_l - outer_l
+    score = (
+        0.38 * np.clip((contrast + 5.0) / 45.0, 0.0, 1.0)
+        + 0.25 * np.clip((rim_gradient - 35.0) / 85.0, 0.0, 1.0)
+        + 0.22 * np.clip((inner_std - 14.0) / 38.0, 0.0, 1.0)
+        + 0.15 * bright_body_ratio
+    )
+    return {
+        "score": round(float(score), 4),
+        "contrast": round(contrast, 2),
+        "inner_l": round(inner_l, 2),
+        "body_l": round(body_l, 2),
+        "outer_l": round(outer_l, 2),
+        "inner_std": round(inner_std, 2),
+        "rim_gradient": round(rim_gradient, 2),
+        "bright_body_ratio": round(bright_body_ratio, 4),
+    }
+
+
+def apply_grid_roi_hough_fusion(image_body, circles, board_crop=None):
+    """Filter Hough candidates with occupancy evidence at canonical grid points."""
+    metadata = {
+        "enabled": parse_bool_env(os.getenv("CHESS_GRID_ROI_HOUGH_FUSION", "true")),
+        "status": "disabled",
+        "raw_count": len(circles),
+    }
+    if not metadata["enabled"]:
+        return circles, metadata
+    if cv2 is None:
+        metadata["status"] = "opencv_unavailable"
+        return circles, metadata
+    if not circles:
+        metadata["status"] = "no_hough_candidates"
+        return circles, metadata
+
+    try:
+        import numpy as np
+
+        image_array = np.frombuffer(image_body, dtype=np.uint8)
+        image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+        if image is None:
+            metadata["status"] = "decode_failed"
+            return circles, metadata
+        image_height, image_width = image.shape[:2]
+        left, top, right, bottom = parse_board_crop(
+            image_width,
+            image_height,
+            board_crop=board_crop,
+        )
+        file_spacing = max(1.0, (right - left) / float(BOARD_FILES - 1))
+        rank_spacing = max(1.0, (bottom - top) / float(BOARD_RANKS - 1))
+        grid_spacing = min(file_spacing, rank_spacing)
+        expected_radius = grid_spacing * float(
+            os.getenv("CHESS_GRID_ROI_EXPECTED_RADIUS_RATIO", "0.445")
+        )
+        max_distance = grid_spacing * float(
+            os.getenv("CHESS_GRID_ROI_HOUGH_MAX_DISTANCE_RATIO", "0.45")
+        )
+        min_radius_ratio = float(os.getenv("CHESS_GRID_ROI_MIN_RADIUS_RATIO", "0.62"))
+        max_radius_ratio = float(os.getenv("CHESS_GRID_ROI_MAX_RADIUS_RATIO", "1.30"))
+        roi_weight = float(os.getenv("CHESS_GRID_ROI_FUSION_ROI_WEIGHT", "0.65"))
+        hough_weight = float(os.getenv("CHESS_GRID_ROI_FUSION_HOUGH_WEIGHT", "0.35"))
+        weight_total = max(1e-6, roi_weight + hough_weight)
+        roi_weight /= weight_total
+        hough_weight /= weight_total
+        threshold = float(os.getenv("CHESS_GRID_ROI_FUSION_THRESHOLD", "0.46"))
+
+        accepted = []
+        rejected = []
+        for source_circle in circles:
+            circle = dict(source_circle)
+            grid_cx = _get_optional_float(circle.get("grid_cx"))
+            grid_cy = _get_optional_float(circle.get("grid_cy"))
+            radius = _get_optional_float(circle.get("radius"))
+            cx = _get_optional_float(circle.get("cx"))
+            cy = _get_optional_float(circle.get("cy"))
+            if None in (grid_cx, grid_cy, radius, cx, cy):
+                rejected.append({
+                    "circle_id": circle.get("circle_id"),
+                    "reason": "missing_grid_or_circle_geometry",
+                })
+                continue
+
+            center_distance = math.hypot(cx - grid_cx, cy - grid_cy)
+            radius_ratio = radius / max(expected_radius, 1e-6)
+            hough_matched = (
+                circle.get("grid_snap_status") == "snapped"
+                and center_distance <= max_distance
+                and min_radius_ratio <= radius_ratio <= max_radius_ratio
+            )
+            if not hough_matched:
+                rejected.append({
+                    "circle_id": circle.get("circle_id"),
+                    "reason": "hough_grid_gate_failed",
+                    "center_distance": round(center_distance, 2),
+                    "radius_ratio": round(radius_ratio, 3),
+                })
+                continue
+
+            roi_features = _grid_roi_occupancy_features(
+                image,
+                grid_cx,
+                grid_cy,
+                expected_radius,
+            )
+            if roi_features is None:
+                rejected.append({
+                    "circle_id": circle.get("circle_id"),
+                    "reason": "roi_feature_failed",
+                })
+                continue
+
+            distance_score = max(0.0, min(1.0, 1.0 - center_distance / max_distance))
+            radius_score = max(
+                0.0,
+                min(1.0, 1.0 - abs(radius - expected_radius) / expected_radius),
+            )
+            appearance_quality = float(circle.get("appearance_quality", 0.0))
+            source_score = 1.0 if len(set(circle.get("detection_sources", []))) >= 2 else 0.5
+            hough_score = (
+                0.40 * distance_score
+                + 0.25 * radius_score
+                + 0.20 * appearance_quality
+                + 0.15 * source_score
+            )
+            fusion_score = roi_weight * roi_features["score"] + hough_weight * hough_score
+            circle["grid_roi_occupancy"] = roi_features
+            circle["hough_grid_evidence_score"] = round(hough_score, 4)
+            circle["grid_roi_hough_fusion_score"] = round(fusion_score, 4)
+            circle["hough_center_distance"] = round(center_distance, 2)
+            circle["hough_radius_ratio"] = round(radius_ratio, 3)
+            if fusion_score >= threshold:
+                accepted.append(circle)
+            else:
+                rejected.append({
+                    "circle_id": circle.get("circle_id"),
+                    "board_x": circle.get("board_x"),
+                    "board_y": circle.get("board_y"),
+                    "reason": "fusion_score_below_threshold",
+                    "roi_score": roi_features["score"],
+                    "hough_score": round(hough_score, 4),
+                    "fusion_score": round(fusion_score, 4),
+                })
+
+        fallback_on_empty = parse_bool_env(
+            os.getenv("CHESS_GRID_ROI_FUSION_FALLBACK_ON_EMPTY", "true")
+        )
+        if not accepted and fallback_on_empty:
+            metadata.update({
+                "status": "fallback_raw_no_candidates",
+                "accepted_count": 0,
+                "rejected_count": len(rejected),
+                "rejected": rejected,
+            })
+            return circles, metadata
+
+        accepted.sort(key=lambda circle: (circle["cy"], circle["cx"]))
+        for new_id, circle in enumerate(accepted):
+            circle["hough_circle_id"] = circle.get("circle_id")
+            circle["circle_id"] = new_id
+        metadata.update({
+            "status": "applied",
+            "accepted_count": len(accepted),
+            "rejected_count": len(rejected),
+            "expected_radius": round(expected_radius, 2),
+            "grid_spacing": round(grid_spacing, 2),
+            "threshold": threshold,
+            "weights": {
+                "grid_roi": round(roi_weight, 4),
+                "hough": round(hough_weight, 4),
+            },
+            "rejected": rejected,
+        })
+        LOGGER.info(
+            "Grid ROI + Hough fusion accepted %d/%d candidates",
+            len(accepted),
+            len(circles),
+        )
+        return accepted, metadata
+    except Exception as exc:
+        LOGGER.exception("Grid ROI + Hough fusion failed")
+        metadata.update({"status": "failed", "error": str(exc)})
+        return circles, metadata
 
 
 def apply_circle_candidates_to_processed(processed, circles):
@@ -2720,6 +3465,26 @@ def apply_visual_evidence_to_processed(processed, image_body, circles=None, boar
 
     processed["visual_evidence_status"] = "ok" if not errors else "failed"
     processed["visual_evidence_errors"] = errors[:8]
+    detected_ids = {
+        int(circle["circle_id"])
+        for circle in circles
+        if circle.get("circle_id") is not None
+    }
+    recognized_ids = {
+        int(piece["circle_id"])
+        for piece in processed.get("pieces", [])
+        if piece.get("circle_id") is not None
+        and int(piece["circle_id"]) in detected_ids
+    }
+    processed["candidate_coverage"] = {
+        "detected": len(detected_ids),
+        "recognized": len(recognized_ids),
+        "ratio": round(
+            len(recognized_ids) / float(len(detected_ids)),
+            3,
+        ) if detected_ids else 0.0,
+        "missing_circle_ids": sorted(detected_ids - recognized_ids),
+    }
     return processed
 
 
@@ -3024,32 +3789,42 @@ def validate_processed_result(processed):
     elif not _is_inside_palace(PLAYER2_SIDE, jiang_pieces[0]):
         errors.append("jiang piece is outside the jiang palace")
 
-    if len(shuai_pieces) == 1 and len(jiang_pieces) == 1:
-        shuai_color = shuai_pieces[0].get("color", "unknown")
-        jiang_color = jiang_pieces[0].get("color", "unknown")
-        if shuai_color == "unknown":
-            errors.append("shuai piece color is unknown")
-        if jiang_color == "unknown":
-            errors.append("jiang piece color is unknown")
-        if shuai_color != "unknown" and jiang_color != "unknown":
-            if shuai_color == jiang_color:
-                errors.append("shuai and jiang pieces cannot have the same text color")
-            else:
-                for piece in pieces:
-                    if piece["color"] == shuai_color and piece["side"] != PLAYER1_SIDE:
-                        errors.append(
-                            f"{piece['color']} piece at ({piece['x']},{piece['y']}) must belong to shuai side"
-                        )
-                    if piece["color"] == jiang_color and piece["side"] != PLAYER2_SIDE:
-                        errors.append(
-                            f"{piece['color']} piece at ({piece['x']},{piece['y']}) must belong to jiang side"
-                        )
+    if len(shuai_pieces) == 1 and shuai_pieces[0].get("color") != "red":
+        errors.append("shuai piece must have red text")
+    if len(jiang_pieces) == 1 and jiang_pieces[0].get("color") != "black":
+        errors.append("jiang piece must have black text")
+
+    for piece in pieces:
+        expected_side = COLOR_SIDE_HINTS.get(piece.get("color", "unknown"))
+        if expected_side is not None and piece.get("side") != expected_side:
+            errors.append(
+                f"{piece['color']} piece at ({piece['x']},{piece['y']}) must belong to {expected_side} side"
+            )
 
     orientation = processed.get("orientation", {})
     if orientation.get("bottom_side") == orientation.get("top_side"):
         errors.append("orientation bottom_side and top_side must be different")
     if orientation.get("bottom_side") == "unknown" or orientation.get("top_side") == "unknown":
         errors.append("orientation must identify both bottom_side and top_side")
+
+    candidate_coverage = processed.get("candidate_coverage", {})
+    detected_candidate_count = int(candidate_coverage.get("detected", 0) or 0)
+    recognized_candidate_count = int(candidate_coverage.get("recognized", 0) or 0)
+    if (
+        parse_bool_env(os.getenv("CHESS_AI_REQUIRE_CANDIDATE_COVERAGE", "true"))
+        and detected_candidate_count > 0
+    ):
+        minimum_coverage = float(
+            os.getenv("CHESS_AI_MIN_CANDIDATE_COVERAGE", "0.85")
+        )
+        required_count = int(detected_candidate_count * minimum_coverage + 0.999999)
+        if recognized_candidate_count < required_count:
+            missing_ids = candidate_coverage.get("missing_circle_ids", [])
+            errors.append(
+                "recognized candidate coverage is too low: "
+                f"got {recognized_candidate_count}/{detected_candidate_count}, "
+                f"need at least {required_count}; missing circle ids {missing_ids[:12]}"
+            )
 
     for side in (PLAYER1_SIDE, PLAYER2_SIDE):
         move = processed["recommended_moves"][side]
@@ -3092,6 +3867,62 @@ def mark_valid_ai_result(processed):
     return processed
 
 
+def get_ai_review_reasons(processed):
+    """Return the quality signals that require an expensive second AI pass."""
+    mode = os.getenv("CHESS_AI_REVIEW_MODE", "auto").strip().lower()
+    if mode == "always":
+        return ["review_mode_always"]
+    if mode not in ("", "auto"):
+        LOGGER.warning("Unsupported CHESS_AI_REVIEW_MODE=%s; using auto", mode)
+
+    reasons = []
+    validation_errors = validate_processed_result(processed)
+    if validation_errors:
+        reasons.append("structural_validation_failed")
+
+    minimum_confidence = float(
+        os.getenv("CHESS_AI_REVIEW_MIN_CONFIDENCE", "0.85")
+    )
+    if float(processed.get("confidence", 0.0)) < minimum_confidence:
+        reasons.append("low_overall_confidence")
+
+    orientation = processed.get("orientation_detection", {})
+    orientation_status = str(orientation.get("status", "not_run"))
+    if orientation_status != "detected":
+        reasons.append(f"orientation_{orientation_status}")
+    else:
+        minimum_orientation_confidence = float(
+            os.getenv("CHESS_AI_REVIEW_MIN_ORIENTATION_CONFIDENCE", "0.35")
+        )
+        orientation_confidence = float(orientation.get("confidence", 0.0) or 0.0)
+        if orientation_confidence < minimum_orientation_confidence:
+            reasons.append("low_orientation_confidence")
+
+    local_report = processed.get("local_piece_classifier", {})
+    if int(local_report.get("unclassified_count", 0) or 0) > 0:
+        reasons.append("unclassified_candidates")
+
+    coverage = processed.get("candidate_coverage", {})
+    detected = int(coverage.get("detected", 0) or 0)
+    recognized = int(coverage.get("recognized", 0) or 0)
+    if detected > 0 and recognized < detected:
+        reasons.append("incomplete_candidate_coverage")
+
+    if processed.get("focused_classifier_status") == "applied":
+        reasons.append("focused_classifier_repair")
+    if processed.get("king_palace_repair_status") == "repaired":
+        reasons.append("king_palace_repair")
+
+    return list(dict.fromkeys(reasons))
+
+
+def mark_review_skipped_result(processed):
+    processed["review_status"] = "skipped_not_needed"
+    processed["review_errors"] = []
+    processed["review_reasons"] = []
+    return processed
+
+
 def mark_reviewed_ai_result(processed):
     processed["validation_status"] = "structural_ok"
     processed["validation_errors"] = []
@@ -3104,6 +3935,24 @@ def mark_review_failed_result(processed, review_errors):
     processed["review_status"] = "review_failed"
     processed["review_errors"] = review_errors[:8]
     processed["confidence"] = min(float(processed.get("confidence", 0.0)), 0.2)
+    return processed
+
+
+def mark_review_failed_preserved_result(processed, review_errors):
+    """Keep a structurally valid first-stage result when review regresses it."""
+    processed["validation_status"] = "structural_ok"
+    processed["validation_errors"] = []
+    processed["review_status"] = "review_failed_preserved"
+    processed["review_errors"] = review_errors[:8]
+    return processed
+
+
+def mark_review_regression_preserved_result(processed, review_errors):
+    """Keep a valid candidate when a valid review drops visual evidence."""
+    processed["validation_status"] = "structural_ok"
+    processed["validation_errors"] = []
+    processed["review_status"] = "review_regression_preserved"
+    processed["review_errors"] = review_errors[:8]
     return processed
 
 
@@ -3349,6 +4198,10 @@ def build_circle_candidate_text(circle_candidates):
                 "radius": round(float(circle["radius"]), 1),
                 "board_x": circle.get("board_x"),
                 "board_y": circle.get("board_y"),
+                "grid_snap_status": circle.get("grid_snap_status"),
+                "grid_offset_x": circle.get("grid_offset_x"),
+                "grid_offset_y": circle.get("grid_offset_y"),
+                "detection_sources": circle.get("detection_sources", []),
             }
         )
     return (
@@ -3356,7 +4209,8 @@ def build_circle_candidate_text(circle_candidates):
         "You must classify only these candidates; do not create a piece at any other center. "
         "If a candidate is not a chess piece, omit it. "
         "For every returned piece, copy exactly one circle_id and its cx/cy from this list. "
-        "Use the candidate's board_x/board_y as the piece location context; do not guess another location. "
+        "board_x/board_y are pre-snapped by board geometry; treat them as authoritative location context. "
+        "A grid_snap_status of uncertain means the candidate needs extra visual caution, not a different guessed square. "
         "Do not reuse the same circle_id for multiple pieces. "
         "If a second image is provided, it is a numbered crop sheet of the same candidates. "
         "Each crop may contain neighboring pieces; classify only the piece marked by the green ring. "
@@ -3383,6 +4237,10 @@ def build_circle_candidate_text_clean(circle_candidates):
             "radius": round(float(circle["radius"]), 1),
             "board_x": circle.get("board_x"),
             "board_y": circle.get("board_y"),
+            "grid_snap_status": circle.get("grid_snap_status"),
+            "grid_offset_x": circle.get("grid_offset_x"),
+            "grid_offset_y": circle.get("grid_offset_y"),
+            "detection_sources": circle.get("detection_sources", []),
         }
         for circle in circle_candidates
     ]
@@ -3390,7 +4248,8 @@ def build_circle_candidate_text_clean(circle_candidates):
         "OpenCV detected these circular piece candidates. Classify only these candidates and do not "
         "create a piece at another center. Omit a candidate if it is not a chess piece. "
         "For every returned piece, copy exactly one circle_id and its cx/cy from this list. "
-        "Use board_x/board_y as the location context and do not guess another location. "
+        "board_x/board_y are pre-snapped by board geometry and are authoritative; do not guess another location. "
+        "A grid_snap_status of uncertain means visually verify the marked candidate but keep its snapped square. "
         "Do not reuse a circle_id. If a numbered crop sheet is provided, classify the piece marked by "
         "the green ring and ignore neighboring pieces. Read the printed character, not the board position. "
         "Unicode character mapping: U+5E05=shuai, U+5C06=jiang, U+58EB/U+4ED5=shi, "
@@ -3462,6 +4321,154 @@ def infer_character_color(char):
     return CHARACTER_COLOR_HINTS.get(str(char or "").strip())
 
 
+def infer_character_side(char):
+    """Return the authoritative side for a side-specific Xiangqi character."""
+    return CHARACTER_SIDE_HINTS.get(str(char or "").strip())
+
+
+def _confident_visual_text_color(estimate):
+    if not isinstance(estimate, dict):
+        return None, 0.0
+    color = estimate.get("color", "unknown")
+    margin = _get_optional_float(estimate.get("color_cluster_margin"))
+    min_margin = float(
+        os.getenv("CHESS_CHARACTER_COLOR_CONFLICT_MIN_MARGIN", "0.35")
+    )
+    if color not in ("red", "black") or margin is None or margin < min_margin:
+        return None, 0.0
+    return color, min(1.0, max(0.0, margin))
+
+
+def reject_character_color_conflicts(classifications, visual_text_colors):
+    """Reject side-specific OCR characters that contradict reliable pixel color."""
+    adjustments = []
+    for circle_id, classification in classifications.items():
+        char = str(classification.get("char", "")).strip()
+        character_color = infer_character_color(char)
+        visual_color, visual_confidence = _confident_visual_text_color(
+            visual_text_colors.get(int(circle_id), {})
+        )
+        if (
+            character_color is None
+            or visual_color is None
+            or character_color == visual_color
+        ):
+            continue
+
+        rejected_name = CHARACTER_NAME_HINTS.get(
+            char,
+            validate_piece_name(classification.get("name", "unknown")),
+        )
+        adjustments.append(
+            {
+                "circle_id": int(circle_id),
+                "char": char,
+                "rejected_name": rejected_name,
+                "character_color": character_color,
+                "visual_color": visual_color,
+                "visual_confidence": round(visual_confidence, 3),
+                "reason": "character_visual_color_conflict",
+            }
+        )
+        classification["rejected_char"] = char
+        classification["rejected_name"] = rejected_name
+        classification["character_rejected"] = True
+        classification["character_rejection_reason"] = (
+            "character_visual_color_conflict"
+        )
+        classification["char"] = ""
+        classification["name"] = "unknown"
+        classification["color"] = visual_color
+        classification["visual_color_authoritative"] = True
+        classification["color_classification_status"] = "confident"
+        classification["color_confidence"] = round(visual_confidence, 3)
+        classification["color_evidence"] = (
+            "visual_color_rejected_character_conflict"
+        )
+        classification.pop("character_name_authoritative", None)
+        classification.pop("character_color_authoritative", None)
+    return adjustments
+
+
+def sanitize_king_classifications(classifications, visual_text_colors):
+    """Restrict the dedicated king pass to exact, color-consistent king glyphs."""
+    adjustments = []
+    for circle_id, classification in classifications.items():
+        char = str(classification.get("char", "")).strip()
+        exact_name = CHARACTER_NAME_HINTS.get(char)
+        if exact_name not in (PLAYER1_SIDE, PLAYER2_SIDE):
+            if char or classification.get("name") not in ("unknown", None):
+                adjustments.append(
+                    {
+                        "circle_id": int(circle_id),
+                        "char": char,
+                        "name": classification.get("name", "unknown"),
+                        "action": "rejected",
+                        "reason": "non_king_output_from_king_classifier",
+                    }
+                )
+            classification["rejected_char"] = char
+            classification["char"] = ""
+            classification["name"] = "unknown"
+            classification["color"] = "unknown"
+            classification["king_classifier_rejected"] = True
+            classification["king_classifier_rejection_reason"] = (
+                "non_king_output_from_king_classifier"
+            )
+            continue
+
+        expected_color = "red" if exact_name == PLAYER1_SIDE else "black"
+        visual_color, visual_confidence = _confident_visual_text_color(
+            visual_text_colors.get(int(circle_id), {})
+        )
+        if visual_color is not None and visual_color != expected_color:
+            adjustments.append(
+                {
+                    "circle_id": int(circle_id),
+                    "char": char,
+                    "name": exact_name,
+                    "character_color": expected_color,
+                    "visual_color": visual_color,
+                    "visual_confidence": round(visual_confidence, 3),
+                    "action": "rejected",
+                    "reason": "king_character_visual_color_conflict",
+                }
+            )
+            classification["rejected_char"] = char
+            classification["char"] = ""
+            classification["name"] = "unknown"
+            classification["color"] = visual_color
+            classification["king_classifier_rejected"] = True
+            classification["king_classifier_rejection_reason"] = (
+                "king_character_visual_color_conflict"
+            )
+            continue
+
+        old_name = classification.get("name", "unknown")
+        old_color = classification.get("color", "unknown")
+        classification["name"] = exact_name
+        classification["color"] = expected_color
+        classification["character_name_authoritative"] = True
+        classification["character_color_authoritative"] = True
+        classification["color_classification_status"] = "confident"
+        classification["color_confidence"] = 1.0
+        classification["color_evidence"] = "exact_king_character"
+        if old_name != exact_name or old_color != expected_color:
+            adjustments.append(
+                {
+                    "circle_id": int(circle_id),
+                    "char": char,
+                    "from_name": old_name,
+                    "to_name": exact_name,
+                    "from_color": old_color,
+                    "to_color": expected_color,
+                    "action": "normalized",
+                    "reason": "exact_king_character",
+                }
+            )
+    return adjustments
+
+
 def apply_character_names_to_classifications(classifications):
     """Make an exact recognized Xiangqi character authoritative for its name."""
     if not classifications:
@@ -3491,61 +4498,41 @@ def apply_character_names_to_classifications(classifications):
 
 
 def merge_dedicated_character_classifications(classifications, dedicated_classifications):
-    """Prefer exact characters from the dedicated pass before color calibration."""
+    """Record king-pass agreement without letting it overwrite normal pieces."""
     adjustments = []
     for circle_id, dedicated in dedicated_classifications.items():
-        if not dedicated.get("character_name_authoritative", False):
+        new_char = str(dedicated.get("char", "")).strip()
+        new_name = dedicated.get("name", "unknown")
+        if (
+            new_name not in (PLAYER1_SIDE, PLAYER2_SIDE)
+            or CHARACTER_NAME_HINTS.get(new_char) != new_name
+            or not dedicated.get("character_name_authoritative", False)
+        ):
             continue
-        target = classifications.setdefault(
-            int(circle_id),
-            {"char": "", "name": "unknown", "color": "unknown"},
-        )
+        target = classifications.get(int(circle_id), {})
         old_char = target.get("char", "")
         old_name = target.get("name", "unknown")
-        new_char = dedicated.get("char", "")
-        new_name = dedicated.get("name", "unknown")
-        if old_char != new_char or old_name != new_name:
-            adjustments.append(
-                {
-                    "circle_id": int(circle_id),
-                    "from_char": old_char,
-                    "to_char": new_char,
-                    "from_name": old_name,
-                    "to_name": new_name,
-                    "reason": "dedicated_character_preferred",
-                }
-            )
-        target["char"] = new_char
-        target["name"] = new_name
-        target["character_name_authoritative"] = True
-
-        if dedicated.get("character_color_authoritative", False):
-            for key in (
-                "color",
-                "character_color_authoritative",
-                "color_classification_status",
-                "color_confidence",
-                "color_evidence",
-            ):
-                if key in dedicated:
-                    target[key] = dedicated[key]
-            continue
-
-        if target.pop("character_color_authoritative", False):
-            old_color = target.get("color", "unknown")
-            target["color"] = "unknown"
-            target.pop("color_classification_status", None)
-            target.pop("color_confidence", None)
-            target.pop("color_evidence", None)
-            adjustments.append(
-                {
-                    "circle_id": int(circle_id),
-                    "char": new_char,
-                    "from_color": old_color,
-                    "to_color": "unknown",
-                    "reason": "conflicting_character_color_invalidated",
-                }
-            )
+        dedicated["general_classifier_agreement"] = (
+            old_name == new_name
+            and CHARACTER_NAME_HINTS.get(str(old_char).strip()) == new_name
+        )
+        adjustments.append(
+            {
+                "circle_id": int(circle_id),
+                "general_char": old_char,
+                "dedicated_char": new_char,
+                "general_name": old_name,
+                "dedicated_name": new_name,
+                "general_classifier_agreement": dedicated[
+                    "general_classifier_agreement"
+                ],
+                "action": (
+                    "confirmed" if dedicated["general_classifier_agreement"]
+                    else "isolated_to_king_selection"
+                ),
+                "reason": "dedicated_king_does_not_override_general_classifier",
+            }
+        )
     return adjustments
 
 
@@ -3769,6 +4756,157 @@ def estimate_candidate_text_colors(image_body, circles):
         return {}
 
 
+def infer_board_orientation_from_text_colors(
+    circles,
+    visual_text_colors,
+    image_width,
+    image_height,
+    board_crop=None,
+):
+    """Infer which side is at the image bottom before assigning board points."""
+    fallback = {"bottom_side": PLAYER1_SIDE, "top_side": PLAYER2_SIDE}
+    metadata = {
+        "enabled": parse_bool_env(os.getenv("CHESS_ORIENTATION_DETECTION", "true")),
+        "status": "disabled",
+        "method": "candidate_text_color_vertical_correlation",
+        "orientation": fallback,
+        "evidence": [],
+    }
+    if not metadata["enabled"]:
+        return fallback, metadata
+    if not circles or not visual_text_colors:
+        metadata["status"] = "insufficient_color_evidence"
+        return fallback, metadata
+
+    try:
+        _, top, _, bottom = parse_board_crop(
+            image_width,
+            image_height,
+            board_crop=board_crop,
+        )
+        center_y = (top + bottom) / 2.0
+        half_height = max(1.0, (bottom - top) / 2.0)
+        min_samples = max(
+            2,
+            int(os.getenv("CHESS_ORIENTATION_MIN_COLOR_SAMPLES", "4")),
+        )
+        min_score = max(
+            0.0,
+            float(os.getenv("CHESS_ORIENTATION_MIN_SCORE", "0.12")),
+        )
+        by_id = {
+            int(circle["circle_id"]): circle
+            for circle in circles
+            if circle.get("circle_id") is not None
+        }
+        signed_sum = 0.0
+        weight_sum = 0.0
+        color_counts = {"red": 0, "black": 0}
+        evidence = []
+        for circle_id, estimate in visual_text_colors.items():
+            circle = by_id.get(int(circle_id))
+            color = estimate.get("color", "unknown")
+            if circle is None or color not in ("red", "black"):
+                continue
+            cy = float(circle["cy"])
+            vertical_position = max(
+                -1.0,
+                min(1.0, (cy - center_y) / half_height),
+            )
+            cluster_margin = _get_optional_float(
+                estimate.get("color_cluster_margin")
+            )
+            color_confidence = (
+                max(0.25, min(1.0, cluster_margin))
+                if cluster_margin is not None
+                else 0.5
+            )
+            side_sign = 1.0 if color == "red" else -1.0
+            contribution = side_sign * vertical_position * color_confidence
+            evidence_weight = abs(vertical_position) * color_confidence
+            signed_sum += contribution
+            weight_sum += evidence_weight
+            color_counts[color] += 1
+            evidence.append(
+                {
+                    "circle_id": int(circle_id),
+                    "color": color,
+                    "cy": round(cy, 2),
+                    "vertical_position": round(vertical_position, 3),
+                    "color_confidence": round(color_confidence, 3),
+                    "contribution": round(contribution, 3),
+                }
+            )
+
+        score = signed_sum / weight_sum if weight_sum > 1e-6 else 0.0
+        metadata.update(
+            {
+                "sample_count": len(evidence),
+                "color_counts": color_counts,
+                "score": round(score, 4),
+                "minimum_score": round(min_score, 4),
+                "evidence": evidence,
+            }
+        )
+        if (
+            len(evidence) < min_samples
+            or min(color_counts.values()) < 1
+            or abs(score) < min_score
+        ):
+            metadata["status"] = "insufficient_color_evidence"
+            return fallback, metadata
+
+        bottom_side = PLAYER1_SIDE if score > 0.0 else PLAYER2_SIDE
+        orientation = {
+            "bottom_side": bottom_side,
+            "top_side": PLAYER2_SIDE if bottom_side == PLAYER1_SIDE else PLAYER1_SIDE,
+        }
+        metadata["status"] = "detected"
+        metadata["orientation"] = orientation
+        metadata["confidence"] = round(min(1.0, abs(score)), 4)
+        return orientation, metadata
+    except Exception as exc:
+        LOGGER.exception("Board orientation detection failed")
+        metadata["status"] = "failed"
+        metadata["error"] = str(exc)
+        return fallback, metadata
+
+
+def apply_orientation_to_candidate_crops(
+    circles,
+    visual_text_colors,
+    orientation,
+):
+    """Rotate bottom-side piece crops so their characters are upright for OCR."""
+    enabled = parse_bool_env(
+        os.getenv("CHESS_ORIENTATION_ROTATE_BOTTOM_SIDE_CROPS", "true")
+    )
+    normalized = normalize_orientation(orientation)
+    bottom_color = (
+        "red" if normalized.get("bottom_side") == PLAYER1_SIDE
+        else "black" if normalized.get("bottom_side") == PLAYER2_SIDE
+        else None
+    )
+    adjusted = []
+    rotated_ids = []
+    for source_circle in circles:
+        circle = dict(source_circle)
+        circle_id = _parse_classifier_circle_id(circle.get("circle_id"))
+        estimate = (
+            visual_text_colors.get(int(circle_id), {})
+            if circle_id is not None
+            else {}
+        )
+        color = estimate.get("color", "unknown")
+        rotation_degrees = 180 if enabled and color == bottom_color else 0
+        circle["crop_rotation_degrees"] = rotation_degrees
+        circle["orientation_color_hint"] = color
+        if rotation_degrees:
+            rotated_ids.append(int(circle_id))
+        adjusted.append(circle)
+    return adjusted, rotated_ids
+
+
 def calibrate_visual_text_colors_with_character_anchors(classifications, visual_text_colors):
     """Classify text colors against image-local red/black character anchors."""
     report = {
@@ -3965,7 +5103,11 @@ def apply_visual_text_colors_to_classifications(classifications, visual_text_col
     return adjustments
 
 
-def apply_candidate_classifications_to_processed(processed, classifications):
+def apply_candidate_classifications_to_processed(
+    processed,
+    classifications,
+    circles=None,
+):
     if not classifications:
         processed["candidate_classifier_status"] = "none"
         processed["candidate_classifier_adjustments"] = []
@@ -3988,16 +5130,26 @@ def apply_candidate_classifications_to_processed(processed, classifications):
                 piece[metadata_key] = classification[metadata_key]
         color_status = classification.get("color_classification_status")
         color_is_unresolved = color_status in ("low_confidence", "unresolved")
-        if color_is_unresolved and piece.get("side") != "unknown":
+        existing_color = piece.get("color", "unknown")
+        if color_is_unresolved and existing_color in ("red", "black"):
+            # Pixel color estimation is a correction signal. On glare, shadow,
+            # or faded ink it can be inconclusive, which must not erase a usable
+            # color already read by the main vision model. A later king-color
+            # mapping can still normalize the side consistently.
+            piece["color_classification_status"] = "model_color_preserved"
+            piece["color_evidence"] = {
+                "source": "main_vision_fallback",
+                "preserved_color": existing_color,
+                "visual_status": color_status,
+                "visual_evidence": classification.get("color_evidence"),
+            }
             adjustments.append(
                 {
                     "circle_id": int(circle_id),
-                    "from_side": piece.get("side"),
-                    "to_side": "unknown",
-                    "reason": f"{color_status}_text_color",
+                    "preserved_color": existing_color,
+                    "reason": f"{color_status}_visual_color_preserved_model_color",
                 }
             )
-            piece["side"] = "unknown"
         new_name = classification.get("name", "unknown")
         if new_name != "unknown" and new_name != piece.get("name"):
             adjustments.append(
@@ -4026,6 +5178,91 @@ def apply_candidate_classifications_to_processed(processed, classifications):
                 }
             )
             piece["color"] = new_color
+
+    if circles:
+        pieces = processed.setdefault("pieces", [])
+        used_circle_ids = {
+            int(piece["circle_id"])
+            for piece in pieces
+            if piece.get("circle_id") is not None
+        }
+        occupied_points = {
+            (int(piece["x"]), int(piece["y"]))
+            for piece in pieces
+            if piece.get("x") is not None and piece.get("y") is not None
+        }
+        for circle in circles:
+            circle_id = int(circle.get("circle_id", -1))
+            if circle_id < 0 or circle_id in used_circle_ids:
+                continue
+            classification = classifications.get(circle_id)
+            if not classification:
+                continue
+            name = classification.get("name", "unknown")
+            color = classification.get("color", "unknown")
+            color_status = classification.get("color_classification_status")
+            character_side = infer_character_side(classification.get("char"))
+            side = character_side or COLOR_SIDE_HINTS.get(color, "unknown")
+            if (
+                name == "unknown"
+                or color not in ("red", "black")
+                or color_status in ("low_confidence", "unresolved", None)
+                or side == "unknown"
+            ):
+                continue
+            board_x = circle.get("board_x")
+            board_y = circle.get("board_y")
+            if board_x is None or board_y is None:
+                continue
+            point = (int(board_x), int(board_y))
+            if point in occupied_points:
+                continue
+            piece = {
+                "side": side,
+                "color": color,
+                "name": name,
+                "x": point[0],
+                "y": point[1],
+                "cx": float(circle["cx"]),
+                "cy": float(circle["cy"]),
+                "circle_id": circle_id,
+                "circle_radius": float(circle.get("radius", 0.0)),
+                "coordinate_source": "candidate_classifier_recovery",
+                "color_classification_status": color_status,
+                "color_confidence": float(
+                    classification.get("color_confidence", 0.0)
+                ),
+                "color_evidence": classification.get("color_evidence"),
+                "visual_evidence_distance": 0.0,
+                "visual_evidence": "circle",
+            }
+            if character_side is not None:
+                piece["character_side_authoritative"] = True
+                piece["side_classification_source"] = "character"
+                piece["side_confidence"] = 1.0
+                piece["side_evidence"] = f"character:{classification.get('char', '')}"
+            else:
+                piece["side_classification_source"] = "color"
+                piece["side_confidence"] = float(
+                    classification.get("color_confidence", 0.0)
+                )
+                piece["side_evidence"] = f"color:{color}"
+            pieces.append(piece)
+            used_circle_ids.add(circle_id)
+            occupied_points.add(point)
+            adjustments.append(
+                {
+                    "circle_id": circle_id,
+                    "added_piece": {
+                        "side": side,
+                        "color": color,
+                        "name": name,
+                        "x": point[0],
+                        "y": point[1],
+                    },
+                    "reason": "confident_candidate_classifier_recovery",
+                }
+            )
 
     processed["candidate_classifier_status"] = "applied" if adjustments else "no_adjustments"
     processed["candidate_classifier_adjustments"] = adjustments
@@ -4090,47 +5327,78 @@ def apply_authoritative_character_classifications_to_processed(processed, classi
     return processed
 
 
+def apply_character_sides_to_processed(processed, classifications):
+    """Apply side-specific characters before the lower-priority color mapping."""
+    if not classifications:
+        processed["character_side_status"] = "not_run"
+        processed["character_side_adjustments"] = []
+        return processed
+
+    adjustments = []
+    for piece in processed.get("pieces", []):
+        circle_id = piece.get("circle_id")
+        if circle_id is None:
+            continue
+        classification = classifications.get(int(circle_id))
+        if not classification:
+            continue
+        if piece.get("character_side_hint_rejected", False):
+            continue
+        char = str(classification.get("char", "")).strip()
+        expected_side = infer_character_side(char)
+        if expected_side is None:
+            continue
+
+        old_side = piece.get("side", "unknown")
+        piece["character_side_authoritative"] = True
+        piece["side_classification_source"] = "character"
+        piece["side_confidence"] = 1.0
+        piece["side_evidence"] = f"character:{char}"
+        if old_side == expected_side:
+            continue
+        piece["side"] = expected_side
+        adjustments.append(
+            {
+                "circle_id": int(circle_id),
+                "char": char,
+                "from_side": old_side,
+                "to_side": expected_side,
+                "reason": "authoritative_character_side",
+            }
+        )
+
+    has_character_sides = any(
+        piece.get("character_side_authoritative", False)
+        for piece in processed.get("pieces", [])
+    )
+    processed["character_side_status"] = (
+        "applied" if adjustments else
+        "confirmed" if has_character_sides else
+        "no_matching_character"
+    )
+    processed["character_side_adjustments"] = adjustments
+    return processed
+
+
 def apply_color_side_mapping_to_processed(processed):
     pieces = processed.get("pieces", [])
-    shuai_pieces = [
-        piece for piece in pieces
-        if piece.get("name") == PLAYER1_SIDE and
-        piece.get("color", "unknown") != "unknown"
-    ]
-    jiang_pieces = [
-        piece for piece in pieces
-        if piece.get("name") == PLAYER2_SIDE and
-        piece.get("color", "unknown") != "unknown"
-    ]
-
-    if len(shuai_pieces) != 1 or len(jiang_pieces) != 1:
-        processed["color_side_mapping_status"] = "king_color_not_ready"
-        processed["color_side_mapping_adjustments"] = []
-        return processed
-
-    shuai_color = shuai_pieces[0]["color"]
-    jiang_color = jiang_pieces[0]["color"]
-    if shuai_color == jiang_color:
-        processed["color_side_mapping_status"] = "king_color_conflict"
-        processed["color_side_mapping_adjustments"] = []
-        return processed
-
-    color_to_side = {
-        shuai_color: PLAYER1_SIDE,
-        jiang_color: PLAYER2_SIDE,
-    }
     adjustments = []
     for piece in pieces:
+        if piece.get("character_side_authoritative", False):
+            continue
         if piece.get("color_classification_status") in (
             "low_confidence",
             "unresolved",
         ):
             continue
         color = piece.get("color", "unknown")
-        expected_side = color_to_side.get(color)
+        expected_side = COLOR_SIDE_HINTS.get(color)
         if expected_side is None:
             continue
         old_side = piece.get("side", "unknown")
+        piece["side_classification_source"] = "color"
+        piece["side_confidence"] = float(piece.get("color_confidence", 0.0))
+        piece["side_evidence"] = f"color:{color}"
         if old_side != expected_side:
             piece["side"] = expected_side
             adjustments.append(
@@ -4144,10 +5412,7 @@ def apply_color_side_mapping_to_processed(processed):
             )
 
     processed["color_side_mapping_status"] = "applied" if adjustments else "no_adjustments"
-    processed["color_side_mapping"] = {
-        shuai_color: PLAYER1_SIDE,
-        jiang_color: PLAYER2_SIDE,
-    }
+    processed["color_side_mapping"] = dict(COLOR_SIDE_HINTS)
     processed["color_side_mapping_adjustments"] = adjustments
     return processed
 
@@ -4189,13 +5454,11 @@ def build_vision_prompt(validation_feedback=None, image_width=None, image_height
         "cx and cy are the image pixel coordinates of the visible piece center, measured from the image top-left corner. "
         "Estimate cx/cy from the actual circular piece center. "
         "Piece names must use pinyin: shuai, jiang, shi, xiang, ma, che, pao, bing, or zu. "
-        "Character color supplement: 相/帅/帥/仕/兵 are red text and belong to the shuai side; "
-        "象/将/將/士/卒 are black text and belong to the jiang side. "
-        "Identify the text color of the Jiang piece and the Shuai piece before assigning sides. "
-        "The jiang side is every piece with the same text color as the Jiang piece. "
-        "The shuai side is every piece with the same text color as the Shuai piece. "
-        "If the Jiang text is black, all black-text pieces are jiang and all red-text pieces are shuai; "
-        "if the Jiang text is red, all red-text pieces are jiang and all black-text pieces are shuai. "
+        "Side recognition priority is mandatory: exact character identity is stronger than visual text color. "
+        "相/帅/帥/仕/兵 belong to the shuai side; 象/将/將/士/卒 belong to the jiang side. "
+        "When the character is side-ambiguous (马/馬, 车/車, 炮/砲) or unreadable, use text color: "
+        "red belongs to the shuai side and black belongs to the jiang side. "
+        "If character and color disagree, trust the exact character. "
         "Do not infer piece side from whether a piece is near the top or bottom of the board. "
         "Before recommending moves, verify that recommended_moves.shuai.from contains a visible shuai-side piece "
         "and recommended_moves.jiang.from contains a visible jiang-side piece. "
@@ -4253,8 +5516,9 @@ def build_review_prompt(candidate,
         "Remove any candidate piece that appears to be inferred from a standard setup rather than visibly present. "
         f"The final pieces array must contain at most {max_visible_pieces} visible pieces; "
         "when uncertain, prefer omitting a piece over inventing one. "
-        "The Jiang/Shuai color rule is mandatory: the Jiang text color defines the jiang side, "
-        "and the Shuai text color defines the shuai side. "
+        "Side recognition priority is mandatory: exact side-specific characters override visual color. "
+        "相/帅/帥/仕/兵 are shuai-side; 象/将/將/士/卒 are jiang-side. "
+        "For ambiguous or unreadable characters, red is shuai-side and black is jiang-side. "
         "If the candidate places Jiang at x=4,y=9 but the Jiang piece center is visibly elsewhere, correct it. "
         "After correcting pieces, recommend one legal-looking move for each side using from points that exist in pieces. "
         "Lower confidence if the board coordinates remain uncertain. "
@@ -4428,6 +5692,84 @@ def call_ai_candidate_classifier(candidate_sheet_bytes,
     return {}
 
 
+def call_candidate_classifier_with_local_fallback(
+    image_body,
+    candidate_sheet_bytes,
+    circle_candidates,
+    ai_api_key,
+):
+    """Prefer the local PP-LCNet model and use cloud AI only for gaps."""
+    local_classifications = {}
+    local_report = {
+        "status": "disabled",
+        "candidate_count": len(circle_candidates or []),
+        "accepted_count": 0,
+        "rejected_count": len(circle_candidates or []),
+        "cloud_fallback_used": False,
+        "cloud_fallback_count": 0,
+    }
+    local_enabled = bool(
+        local_piece_classifier_enabled
+        and local_piece_classifier_enabled()
+    )
+    if local_enabled and classify_candidates_locally is not None:
+        try:
+            local_classifications, local_report = classify_candidates_locally(
+                image_body,
+                circle_candidates,
+            )
+        except Exception as exc:
+            LOGGER.exception("Local PP-LCNet candidate classifier failed")
+            local_report = {
+                "status": "error",
+                "error": str(exc),
+                "candidate_count": len(circle_candidates or []),
+                "accepted_count": 0,
+                "rejected_count": len(circle_candidates or []),
+            }
+
+    expected_ids = {
+        int(circle["circle_id"])
+        for circle in (circle_candidates or [])
+        if circle.get("circle_id") is not None
+    }
+    missing_ids = expected_ids - set(local_classifications)
+    cloud_fallback_enabled = parse_bool_env(
+        os.getenv("CHESS_LOCAL_CLASSIFIER_CLOUD_FALLBACK", "true")
+    )
+    cloud_classifications = {}
+    if (
+        missing_ids
+        and cloud_fallback_enabled
+        and parse_bool_env(os.getenv("CHESS_AI_ENABLE_CANDIDATE_CLASSIFIER", "true"))
+    ):
+        cloud_classifications = call_ai_candidate_classifier(
+            candidate_sheet_bytes,
+            circle_candidates,
+            ai_api_key,
+        )
+
+    classifications = {
+        circle_id: classification
+        for circle_id, classification in cloud_classifications.items()
+        if int(circle_id) in missing_ids
+    }
+    classifications.update(local_classifications)
+    cloud_fallback_count = len(classifications) - len(local_classifications)
+    local_report["cloud_fallback_used"] = bool(cloud_classifications)
+    local_report["cloud_fallback_count"] = cloud_fallback_count
+    local_report["final_classified_count"] = len(classifications)
+    local_report["unclassified_count"] = len(expected_ids - set(classifications))
+    LOGGER.info(
+        "Candidate classification: local_status=%s local=%d cloud_fallback=%d unclassified=%d",
+        local_report.get("status", "unknown"),
+        len(local_classifications),
+        cloud_fallback_count,
+        local_report["unclassified_count"],
+    )
+    return classifications, local_report
+
+
 def build_king_classifier_prompt(circle_candidates):
     items = [
         {"circle_id": int(circle["circle_id"])}
@@ -4438,11 +5780,12 @@ def build_king_classifier_prompt(circle_candidates):
         "The green ring marks the target piece in each tile. Read the printed Chinese character, "
         "not the board position, color grouping, or expected setup. "
         "This is a dedicated king detector: identify only exact U+5E05 as shuai and exact U+5C06 as jiang. "
-        "Do not call any other character shuai or jiang. Return JSON with one top-level key items. "
-        "For every readable candidate, return circle_id, char, name, and color. "
-        "name must be shuai, jiang, or unknown. color must be red, black, or unknown. "
+        "Traditional U+5E25 is also shuai and traditional U+5C07 is also jiang. "
+        "Do not return an item for any non-king character. Return JSON with one top-level key items. "
+        "For each exact king found, return circle_id, char, name, and color. "
+        "name must be shuai or jiang. color must be red for shuai and black for jiang. "
         "There must be at most one shuai and at most one jiang. "
-        "If the character is not clearly readable, use unknown instead of guessing. Candidate ids: "
+        "If no exact king is clearly readable, return an empty items array. Candidate ids: "
         + json.dumps(items, ensure_ascii=True, separators=(",", ":"))
     )
 
@@ -4459,9 +5802,12 @@ def king_classifier_schema():
                     "additionalProperties": False,
                     "properties": {
                         "circle_id": {"type": "integer", "minimum": 0},
-                        "char": {"type": "string"},
-                        "name": {"type": "string", "enum": ["shuai", "jiang", "unknown"]},
-                        "color": {"type": "string", "enum": ["red", "black", "unknown"]},
+                        "char": {
+                            "type": "string",
+                            "enum": ["帅", "帥", "将", "將"],
+                        },
+                        "name": {"type": "string", "enum": ["shuai", "jiang"]},
+                        "color": {"type": "string", "enum": ["red", "black"]},
                     },
                     "required": ["circle_id", "char", "name", "color"],
                 },
@@ -4548,12 +5894,117 @@ def call_ai_king_classifier(candidate_sheet_bytes, circle_candidates, ai_api_key
     )
 
 
+def select_palace_circle_candidates(circle_candidates):
+    """Limit the dedicated king pass to squares where a king can legally exist."""
+    return [
+        circle
+        for circle in circle_candidates
+        if 3 <= int(circle.get("board_x", -1)) <= 5
+        and (
+            0 <= int(circle.get("board_y", -1)) <= 2
+            or 7 <= int(circle.get("board_y", -1)) <= 9
+        )
+    ]
+
+
+def refine_outside_palace_king_classifications(
+    image_bytes,
+    circles,
+    classifications,
+    king_classifications,
+    ai_api_key,
+):
+    """Retry an impossible king label with a focused, single-piece crop."""
+    if not parse_bool_env(
+        os.getenv("CHESS_AI_RETRY_OUTSIDE_PALACE_KINGS", "true")
+    ):
+        return []
+
+    by_id = {int(circle["circle_id"]): circle for circle in circles}
+    suspicious_ids = set()
+    for source in (classifications, king_classifications):
+        for circle_id, classification in source.items():
+            name = classification.get("name")
+            circle = by_id.get(int(circle_id))
+            if name not in (PLAYER1_SIDE, PLAYER2_SIDE) or circle is None:
+                continue
+            point = {
+                "x": int(circle.get("board_x", -1)),
+                "y": int(circle.get("board_y", -1)),
+            }
+            if not _is_inside_palace(name, point):
+                suspicious_ids.add(int(circle_id))
+
+    adjustments = []
+    for circle_id in sorted(suspicious_ids):
+        circle = by_id[circle_id]
+        focused_sheet = create_candidate_crop_sheet(image_bytes, [circle])
+        focused = call_ai_candidate_classifier(
+            focused_sheet,
+            [circle],
+            ai_api_key,
+        )
+        refined = focused.get(circle_id)
+        if not refined or refined.get("name") in (
+            PLAYER1_SIDE,
+            PLAYER2_SIDE,
+            "unknown",
+        ):
+            continue
+
+        previous = classifications.get(circle_id, {})
+        classifications[circle_id] = refined
+        king_classifications.pop(circle_id, None)
+        adjustments.append(
+            {
+                "circle_id": circle_id,
+                "from_char": previous.get("char", ""),
+                "from_name": previous.get("name", "unknown"),
+                "to_char": refined.get("char", ""),
+                "to_name": refined.get("name", "unknown"),
+                "reason": "focused_retry_for_outside_palace_king",
+            }
+        )
+    return adjustments
+
+
 def apply_king_classifications_to_processed(processed, classifications, circles):
-    selected = {}
+    selections = {PLAYER1_SIDE: [], PLAYER2_SIDE: []}
     for circle_id, classification in classifications.items():
         name = classification.get("name")
-        if name in (PLAYER1_SIDE, PLAYER2_SIDE) and name not in selected:
-            selected[name] = (int(circle_id), classification)
+        if name not in selections:
+            continue
+        expected_color = "red" if name == PLAYER1_SIDE else "black"
+        classified_color = classification.get("color", "unknown")
+        exact_character = CHARACTER_NAME_HINTS.get(
+            str(classification.get("char", "")).strip()
+        ) == name
+        agreement_rank = (
+            0 if classification.get("general_classifier_agreement", False) else 1
+        )
+        color_rank = (
+            0 if classified_color == expected_color
+            else 1 if classified_color == "unknown"
+            else 2
+        )
+        selections[name].append(
+            (
+                agreement_rank,
+                0 if exact_character else 1,
+                color_rank,
+                int(circle_id),
+                classification,
+            )
+        )
+
+    selected = {
+        name: (circle_id, classification)
+        for name, candidates in selections.items()
+        if candidates
+        for _, _, _, circle_id, classification in [
+            min(candidates, key=lambda item: item[:4])
+        ]
+    }
 
     if not selected:
         processed["king_classifier_status"] = "no_exact_king"
@@ -4666,6 +6117,24 @@ def apply_king_classifications_to_processed(processed, classifications, circles)
         # crop is partially occluded. Preserve an existing king whose name was
         # not covered by that response instead of deleting a usable result.
         if piece.get("name") not in selected_names:
+            circle_id = _parse_classifier_circle_id(piece.get("circle_id"))
+            restored_name = prior_non_king_names.get(circle_id)
+            if restored_name is not None:
+                old_name = piece.get("name")
+                piece["name"] = restored_name
+                piece["character_side_hint_rejected"] = True
+                piece["character_side_rejection_reason"] = (
+                    "king_character_outside_palace"
+                )
+                adjustments.append(
+                    {
+                        "circle_id": piece.get("circle_id"),
+                        "from_name": old_name,
+                        "to_name": restored_name,
+                        "action": "restored_non_king",
+                        "reason": "rejected_king_classifier_candidate",
+                    }
+                )
             retained_pieces.append(piece)
             continue
         if piece.get("circle_id") not in selected_ids:
@@ -4682,6 +6151,10 @@ def apply_king_classifications_to_processed(processed, classifications, circles)
             if restored_name is not None:
                 old_name = piece.get("name")
                 piece["name"] = restored_name
+                piece["character_side_hint_rejected"] = True
+                piece["character_side_rejection_reason"] = (
+                    "duplicate_king_character"
+                )
                 retained_pieces.append(piece)
                 adjustments.append(
                     {
@@ -4985,28 +6458,237 @@ def call_qwen_vision(image_bytes,
     return build_processed_result_from_ai(ai_result)
 
 
+def validate_recognized_position(processed):
+    """Return only recognition/board-structure errors, excluding move errors."""
+    move_error_prefixes = tuple(
+        f"{side} recommended move " for side in (PLAYER1_SIDE, PLAYER2_SIDE)
+    )
+    return [
+        error
+        for error in validate_processed_result(processed)
+        if not error.startswith(move_error_prefixes)
+    ]
+
+
+def ai_move_decision_schema():
+    point_schema = _point_schema()
+    move_schema = {
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {"from": point_schema, "to": point_schema},
+        "required": ["from", "to"],
+    }
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "recommended_moves": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    PLAYER1_SIDE: move_schema,
+                    PLAYER2_SIDE: move_schema,
+                },
+                "required": [PLAYER1_SIDE, PLAYER2_SIDE],
+            }
+        },
+        "required": ["recommended_moves"],
+    }
+
+
+def build_move_decision_prompt(processed):
+    position = {
+        "orientation": processed.get("orientation", {}),
+        "pieces": [
+            {
+                "side": piece.get("side"),
+                "color": piece.get("color"),
+                "name": piece.get("name"),
+                "x": piece.get("x"),
+                "y": piece.get("y"),
+            }
+            for piece in processed.get("pieces", [])
+        ],
+    }
+    return (
+        "Choose one legal-looking Xiangqi move for each side from this finalized recognized position. "
+        "Coordinates are canonical: x=0..8 from the shuai side's left to right and y=0..9 "
+        "from the shuai baseline toward the jiang baseline. Use only listed pieces. Each from point "
+        "must contain a piece belonging to that side; each to point must be on the board and must not "
+        "contain a friendly piece. Return only JSON with one top-level key recommended_moves, containing "
+        "shuai and jiang, each with from and to points. Position JSON: "
+        + json.dumps(position, ensure_ascii=False, separators=(",", ":"))
+    )
+
+
+def call_ai_move_decision(processed, ai_api_key):
+    # Fairy-Stockfish replaces these preliminary moves after recognition, so a
+    # separate cloud move request is unnecessary in the normal worker path.
+    if not parse_bool_env(os.getenv("CHESS_AI_SEPARATE_MOVE_DECISION", "false")):
+        processed["decision_status"] = "disabled"
+        processed["decision_errors"] = []
+        return processed
+
+    recognition_errors = validate_recognized_position(processed)
+    if recognition_errors:
+        processed["decision_status"] = "skipped_invalid_position"
+        processed["decision_errors"] = recognition_errors[:8]
+        return processed
+
+    prompt = build_move_decision_prompt(processed)
+    provider = os.getenv("CHESS_AI_PROVIDER", DEFAULT_AI_PROVIDER).strip().lower()
+    try:
+        if provider in ("qwen", "dashscope", "tongyi", "aliyun"):
+            model = os.getenv("CHESS_AI_DECISION_MODEL", "qwen-plus")
+            base_url = os.getenv("CHESS_AI_BASE_URL", QWEN_COMPAT_BASE_URL).rstrip("/")
+            payload = {
+                "model": model,
+                "messages": [{"role": "user", "content": prompt}],
+                "response_format": {"type": "json_object"},
+            }
+            response_body = post_ai_json(
+                f"{base_url}/chat/completions",
+                json.dumps(payload, separators=(",", ":")).encode("utf-8"),
+                {
+                    "Authorization": f"Bearer {ai_api_key}",
+                    "Content-Type": "application/json",
+                },
+                service_name="Qwen move decision",
+            )
+            response = json.loads(response_body)
+            content = response["choices"][0]["message"]["content"]
+            if isinstance(content, list):
+                content = "".join(
+                    item.get("text", "") for item in content if isinstance(item, dict)
+                )
+            decision = json.loads(str(content))
+        elif provider in ("openai", ""):
+            model = os.getenv("CHESS_AI_DECISION_MODEL", os.getenv("CHESS_AI_MODEL", DEFAULT_AI_MODEL))
+            payload = {
+                "model": model,
+                "input": prompt,
+                "text": {
+                    "format": {
+                        "type": "json_schema",
+                        "name": "xiangqi_move_decision",
+                        "strict": True,
+                        "schema": ai_move_decision_schema(),
+                    }
+                },
+            }
+            response_body = post_ai_json(
+                OPENAI_RESPONSES_URL,
+                json.dumps(payload, separators=(",", ":")).encode("utf-8"),
+                {
+                    "Authorization": f"Bearer {ai_api_key}",
+                    "Content-Type": "application/json",
+                },
+                service_name="OpenAI move decision",
+            )
+            decision = json.loads(extract_response_text(json.loads(response_body)))
+        else:
+            raise ValueError(f"Unsupported CHESS_AI_PROVIDER: {provider}")
+
+        moves = decision["recommended_moves"]
+        processed["recommended_moves"] = {
+            PLAYER1_SIDE: {
+                "from": validate_board_point(moves[PLAYER1_SIDE]["from"]),
+                "to": validate_board_point(moves[PLAYER1_SIDE]["to"]),
+            },
+            PLAYER2_SIDE: {
+                "from": validate_board_point(moves[PLAYER2_SIDE]["from"]),
+                "to": validate_board_point(moves[PLAYER2_SIDE]["to"]),
+            },
+        }
+        processed["decision_status"] = "applied"
+        processed["decision_errors"] = []
+        return sync_move_compatibility_fields(processed)
+    except Exception as exc:
+        LOGGER.exception("Separate AI move decision failed; preserving preliminary moves")
+        processed["decision_status"] = "failed_preserved_preliminary"
+        processed["decision_errors"] = [str(exc)]
+        return processed
+
+
 def call_ai_vision(image_bytes,
                    image_width,
                    image_height,
                    ai_api_key,
                    validation_feedback=None,
-                   prompt=None):
-    board_crop, board_crop_metadata = get_effective_board_crop(image_bytes, image_width, image_height)
-    circle_detection_body, grid_line_metadata = suppress_board_grid_lines(
-        image_bytes,
-        board_crop=board_crop,
-    )
-    circle_candidates = annotate_circle_candidates_with_board_points(
-        detect_piece_circles(
-            circle_detection_body,
-            suppress_grid_lines=False,
+                   prompt=None,
+                   reusable_context=None):
+    call_started = time.perf_counter()
+    context_reused = bool(reusable_context)
+    if context_reused:
+        board_crop = tuple(reusable_context["board_crop"])
+        board_crop_metadata = copy.deepcopy(reusable_context["board_crop_metadata"])
+        circle_candidates = copy.deepcopy(reusable_context["circle_candidates"])
+        circle_detection_metadata = copy.deepcopy(
+            reusable_context["circle_detection_metadata"]
+        )
+        visual_text_colors = copy.deepcopy(reusable_context["visual_text_colors"])
+        detected_orientation = copy.deepcopy(reusable_context["detected_orientation"])
+        orientation_detection = copy.deepcopy(reusable_context["orientation_detection"])
+        candidate_sheet_bytes = reusable_context["candidate_sheet_bytes"]
+        preparation_elapsed_ms = 0
+        LOGGER.info(
+            "Reusing first-pass vision context for review: candidates=%d",
+            len(circle_candidates),
+        )
+    else:
+        preparation_started = time.perf_counter()
+        board_crop, board_crop_metadata = get_effective_board_crop(
+            image_bytes,
+            image_width,
+            image_height,
+        )
+        raw_circle_candidates, circle_detection_metadata = detect_piece_circles_fused(
+            image_bytes,
             board_crop=board_crop,
-        ),
-        image_width,
-        image_height,
-        board_crop=board_crop,
-    )
-    candidate_sheet_bytes = create_candidate_crop_sheet(image_bytes, circle_candidates)
+        )
+        provisional_orientation = {
+            "bottom_side": PLAYER1_SIDE,
+            "top_side": PLAYER2_SIDE,
+        }
+        circle_candidates = annotate_circle_candidates_with_board_points(
+            raw_circle_candidates,
+            image_width,
+            image_height,
+            board_crop=board_crop,
+            orientation=provisional_orientation,
+        )
+        circle_candidates, grid_roi_fusion_metadata = apply_grid_roi_hough_fusion(
+            image_bytes,
+            circle_candidates,
+            board_crop=board_crop,
+        )
+        circle_detection_metadata["grid_roi_hough_fusion"] = grid_roi_fusion_metadata
+        visual_text_colors = estimate_candidate_text_colors(image_bytes, circle_candidates)
+        detected_orientation, orientation_detection = infer_board_orientation_from_text_colors(
+            circle_candidates,
+            visual_text_colors,
+            image_width,
+            image_height,
+            board_crop=board_crop,
+        )
+        circle_candidates = annotate_circle_candidates_with_board_points(
+            circle_candidates,
+            image_width,
+            image_height,
+            board_crop=board_crop,
+            orientation=detected_orientation,
+        )
+        circle_candidates, rotated_crop_circle_ids = apply_orientation_to_candidate_crops(
+            circle_candidates,
+            visual_text_colors,
+            detected_orientation,
+        )
+        orientation_detection["rotated_crop_circle_ids"] = rotated_crop_circle_ids
+        circle_detection_metadata["orientation_detection"] = orientation_detection
+        candidate_sheet_bytes = create_candidate_crop_sheet(image_bytes, circle_candidates)
+        preparation_elapsed_ms = round(
+            (time.perf_counter() - preparation_started) * 1000
+        )
     if prompt is None:
         prompt = build_vision_prompt(
             validation_feedback,
@@ -5015,6 +6697,7 @@ def call_ai_vision(image_bytes,
             circle_candidates=circle_candidates,
         )
     provider = os.getenv("CHESS_AI_PROVIDER", DEFAULT_AI_PROVIDER).strip().lower()
+    vision_request_started = time.perf_counter()
     if provider in ("qwen", "dashscope", "tongyi", "aliyun"):
         processed = call_qwen_vision(
             image_bytes,
@@ -5037,30 +6720,105 @@ def call_ai_vision(image_bytes,
         )
     else:
         raise ValueError(f"Unsupported CHESS_AI_PROVIDER: {provider}")
+    vision_request_elapsed_ms = round(
+        (time.perf_counter() - vision_request_started) * 1000
+    )
+
+    ai_reported_orientation = normalize_orientation(processed.get("orientation"))
+    orientation_detection["ai_reported_orientation"] = ai_reported_orientation
+    resolved_orientation = detected_orientation
+    if orientation_detection.get("status") != "detected" and (
+        ai_reported_orientation.get("bottom_side") in (PLAYER1_SIDE, PLAYER2_SIDE)
+        and ai_reported_orientation.get("top_side") in (PLAYER1_SIDE, PLAYER2_SIDE)
+        and ai_reported_orientation.get("bottom_side")
+        != ai_reported_orientation.get("top_side")
+    ):
+        resolved_orientation = ai_reported_orientation
+        orientation_detection["status"] = "ai_fallback"
+        orientation_detection["orientation"] = resolved_orientation
+        circle_candidates = annotate_circle_candidates_with_board_points(
+            circle_candidates,
+            image_width,
+            image_height,
+            board_crop=board_crop,
+            orientation=resolved_orientation,
+        )
+        circle_candidates, rotated_crop_circle_ids = apply_orientation_to_candidate_crops(
+            circle_candidates,
+            visual_text_colors,
+            resolved_orientation,
+        )
+        orientation_detection["rotated_crop_circle_ids"] = rotated_crop_circle_ids
+        candidate_sheet_bytes = create_candidate_crop_sheet(
+            image_bytes,
+            circle_candidates,
+        )
+    processed["orientation"] = resolved_orientation
+    processed["orientation_detection"] = orientation_detection
     processed = apply_circle_candidates_to_processed(processed, circle_candidates)
-    classifications = call_ai_candidate_classifier(candidate_sheet_bytes, circle_candidates, ai_api_key)
+    classification_started = time.perf_counter()
+    if context_reused:
+        classifications = copy.deepcopy(reusable_context["classifications"])
+        local_piece_classifier_report = copy.deepcopy(
+            reusable_context["local_piece_classifier_report"]
+        )
+        king_classifications = copy.deepcopy(
+            reusable_context["king_classifications"]
+        )
+    else:
+        classifications, local_piece_classifier_report = (
+            call_candidate_classifier_with_local_fallback(
+                image_bytes,
+                candidate_sheet_bytes,
+                circle_candidates,
+                ai_api_key,
+            )
+        )
+        king_circle_candidates = select_palace_circle_candidates(circle_candidates)
+        king_candidate_sheet_bytes = create_candidate_crop_sheet(
+            image_bytes,
+            king_circle_candidates,
+        )
+        king_classifications = call_ai_king_classifier(
+            king_candidate_sheet_bytes,
+            king_circle_candidates,
+            ai_api_key,
+        )
+    processed["local_piece_classifier"] = local_piece_classifier_report
+    classification_elapsed_ms = round(
+        (time.perf_counter() - classification_started) * 1000
+    )
+    character_color_conflict_adjustments = reject_character_color_conflicts(
+        classifications,
+        visual_text_colors,
+    )
+    king_classifier_sanitization_adjustments = sanitize_king_classifications(
+        king_classifications,
+        visual_text_colors,
+    )
+    focused_classifier_adjustments = refine_outside_palace_king_classifications(
+        image_bytes,
+        circle_candidates,
+        classifications,
+        king_classifications,
+        ai_api_key,
+    )
+    character_color_conflict_adjustments.extend(
+        reject_character_color_conflicts(
+            classifications,
+            visual_text_colors,
+        )
+    )
     character_name_adjustments = apply_character_names_to_classifications(
         classifications
     )
     character_text_color_adjustments = apply_character_text_colors_to_classifications(
         classifications
     )
-    king_classifications = call_ai_king_classifier(
-        candidate_sheet_bytes,
-        circle_candidates,
-        ai_api_key,
-    )
-    character_name_adjustments.extend(
-        apply_character_names_to_classifications(king_classifications)
-    )
-    character_text_color_adjustments.extend(
-        apply_character_text_colors_to_classifications(king_classifications)
-    )
     character_classifier_merge_adjustments = merge_dedicated_character_classifications(
         classifications,
         king_classifications,
     )
-    visual_text_colors = estimate_candidate_text_colors(image_bytes, circle_candidates)
     anchored_text_color_report = calibrate_visual_text_colors_with_character_anchors(
         classifications,
         visual_text_colors,
@@ -5069,7 +6827,11 @@ def call_ai_vision(image_bytes,
         classifications,
         visual_text_colors,
     )
-    processed = apply_candidate_classifications_to_processed(processed, classifications)
+    processed = apply_candidate_classifications_to_processed(
+        processed,
+        classifications,
+        circle_candidates,
+    )
     processed["visual_text_color_status"] = (
         "applied" if visual_text_color_adjustments else
         "no_adjustments" if visual_text_colors else
@@ -5090,6 +6852,22 @@ def call_ai_vision(image_bytes,
     processed["character_classifier_merge_adjustments"] = (
         character_classifier_merge_adjustments
     )
+    processed["character_color_conflict_status"] = (
+        "rejected" if character_color_conflict_adjustments else "no_conflicts"
+    )
+    processed["character_color_conflict_adjustments"] = (
+        character_color_conflict_adjustments
+    )
+    processed["king_classifier_sanitization_status"] = (
+        "applied" if king_classifier_sanitization_adjustments else "no_adjustments"
+    )
+    processed["king_classifier_sanitization_adjustments"] = (
+        king_classifier_sanitization_adjustments
+    )
+    processed["focused_classifier_status"] = (
+        "applied" if focused_classifier_adjustments else "no_adjustments"
+    )
+    processed["focused_classifier_adjustments"] = focused_classifier_adjustments
     has_character_color_hints = any(
         classification.get("character_color_authoritative", False)
         for classification in list(classifications.values())
@@ -5112,6 +6890,7 @@ def call_ai_vision(image_bytes,
         "not_run"
     )
     processed["character_piece_name_adjustments"] = character_name_adjustments
+    processed = apply_character_sides_to_processed(processed, classifications)
     processed = repair_king_palace_candidates(processed)
     processed = apply_color_side_mapping_to_processed(processed)
     processed = apply_grid_snap_to_processed(processed, image_width, image_height, board_crop=board_crop)
@@ -5122,8 +6901,45 @@ def call_ai_vision(image_bytes,
         circles=circle_candidates,
         board_crop=board_crop,
     )
+    decision_started = time.perf_counter()
+    processed = call_ai_move_decision(processed, ai_api_key)
+    decision_elapsed_ms = round((time.perf_counter() - decision_started) * 1000)
     processed = repair_recommended_moves_to_basic_legal(processed)
-    processed["grid_line_preprocessing"] = grid_line_metadata
+    processed["circle_detection"] = circle_detection_metadata
+    processed["grid_line_preprocessing"] = circle_detection_metadata.get(
+        "suppression", {"status": "not_run"}
+    )
+    processed["_vision_context"] = {
+        "board_crop": tuple(board_crop),
+        "board_crop_metadata": copy.deepcopy(board_crop_metadata),
+        "circle_candidates": copy.deepcopy(circle_candidates),
+        "circle_detection_metadata": copy.deepcopy(circle_detection_metadata),
+        "visual_text_colors": copy.deepcopy(visual_text_colors),
+        "detected_orientation": copy.deepcopy(detected_orientation),
+        "orientation_detection": copy.deepcopy(orientation_detection),
+        "candidate_sheet_bytes": candidate_sheet_bytes,
+        "classifications": copy.deepcopy(classifications),
+        "local_piece_classifier_report": copy.deepcopy(local_piece_classifier_report),
+        "king_classifications": copy.deepcopy(king_classifications),
+    }
+    total_elapsed_ms = round((time.perf_counter() - call_started) * 1000)
+    processed["recognition_timings_ms"] = {
+        "preparation": preparation_elapsed_ms,
+        "vision_request": vision_request_elapsed_ms,
+        "classification": classification_elapsed_ms,
+        "move_decision": decision_elapsed_ms,
+        "total": total_elapsed_ms,
+        "reused_context": context_reused,
+    }
+    LOGGER.info(
+        "Recognition timings: prepare=%dms vision=%dms classify=%dms decision=%dms total=%dms reused=%s",
+        preparation_elapsed_ms,
+        vision_request_elapsed_ms,
+        classification_elapsed_ms,
+        decision_elapsed_ms,
+        total_elapsed_ms,
+        context_reused,
+    )
     return sync_move_compatibility_fields(processed)
 
 
@@ -5135,18 +6951,23 @@ def review_ai_result(image_bytes,
                      initial_feedback=None):
     validation_feedback = initial_feedback
     last_reviewed = None
-    board_crop, _ = get_effective_board_crop(image_bytes, image_width, image_height)
-    circle_detection_body, _ = suppress_board_grid_lines(image_bytes, board_crop=board_crop)
-    circle_candidates = annotate_circle_candidates_with_board_points(
-        detect_piece_circles(
-            circle_detection_body,
-            suppress_grid_lines=False,
+    candidate_is_valid = not validate_processed_result(candidate)
+    reusable_context = candidate.get("_vision_context")
+    if reusable_context:
+        circle_candidates = reusable_context["circle_candidates"]
+    else:
+        board_crop, _ = get_effective_board_crop(image_bytes, image_width, image_height)
+        raw_circle_candidates, _ = detect_piece_circles_fused(
+            image_bytes,
             board_crop=board_crop,
-        ),
-        image_width,
-        image_height,
-        board_crop=board_crop,
-    )
+        )
+        circle_candidates = annotate_circle_candidates_with_board_points(
+            raw_circle_candidates,
+            image_width,
+            image_height,
+            board_crop=board_crop,
+            orientation=candidate.get("orientation"),
+        )
     for attempt in range(1, AI_REVIEW_MAX_ATTEMPTS + 1):
         prompt = build_review_prompt(
             candidate,
@@ -5162,6 +6983,7 @@ def review_ai_result(image_bytes,
                 image_height,
                 ai_api_key,
                 prompt=prompt,
+                reusable_context=reusable_context,
             )
         except Exception:
             LOGGER.exception("AI review failed on attempt %d", attempt)
@@ -5169,6 +6991,33 @@ def review_ai_result(image_bytes,
 
         review_errors = validate_processed_result(reviewed)
         if not review_errors:
+            candidate_circle_ids = {
+                int(piece["circle_id"])
+                for piece in candidate.get("pieces", [])
+                if piece.get("circle_id") is not None
+                and piece.get("visual_evidence") == "circle"
+            }
+            reviewed_circle_ids = {
+                int(piece["circle_id"])
+                for piece in reviewed.get("pieces", [])
+                if piece.get("circle_id") is not None
+                and piece.get("visual_evidence") == "circle"
+            }
+            dropped_circle_ids = sorted(candidate_circle_ids - reviewed_circle_ids)
+            if candidate_is_valid and dropped_circle_ids:
+                LOGGER.warning(
+                    "AI second-stage review dropped %d visual candidate(s); "
+                    "preserving first-stage result: %s",
+                    len(dropped_circle_ids),
+                    dropped_circle_ids,
+                )
+                return mark_review_regression_preserved_result(
+                    candidate,
+                    [
+                        "valid review dropped visual candidate circle_ids: "
+                        + ",".join(str(value) for value in dropped_circle_ids)
+                    ],
+                )
             LOGGER.info("AI second-stage review passed on attempt %d", attempt)
             return mark_reviewed_ai_result(reviewed)
 
@@ -5181,6 +7030,12 @@ def review_ai_result(image_bytes,
             "; ".join(review_errors[:8]),
         )
 
+    if candidate_is_valid:
+        return mark_review_failed_preserved_result(
+            candidate,
+            validation_feedback
+            or ["AI second-stage review failed to return a usable result"],
+        )
     if last_reviewed is not None:
         return mark_invalid_review_result(last_reviewed, validation_feedback or [])
     return mark_review_failed_result(candidate, ["AI second-stage review failed to return a usable result"])
@@ -5240,20 +7095,28 @@ def process_image(image_bytes,
                     LOGGER.info("AI result validation passed after retry attempt %d", attempt)
                 processed = mark_valid_ai_result(processed)
                 if parse_bool_env(os.getenv("CHESS_AI_ENABLE_REVIEW", "true")):
-                    reviewed = review_ai_result(
-                        image_bytes,
-                        image_width,
-                        image_height,
-                        ai_api_key,
-                        processed,
+                    review_reasons = get_ai_review_reasons(processed)
+                    processed["review_reasons"] = review_reasons
+                    if review_reasons:
+                        LOGGER.info(
+                            "AI second-stage review triggered: %s",
+                            ", ".join(review_reasons),
+                        )
+                        reviewed = review_ai_result(
+                            image_bytes,
+                            image_width,
+                            image_height,
+                            ai_api_key,
+                            processed,
+                        )
+                        reviewed["image_preprocessing"] = preprocessing_metadata
+                        if reviewed.get("validation_status") == "structural_ok":
+                            reviewed = apply_engine_recommendations(reviewed)
+                        return reviewed
+                    LOGGER.info(
+                        "AI second-stage review skipped: first-stage quality gates passed"
                     )
-                    reviewed["image_preprocessing"] = preprocessing_metadata
-                    if (
-                        reviewed.get("validation_status") == "structural_ok"
-                        and reviewed.get("review_status") == "review_ok"
-                    ):
-                        reviewed = apply_engine_recommendations(reviewed)
-                    return reviewed
+                    processed = mark_review_skipped_result(processed)
                 return apply_engine_recommendations(processed)
 
             last_processed = processed
@@ -5308,17 +7171,25 @@ def read_manifest(bucket, device_id):
 
 
 def build_result(manifest, processed, image_width, image_height):
+    result_status = (
+        "ok"
+        if processed.get("validation_status") == "structural_ok"
+        else "recognition_failed"
+    )
     return {
         "protocol_version": int(manifest["protocol_version"]),
         "device_id": manifest["device_id"],
         "session_id": manifest["session_id"],
         "frame_id": manifest["frame_id"],
         "sequence": int(manifest["sequence"]),
-        "status": "ok",
+        "status": result_status,
         "image_width": image_width,
         "image_height": image_height,
         "confidence": processed["confidence"],
         "orientation": processed["orientation"],
+        "orientation_detection": processed.get(
+            "orientation_detection", {"status": "not_run"}
+        ),
         "pieces": processed["pieces"],
         "recommended_moves": processed["recommended_moves"],
         "coordinate_system": processed["coordinate_system"],
@@ -5330,6 +7201,8 @@ def build_result(manifest, processed, image_width, image_height):
         "validation_errors": processed.get("validation_errors", []),
         "review_status": processed.get("review_status", "not_run"),
         "review_errors": processed.get("review_errors", []),
+        "review_reasons": processed.get("review_reasons", []),
+        "recognition_timings_ms": processed.get("recognition_timings_ms", {}),
         "grid_snap_status": processed.get("grid_snap_status", "not_run"),
         "board_geometry_mode": processed.get("board_geometry_mode", "not_run"),
         "board_geometry": processed.get("board_geometry", {}),
@@ -5341,13 +7214,20 @@ def build_result(manifest, processed, image_width, image_height):
         "grid_snap_move_adjustments": processed.get("grid_snap_move_adjustments", []),
         "move_repair_status": processed.get("move_repair_status", "not_run"),
         "move_repair_adjustments": processed.get("move_repair_adjustments", []),
+        "decision_status": processed.get("decision_status", "not_run"),
+        "decision_errors": processed.get("decision_errors", []),
         "visual_evidence_status": processed.get("visual_evidence_status", "not_run"),
         "visual_evidence_errors": processed.get("visual_evidence_errors", []),
         "detected_piece_circles": processed.get("detected_piece_circles", []),
+        "candidate_coverage": processed.get("candidate_coverage", {}),
+        "circle_detection": processed.get("circle_detection", {"status": "not_run"}),
         "opencv_candidate_status": processed.get("opencv_candidate_status", "not_run"),
         "opencv_candidate_adjustments": processed.get("opencv_candidate_adjustments", []),
         "candidate_classifier_status": processed.get("candidate_classifier_status", "not_run"),
         "candidate_classifier_adjustments": processed.get("candidate_classifier_adjustments", []),
+        "local_piece_classifier": processed.get(
+            "local_piece_classifier", {"status": "not_run"}
+        ),
         "visual_text_color_status": processed.get("visual_text_color_status", "not_run"),
         "visual_text_color_method": processed.get("visual_text_color_method", "not_run"),
         "visual_text_color_estimates": processed.get("visual_text_color_estimates", {}),
@@ -5358,6 +7238,8 @@ def build_result(manifest, processed, image_width, image_height):
         "character_text_color_adjustments": processed.get("character_text_color_adjustments", []),
         "character_piece_name_status": processed.get("character_piece_name_status", "not_run"),
         "character_piece_name_adjustments": processed.get("character_piece_name_adjustments", []),
+        "character_side_status": processed.get("character_side_status", "not_run"),
+        "character_side_adjustments": processed.get("character_side_adjustments", []),
         "dedicated_character_classifier_status": processed.get(
             "dedicated_character_classifier_status", "not_run"
         ),
@@ -5369,6 +7251,24 @@ def build_result(manifest, processed, image_width, image_height):
         ),
         "character_classifier_merge_adjustments": processed.get(
             "character_classifier_merge_adjustments", []
+        ),
+        "character_color_conflict_status": processed.get(
+            "character_color_conflict_status", "not_run"
+        ),
+        "character_color_conflict_adjustments": processed.get(
+            "character_color_conflict_adjustments", []
+        ),
+        "king_classifier_sanitization_status": processed.get(
+            "king_classifier_sanitization_status", "not_run"
+        ),
+        "king_classifier_sanitization_adjustments": processed.get(
+            "king_classifier_sanitization_adjustments", []
+        ),
+        "focused_classifier_status": processed.get(
+            "focused_classifier_status", "not_run"
+        ),
+        "focused_classifier_adjustments": processed.get(
+            "focused_classifier_adjustments", []
         ),
         "king_classifier_status": processed.get("king_classifier_status", "not_run"),
         "king_classifier_adjustments": processed.get("king_classifier_adjustments", []),
@@ -5384,6 +7284,22 @@ def build_result(manifest, processed, image_width, image_height):
         "engine_recommended_moves": processed.get("engine_recommended_moves", {}),
         "image_preprocessing": processed.get("image_preprocessing", {"status": "not_run"}),
         "grid_line_preprocessing": processed.get("grid_line_preprocessing", {"status": "not_run"}),
+    }
+
+
+def build_device_result(result):
+    """Return the compact result schema consumed by the ESP32 firmware."""
+    return {
+        "protocol_version": result["protocol_version"],
+        "device_id": result["device_id"],
+        "session_id": result["session_id"],
+        "frame_id": result["frame_id"],
+        "sequence": result["sequence"],
+        "status": result["status"],
+        "image_width": result["image_width"],
+        "image_height": result["image_height"],
+        "confidence": result["confidence"],
+        "points": result["points"],
     }
 
 
@@ -5419,11 +7335,12 @@ def save_debug_artifacts(debug_dir,
         board_crop = board_crop_from_result_geometry(result.get("board_geometry"))
         grid_detection_body, _ = suppress_board_grid_lines(debug_image_body, board_crop=board_crop)
         grid_suppressed_path.write_bytes(grid_detection_body)
-        circles = result.get("detected_piece_circles", []) or detect_piece_circles(
-            grid_detection_body,
-            suppress_grid_lines=False,
-            board_crop=board_crop,
-        )
+        circles = result.get("detected_piece_circles", [])
+        if not circles:
+            circles, _ = detect_piece_circles_fused(
+                debug_image_body,
+                board_crop=board_crop,
+            )
         crop_sheet = create_candidate_crop_sheet(debug_image_body, circles)
         if crop_sheet:
             crop_sheet_path.write_bytes(crop_sheet)
@@ -5494,16 +7411,28 @@ def process_one(bucket, args, state, device_id):
     )
     result = build_result(manifest, processed, image_width, image_height)
     result_json = json.dumps(result, separators=(",", ":"))
+    device_result_json = json.dumps(
+        build_device_result(result),
+        separators=(",", ":"),
+    )
 
+    # Keep the full diagnostics locally, but upload only the small schema that
+    # the ESP32 parses. This keeps the device response well below its 8 KiB
+    # receive buffer and avoids transferring classifier/debug metadata.
     save_debug_artifacts(args.debug_dir, manifest, image_body, result_json, ai_image_body=ai_image_body)
 
     bucket.put_object(
         result_key,
-        result_json,
+        device_result_json,
         headers={
             "Content-Type": "application/json",
             "Cache-Control": "no-cache",
         },
+    )
+    LOGGER.info(
+        "Device result payload written: bytes=%d full_debug_bytes=%d",
+        len(device_result_json.encode("utf-8")),
+        len(result_json.encode("utf-8")),
     )
 
     processed_at = int(time.time())
