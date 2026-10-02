@@ -4,7 +4,7 @@
 #include "driver/gpio.h"
 #include "esp_err.h"
 
-#define LIGHT_ADC_GPIO             GPIO_NUM_8
+#define LIGHT_ADC_GPIO             GPIO_NUM_NC /* IO8 is camera D7; no light sensor. */
 #define LIGHT_ADC_MAX_RAW          4095
 
 esp_err_t light_adc_init(void);

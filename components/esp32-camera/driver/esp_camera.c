@@ -232,7 +232,11 @@ esp_err_t esp_camera_init(const camera_config_t *config)
         err = ESP_ERR_CAMERA_FAILED_TO_SET_FRAME_SIZE;
         goto fail;
     }
-    s_state->sensor.set_pixformat(&s_state->sensor, pix_format);
+    if (s_state->sensor.set_pixformat(&s_state->sensor, pix_format) != 0) {
+        ESP_LOGE(TAG, "SCCB failed to configure pixel format");
+        err = ESP_FAIL;
+        goto fail;
+    }
 #if CONFIG_CAMERA_CONVERTER_ENABLED
     if(config->conv_mode) {
         s_state->sensor.pixformat = get_output_data_format(config->conv_mode); // If conversion enabled, change the out data format by conversion mode
@@ -240,7 +244,11 @@ esp_err_t esp_camera_init(const camera_config_t *config)
 #endif
 
     if (pix_format == PIXFORMAT_JPEG) {
-        s_state->sensor.set_quality(&s_state->sensor, config->jpeg_quality);
+        if (s_state->sensor.set_quality(&s_state->sensor, config->jpeg_quality) != 0) {
+            ESP_LOGE(TAG, "SCCB failed to configure JPEG quality");
+            err = ESP_FAIL;
+            goto fail;
+        }
     }
     s_state->sensor.init_status(&s_state->sensor);
 

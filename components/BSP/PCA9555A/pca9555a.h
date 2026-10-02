@@ -51,10 +51,10 @@
 #define PCA9555A_OV5640_PWDN_IO        PCA9555A_PIN_P0_1
 #define PCA9555A_OV5640_RESET_IO       PCA9555A_PIN_P0_2
 #define PCA9555A_KEY1_IO               PCA9555A_PIN_P0_3
-#define PCA9555A_KEY2_IO               PCA9555A_PIN_P0_4
-#define PCA9555A_KEY3_IO               PCA9555A_PIN_P0_5
-#define PCA9555A_KEY4_IO               PCA9555A_PIN_P0_6
-#define PCA9555A_LED_IO                PCA9555A_PIN_P0_7
+#define PCA9555A_KEY2_IO               0x0000 /* Not connected. */
+#define PCA9555A_KEY3_IO               0x0000 /* Not connected. */
+#define PCA9555A_KEY4_IO               0x0000 /* Not connected. */
+#define PCA9555A_LED_IO                PCA9555A_PIN_P0_4
 
 /* Reserved pins for later board functions. */
 #define PCA9555A_RESERVED_P1_0_IO      PCA9555A_PIN_P1_0
@@ -66,14 +66,14 @@
 #define PCA9555A_RESERVED_P1_6_IO      PCA9555A_PIN_P1_6
 #define PCA9555A_RESERVED_P1_7_IO      PCA9555A_PIN_P1_7
 
-/* Configuration bit: 1=input, 0=output. P0_3..P0_6 are low-active keys. */
-#define PCA9555A_DEFAULT_CONFIG        0xFF78
+/* Configuration bit: 1=input, 0=output. P0_3 is the low-active key; unused pins remain inputs. */
+#define PCA9555A_DEFAULT_CONFIG        0xFFE8
 #define PCA9555A_DEFAULT_OUTPUT        (PCA9555A_OV5640_RESET_IO | PCA9555A_BEEP_IO)
 
 #define PCA9555A_KEY1                  pca9555a_pin_read(PCA9555A_KEY1_IO)
-#define PCA9555A_KEY2                  pca9555a_pin_read(PCA9555A_KEY2_IO)
-#define PCA9555A_KEY3                  pca9555a_pin_read(PCA9555A_KEY3_IO)
-#define PCA9555A_KEY4                  pca9555a_pin_read(PCA9555A_KEY4_IO)
+#define PCA9555A_KEY2                  1 /* Unconnected key: released. */
+#define PCA9555A_KEY3                  1 /* Unconnected key: released. */
+#define PCA9555A_KEY4                  1 /* Unconnected key: released. */
 
 #define PCA9555A_KEY1_PRES             1
 #define PCA9555A_KEY2_PRES             2
@@ -86,6 +86,7 @@ esp_err_t pca9555a_read_ports(uint8_t *data, size_t len);
 esp_err_t pca9555a_write_ports(uint8_t reg, uint8_t *data, size_t len);
 uint16_t pca9555a_ioconfig(uint16_t config_value);
 uint16_t pca9555a_pin_write(uint16_t pin, int val);
+esp_err_t pca9555a_pin_write_checked(uint16_t pin, int val);
 int pca9555a_pin_read(uint16_t pin);
 uint8_t pca9555a_key_scan(uint8_t mode);
 int pca9555a_int_read(void);

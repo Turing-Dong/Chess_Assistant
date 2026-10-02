@@ -41,6 +41,11 @@ static esp_err_t light_adc_cali_init(void)
 
 esp_err_t light_adc_init(void)
 {
+    if (LIGHT_ADC_GPIO == GPIO_NUM_NC)
+    {
+        return ESP_ERR_NOT_SUPPORTED;
+    }
+
     if (light_adc_initialized)
     {
         return ESP_OK;

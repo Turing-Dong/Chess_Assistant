@@ -1,10 +1,12 @@
 #include "pca9555a.h"
+#include "freertos/semphr.h"
 
 static const char *TAG = "PCA9555A";
 
 i2c_obj_t pca9555a_i2c_master;
 static uint16_t pca9555a_output_latch = PCA9555A_DEFAULT_OUTPUT;
 static uint16_t pca9555a_failed = 0;
+static SemaphoreHandle_t pca9555a_output_mutex;
 
 esp_err_t pca9555a_read_registers(uint8_t reg, uint8_t *data, size_t len)
 {
@@ -55,19 +57,35 @@ static esp_err_t pca9555a_write_u16(uint8_t reg, uint16_t value)
     return pca9555a_write_ports(reg, data, 2);
 }
 
-uint16_t pca9555a_pin_write(uint16_t pin, int val)
+esp_err_t pca9555a_pin_write_checked(uint16_t pin, int val)
 {
-    if (val)
+    if (pca9555a_output_mutex == NULL)
     {
-        pca9555a_output_latch |= pin;
+        return ESP_ERR_INVALID_STATE;
+    }
+    if (xSemaphoreTake(pca9555a_output_mutex, pdMS_TO_TICKS(1000)) != pdTRUE)
+    {
+        return ESP_ERR_TIMEOUT;
+    }
+    uint16_t next = val ? (pca9555a_output_latch | pin) :
+                         (pca9555a_output_latch & (uint16_t)~pin);
+    esp_err_t error = pca9555a_write_u16(PCA9555A_OUTPUT_PORT0_REG, next);
+    if (error == ESP_OK)
+    {
+        pca9555a_output_latch = next;
     }
     else
     {
-        pca9555a_output_latch &= (uint16_t)~pin;
+        ESP_LOGE(TAG, "Output write mask=0x%04X level=%d failed: %s",
+                 pin, val, esp_err_to_name(error));
     }
+    xSemaphoreGive(pca9555a_output_mutex);
+    return error;
+}
 
-    pca9555a_write_u16(PCA9555A_OUTPUT_PORT0_REG, pca9555a_output_latch);
-
+uint16_t pca9555a_pin_write(uint16_t pin, int val)
+{
+    pca9555a_pin_write_checked(pin, val);
     return pca9555a_output_latch;
 }
 
@@ -126,6 +144,15 @@ void pca9555a_init(i2c_obj_t self)
     }
 
     pca9555a_i2c_master = self;
+    if (pca9555a_output_mutex == NULL)
+    {
+        pca9555a_output_mutex = xSemaphoreCreateMutex();
+        if (pca9555a_output_mutex == NULL)
+        {
+            ESP_LOGE(TAG, "Cannot allocate output mutex");
+            return;
+        }
+    }
 
     /* Clear the INT state once after power-on by reading the input ports. */
     pca9555a_read_ports(r_data, 2);
@@ -210,15 +237,15 @@ int pca9555a_key1_read(void)
 
 int pca9555a_key2_read(void)
 {
-    return pca9555a_pin_read(PCA9555A_KEY2_IO);
+    return 1; /* Unconnected key: released. */
 }
 
 int pca9555a_key3_read(void)
 {
-    return pca9555a_pin_read(PCA9555A_KEY3_IO);
+    return 1; /* Unconnected key: released. */
 }
 
 int pca9555a_key4_read(void)
 {
-    return pca9555a_pin_read(PCA9555A_KEY4_IO);
+    return 1; /* Unconnected key: released. */
 }

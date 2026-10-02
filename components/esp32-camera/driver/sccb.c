@@ -55,8 +55,8 @@ int SCCB_Init(int pin_sda, int pin_scl)
     memset(&conf, 0, sizeof(i2c_config_t));
 
     sccb_i2c_port = SCCB_I2C_PORT_DEFAULT;
-    sccb_owns_i2c_port = true;
-    ESP_LOGI(TAG, "sccb_i2c_port=%d", sccb_i2c_port);
+    sccb_owns_i2c_port = false;
+    ESP_LOGI(TAG, "sccb_i2c_port=%d frequency=%d Hz", sccb_i2c_port, SCCB_FREQ);
 
     conf.mode = I2C_MODE_MASTER;
     conf.sda_io_num = pin_sda;
@@ -69,14 +69,16 @@ int SCCB_Init(int pin_sda, int pin_scl)
         return ret;
     }
 
-    return i2c_driver_install(sccb_i2c_port, conf.mode, 0, 0, 0);
+    ret = i2c_driver_install(sccb_i2c_port, conf.mode, 0, 0, 0);
+    sccb_owns_i2c_port = (ret == ESP_OK);
+    return ret;
 }
 
 int SCCB_Use_Port(int i2c_num) { // sccb use an already initialized I2C port
     if (sccb_owns_i2c_port) {
         SCCB_Deinit();
     }
-    if (i2c_num < 0 || i2c_num > I2C_NUM_MAX) {
+    if (i2c_num < 0 || i2c_num >= I2C_NUM_MAX) {
         return ESP_ERR_INVALID_ARG;
     }
     sccb_i2c_port = i2c_num;
@@ -111,8 +113,10 @@ uint8_t SCCB_Probe(void)
         esp_err_t ret = i2c_master_cmd_begin(sccb_i2c_port, cmd, 1000 / portTICK_RATE_MS);
         i2c_cmd_link_delete(cmd);
         if( ret == ESP_OK) {
+            ESP_LOGI(TAG, "SCCB address 0x%02X ACK", slave_addr);
             return slave_addr;
         }
+        ESP_LOGW(TAG, "SCCB address 0x%02X probe failed: %s", slave_addr, esp_err_to_name(ret));
     }
     return 0;
 }
@@ -173,7 +177,11 @@ uint8_t SCCB_Read16(uint8_t slv_addr, uint16_t reg)
     i2c_master_stop(cmd);
     ret = i2c_master_cmd_begin(sccb_i2c_port, cmd, 1000 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
-    if(ret != ESP_OK) return -1;
+    if(ret != ESP_OK) {
+        ESP_LOGE(TAG, "SCCB register-select failed addr=0x%02X reg=0x%04X: %s",
+                 slv_addr, reg, esp_err_to_name(ret));
+        return 0xFF;
+    }
     cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, ( slv_addr << 1 ) | READ_BIT, ACK_CHECK_EN);
@@ -182,7 +190,9 @@ uint8_t SCCB_Read16(uint8_t slv_addr, uint16_t reg)
     ret = i2c_master_cmd_begin(sccb_i2c_port, cmd, 1000 / portTICK_RATE_MS);
     i2c_cmd_link_delete(cmd);
     if(ret != ESP_OK) {
-        ESP_LOGE(TAG, "W [%04x]=%02x fail\n", reg, data);
+        ESP_LOGE(TAG, "SCCB read failed addr=0x%02X reg=0x%04X: %s",
+                 slv_addr, reg, esp_err_to_name(ret));
+        return 0xFF;
     }
     return data;
 }
