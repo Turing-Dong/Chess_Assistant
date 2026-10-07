@@ -69,6 +69,16 @@ esp_err_t camera_decode_frame_rgb565(const camera_fb_t *frame,
                                      uint16_t *output,
                                      uint16_t output_width,
                                      uint16_t output_height);
+/*
+ * Encode the same central square source region shown by the LCD preview as a
+ * full-resolution JPEG. The returned buffer is heap allocated and must be
+ * released with heap_caps_free() or free().
+ */
+esp_err_t camera_encode_preview_region_jpeg(const camera_fb_t *frame,
+                                            uint8_t **jpeg_data,
+                                            size_t *jpeg_length,
+                                            uint16_t *image_width,
+                                            uint16_t *image_height);
 
 /* Capture one JPEG frame and display it at the lower-left corner of the LCD. */
 esp_err_t camera_show(void);

@@ -7,6 +7,7 @@
 #include "esp_jpg_decode.h"
 #include "esp_log.h"
 #include "esp_timer.h"
+#include "img_converters.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 
@@ -28,6 +29,7 @@ static camera_fb_t *camera_upload_frame;
 #define CAMERA_UPLOAD_FRAME_SIZE   FRAMESIZE_FHD
 #define CAMERA_PREVIEW_SOURCE_WIDTH 1920U
 #define CAMERA_PREVIEW_CROP_SIZE   1080U
+#define CAMERA_UPLOAD_PREVIEW_JPEG_QUALITY 90U
 #define CAMERA_FRAME_SIZE_SWITCH_DELAY_MS 150
 #define CAMERA_FRAME_SIZE_CAPTURE_ATTEMPTS 5
 #define CAMERA_PREVIEW_MUTEX_TIMEOUT_MS 1000
@@ -1027,6 +1029,107 @@ esp_err_t camera_decode_frame_rgb565(const camera_fb_t *frame,
                           camera_jpeg_reader,
                           camera_jpeg_writer,
                           &context);
+}
+
+esp_err_t camera_encode_preview_region_jpeg(const camera_fb_t *frame,
+                                            uint8_t **jpeg_data,
+                                            size_t *jpeg_length,
+                                            uint16_t *image_width,
+                                            uint16_t *image_height)
+{
+    if (frame == NULL || jpeg_data == NULL || jpeg_length == NULL ||
+        image_width == NULL || image_height == NULL)
+    {
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (frame->format != PIXFORMAT_JPEG ||
+        frame->width != CAMERA_PREVIEW_SOURCE_WIDTH ||
+        frame->height != CAMERA_PREVIEW_CROP_SIZE)
+    {
+        ESP_LOGE(TAG,
+                 "Preview-region JPEG requires %ux%u JPEG source, got %ux%u format=%d",
+                 (unsigned)CAMERA_PREVIEW_SOURCE_WIDTH,
+                 (unsigned)CAMERA_PREVIEW_CROP_SIZE,
+                 (unsigned)frame->width,
+                 (unsigned)frame->height,
+                 frame->format);
+        return ESP_ERR_INVALID_SIZE;
+    }
+
+    *jpeg_data = NULL;
+    *jpeg_length = 0U;
+    *image_width = 0U;
+    *image_height = 0U;
+
+    const uint16_t crop_size = CAMERA_PREVIEW_CROP_SIZE;
+    const size_t crop_buffer_size =
+        (size_t)crop_size * crop_size * sizeof(uint16_t);
+    uint16_t *crop_rgb565 = heap_caps_malloc(crop_buffer_size,
+                                             MALLOC_CAP_SPIRAM |
+                                             MALLOC_CAP_8BIT);
+    if (crop_rgb565 == NULL)
+    {
+        ESP_LOGE(TAG,
+                 "Unable to allocate %u-byte preview-region RGB565 buffer",
+                 (unsigned)crop_buffer_size);
+        return ESP_ERR_NO_MEM;
+    }
+
+    int64_t decode_start = esp_timer_get_time();
+    esp_err_t error = camera_decode_frame_rgb565(frame,
+                                                 crop_rgb565,
+                                                 crop_size,
+                                                 crop_size);
+    if (error != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Preview-region JPEG decode failed: %s",
+                 esp_err_to_name(error));
+        heap_caps_free(crop_rgb565);
+        return error;
+    }
+    uint32_t decode_time_ms =
+        (uint32_t)((esp_timer_get_time() - decode_start) / 1000);
+
+    int64_t encode_start = esp_timer_get_time();
+    bool encoded = fmt2jpg((uint8_t *)crop_rgb565,
+                           crop_buffer_size,
+                           crop_size,
+                           crop_size,
+                           PIXFORMAT_RGB565,
+                           CAMERA_UPLOAD_PREVIEW_JPEG_QUALITY,
+                           jpeg_data,
+                           jpeg_length);
+    heap_caps_free(crop_rgb565);
+
+    if (!encoded || *jpeg_data == NULL || *jpeg_length == 0U)
+    {
+        if (*jpeg_data != NULL)
+        {
+            heap_caps_free(*jpeg_data);
+            *jpeg_data = NULL;
+        }
+        *jpeg_length = 0U;
+        ESP_LOGE(TAG, "Preview-region JPEG encode failed");
+        return ESP_FAIL;
+    }
+
+    uint32_t encode_time_ms =
+        (uint32_t)((esp_timer_get_time() - encode_start) / 1000);
+    *image_width = crop_size;
+    *image_height = crop_size;
+    const unsigned crop_x =
+        (CAMERA_PREVIEW_SOURCE_WIDTH - CAMERA_PREVIEW_CROP_SIZE) / 2U;
+    ESP_LOGI(TAG,
+             "Preview-region JPEG ready: source=%ux%u crop=(%u,0 %ux%u) bytes=%u decode=%lu ms encode=%lu ms",
+             (unsigned)frame->width,
+             (unsigned)frame->height,
+             crop_x,
+             (unsigned)crop_size,
+             (unsigned)crop_size,
+             (unsigned)*jpeg_length,
+             (unsigned long)decode_time_ms,
+             (unsigned long)encode_time_ms);
+    return ESP_OK;
 }
 
 esp_err_t camera_show(void)
