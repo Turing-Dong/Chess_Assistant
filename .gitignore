@@ -22,6 +22,8 @@ tmp/
 tmp_worker_verify/
 debug_logs/
 training_dataset/
+training_dataset2/
+新建文件夹/
 
 # ESP-IDF build output
 build/

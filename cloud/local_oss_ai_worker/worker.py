@@ -66,6 +66,8 @@ DEFAULT_BOARD_GRID_TOP = 0.127
 DEFAULT_BOARD_GRID_BOTTOM = 0.913
 GRID_CROP_FALLBACK_SOURCE = "default_grid_crop"
 DEFAULT_MAX_VISIBLE_PIECES = 32
+DEFAULT_CENTER_CROP_SIZE = 1080
+DEFAULT_CENTER_CROP_JPEG_QUALITY = 95
 DEFAULT_RECTIFIED_BOARD_WIDTH = 1080
 DEFAULT_RECTIFIED_BOARD_HEIGHT = 1215
 PLAYER1_SIDE = "shuai"
@@ -666,6 +668,108 @@ def _fit_even_grid_from_clusters(clusters, expected_count, image_limit):
     return best
 
 
+def _anchor_x_grid_to_image_left_reference(x_clusters, x_grid, image_width):
+    """Anchor the first board grid line near its expected image-edge offset."""
+    metadata = {"status": "not_applied"}
+    if not x_grid or not x_clusters:
+        metadata["reason"] = "missing_grid_or_clusters"
+        return x_grid, metadata
+    if not parse_bool_env(os.getenv("CHESS_GRID_ANCHOR_LEFT_REFERENCE", "true")):
+        metadata["status"] = "disabled"
+        return x_grid, metadata
+
+    spacing = float(x_grid.get("spacing", 0.0))
+    current_start = float(x_grid.get("start", 0.0))
+    if spacing <= 0.0:
+        metadata["reason"] = "invalid_spacing"
+        return x_grid, metadata
+
+    reference_ratio = float(
+        os.getenv("CHESS_GRID_LEFT_REFERENCE_RATIO", str(DEFAULT_BOARD_GRID_LEFT))
+    )
+    reference_ratio = max(0.0, min(1.0, reference_ratio))
+    expected_start = float(image_width) * reference_ratio
+
+    search_tolerance = max(
+        8.0,
+        float(image_width)
+        * float(os.getenv("CHESS_GRID_LEFT_REFERENCE_SEARCH_IMAGE_RATIO", "0.03")),
+        spacing
+        * float(os.getenv("CHESS_GRID_LEFT_REFERENCE_SEARCH_SPACING_RATIO", "0.25")),
+    )
+    minimum_weight = image_width * float(
+        os.getenv("CHESS_GRID_LEFT_REFERENCE_MIN_WEIGHT_RATIO", "0.50")
+    )
+    candidates = [
+        cluster
+        for cluster in x_clusters
+        if abs(float(cluster["position"]) - expected_start) <= search_tolerance
+        and float(cluster.get("weight", 0.0)) >= minimum_weight
+    ]
+    if not candidates:
+        metadata.update(
+            {
+                "reason": "reference_line_not_found",
+                "reference_ratio": round(reference_ratio, 5),
+                "expected_start": round(expected_start, 2),
+                "search_tolerance": round(search_tolerance, 2),
+                "search_range": [
+                    round(max(0.0, expected_start - search_tolerance), 2),
+                    round(min(float(image_width - 1), expected_start + search_tolerance), 2),
+                ],
+                "minimum_weight": round(minimum_weight, 2),
+            }
+        )
+        return x_grid, metadata
+
+    anchor = min(
+        candidates,
+        key=lambda cluster: (
+            abs(float(cluster["position"]) - expected_start),
+            -float(cluster.get("weight", 0.0)),
+        ),
+    )
+    corrected_start = float(anchor["position"])
+    corrected_end = corrected_start + (BOARD_FILES - 1) * spacing
+    if corrected_end > image_width - 1:
+        metadata.update(
+            {
+                "reason": "corrected_grid_out_of_bounds",
+                "expected_start": round(expected_start, 2),
+                "matched_line": round(corrected_start, 2),
+            }
+        )
+        return x_grid, metadata
+
+    corrected = dict(x_grid)
+    corrected["start"] = corrected_start
+    corrected["end"] = corrected_end
+    metadata.update(
+        {
+            "status": (
+                "already_anchored"
+                if abs(corrected_start - current_start) <= 1.0
+                else "anchored_to_image_left_reference"
+            ),
+            "original_start": round(current_start, 2),
+            "original_end": round(float(x_grid["end"]), 2),
+            "reference_ratio": round(reference_ratio, 5),
+            "expected_start": round(expected_start, 2),
+            "image_left_edge": 0.0,
+            "matched_line": round(corrected_start, 2),
+            "matched_line_weight": round(float(anchor.get("weight", 0.0)), 2),
+            "search_tolerance": round(search_tolerance, 2),
+            "search_range": [
+                round(max(0.0, expected_start - search_tolerance), 2),
+                round(min(float(image_width - 1), expected_start + search_tolerance), 2),
+            ],
+            "corrected_start": round(corrected_start, 2),
+            "corrected_end": round(corrected_end, 2),
+        }
+    )
+    return corrected, metadata
+
+
 def _fit_grid_axis_from_circle_centers(circles, coordinate, initial_grid, expected_count, image_limit):
     """Refine one grid axis using piece centers after the rough Hough fit."""
     if not circles or not initial_grid:
@@ -903,6 +1007,12 @@ def detect_rectified_grid_crop(image_body):
             )
             return None, metadata
 
+        x_grid, x_reference_anchor = _anchor_x_grid_to_image_left_reference(
+            x_clusters,
+            x_grid,
+            image_width,
+        )
+
         left = x_grid["start"]
         right = x_grid["end"]
         top = y_grid["start"]
@@ -937,6 +1047,12 @@ def detect_rectified_grid_crop(image_body):
             image_width,
             image_height,
         )
+        if x_reference_anchor.get("status") in (
+            "already_anchored",
+            "anchored_to_image_left_reference",
+        ):
+            crop = (x_grid["start"], crop[1], x_grid["end"], crop[3])
+            circle_refinement["x_reference_anchor_preserved"] = True
         left, top, right, bottom = crop
         metadata.update(
             {
@@ -953,6 +1069,7 @@ def detect_rectified_grid_crop(image_body):
                 "y_matched": y_grid["matched"],
                 "x_spacing": round(float(x_grid["spacing"]), 2),
                 "y_spacing": round(float(y_grid["spacing"]), 2),
+                "x_reference_anchor": x_reference_anchor,
                 "circle_refinement": circle_refinement,
             }
         )
@@ -1490,6 +1607,61 @@ def detect_board_quad(image_body):
     except Exception:
         LOGGER.exception("OpenCV board quadrilateral detection failed")
         return None
+
+
+def center_crop_image(image_body, target_size=DEFAULT_CENTER_CROP_SIZE):
+    """Decode an image and return its centered square crop as JPEG bytes."""
+    if Image is None:
+        raise RuntimeError("Pillow is required for center-crop preprocessing")
+    if not image_body:
+        raise ValueError("Cannot center-crop an empty image")
+
+    target_size = int(target_size)
+    if target_size <= 0:
+        raise ValueError("Center-crop target size must be positive")
+
+    with Image.open(io.BytesIO(image_body)) as source:
+        source.load()
+        source_width, source_height = source.size
+        if source_width < target_size or source_height < target_size:
+            raise ValueError(
+                "Source image is smaller than the requested center crop: "
+                f"source={source_width}x{source_height} target={target_size}x{target_size}"
+            )
+
+        left = (source_width - target_size) // 2
+        top = (source_height - target_size) // 2
+        right = left + target_size
+        bottom = top + target_size
+
+        if source_width == target_size and source_height == target_size:
+            cropped_body = image_body
+            status = "already_target_size"
+        else:
+            cropped = source.crop((left, top, right, bottom)).convert("RGB")
+            quality = int(
+                os.getenv(
+                    "CHESS_CENTER_CROP_JPEG_QUALITY",
+                    str(DEFAULT_CENTER_CROP_JPEG_QUALITY),
+                )
+            )
+            quality = max(1, min(100, quality))
+            output = io.BytesIO()
+            cropped.save(output, format="JPEG", quality=quality, optimize=True)
+            cropped_body = output.getvalue()
+            status = "center_cropped"
+
+    metadata = {
+        "status": status,
+        "method": "pillow_center_crop",
+        "source_image_width": source_width,
+        "source_image_height": source_height,
+        "crop_box": [left, top, right, bottom],
+        "output_image_width": target_size,
+        "output_image_height": target_size,
+        "output_bytes": len(cropped_body),
+    }
+    return cropped_body, target_size, target_size, metadata
 
 
 def rectify_board_image(image_body):
@@ -7379,8 +7551,8 @@ def process_one(bucket, args, state, device_id):
 
     image_key = urllib.parse.unquote_plus(str(manifest["image_key"]))
     result_key = urllib.parse.unquote_plus(str(manifest["result_key"]))
-    image_width = _get_positive_int(manifest, "image_width")
-    image_height = _get_positive_int(manifest, "image_height")
+    source_image_width = _get_positive_int(manifest, "image_width")
+    source_image_height = _get_positive_int(manifest, "image_height")
 
     LOGGER.info(
         "New frame detected: device_id=%s frame_id=%s sequence=%d image_key=%s",
@@ -7390,11 +7562,37 @@ def process_one(bucket, args, state, device_id):
         image_key,
     )
 
-    image_body = bucket.get_object(image_key).read()
+    downloaded_image_body = bucket.get_object(image_key).read()
+    image_body, crop_image_width, crop_image_height, center_crop_metadata = center_crop_image(
+        downloaded_image_body
+    )
+    LOGGER.info(
+        "Center crop complete: source=%dx%d crop=%s output=%dx%d bytes=%d status=%s",
+        center_crop_metadata["source_image_width"],
+        center_crop_metadata["source_image_height"],
+        center_crop_metadata["crop_box"],
+        crop_image_width,
+        crop_image_height,
+        len(image_body),
+        center_crop_metadata["status"],
+    )
     ai_image_body, ai_image_width, ai_image_height, preprocessing_metadata = rectify_board_image(image_body)
+    rectification_status = preprocessing_metadata.get("status", "unknown")
+    preprocessing_metadata["rectification_status"] = rectification_status
+    preprocessing_metadata["center_crop"] = center_crop_metadata
+    if rectification_status == "disabled":
+        preprocessing_metadata["status"] = center_crop_metadata["status"]
+    elif rectification_status == "rectified":
+        preprocessing_metadata["status"] = (
+            f"{center_crop_metadata['status']}_and_rectified"
+        )
+    else:
+        preprocessing_metadata["status"] = (
+            f"{center_crop_metadata['status']}_rectification_{rectification_status}"
+        )
     if ai_image_width is None or ai_image_height is None:
-        ai_image_width = image_width
-        ai_image_height = image_height
+        ai_image_width = crop_image_width
+        ai_image_height = crop_image_height
     LOGGER.info(
         "Image preprocessing status=%s ai_size=%dx%d",
         preprocessing_metadata.get("status", "unknown"),
@@ -7409,7 +7607,15 @@ def process_one(bucket, args, state, device_id):
         ai_api_key=ai_api_key,
         preprocessing_metadata=preprocessing_metadata,
     )
-    result = build_result(manifest, processed, image_width, image_height)
+    # The ESP32 validates these fields against the dimensions in the upload
+    # manifest.  Keep the protocol dimensions unchanged even though inference
+    # runs on the centered crop.
+    result = build_result(
+        manifest,
+        processed,
+        source_image_width,
+        source_image_height,
+    )
     result_json = json.dumps(result, separators=(",", ":"))
     device_result_json = json.dumps(
         build_device_result(result),

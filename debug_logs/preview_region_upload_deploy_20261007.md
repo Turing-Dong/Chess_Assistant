@@ -1,5 +1,10 @@
 # Preview-region upload deployment log
 
+> Superseded later on 2026-10-07. The device-side crop/re-encode path was
+> removed after truncated JPEGs were observed. The current design uploads the
+> original camera JPEG and performs the 1080x1080 center crop in the worker.
+> See `full_frame_worker_preprocessing_20261007.md`.
+
 - Date: 2026-10-07
 - Target: ESP32-S3 (device identifier omitted)
 - Serial port: `COM9` (`USB-SERIAL CH340`)

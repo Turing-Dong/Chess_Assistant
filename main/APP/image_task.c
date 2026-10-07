@@ -260,7 +260,7 @@ static esp_err_t image_task_upload_jpeg_with_retry(const char *url,
          attempt++)
     {
         ESP_LOGI(TAG,
-                 "Uploading preview-region JPEG: bytes=%u attempt=%u/%u",
+                 "Uploading camera JPEG: bytes=%u attempt=%u/%u",
                  (unsigned)image_length,
                  (unsigned)(attempt + 1U),
                  (unsigned)OSS_UPLOAD_RETRY_COUNT);
@@ -268,7 +268,7 @@ static esp_err_t image_task_upload_jpeg_with_retry(const char *url,
         if (last_error == ESP_OK)
         {
             ESP_LOGI(TAG,
-                     "Preview-region JPEG upload succeeded: bytes=%u attempt=%u",
+                     "Camera JPEG upload succeeded: bytes=%u attempt=%u",
                      (unsigned)image_length,
                      (unsigned)(attempt + 1U));
             return ESP_OK;
@@ -428,30 +428,32 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
         goto exit;
     }
 
+    image_width = (uint16_t)frame->width;
+    image_height = (uint16_t)frame->height;
+    image_length = frame->len;
     ESP_LOGI(TAG,
-             "Captured source image: %ux%u, %u bytes",
-             (unsigned)frame->width,
-             (unsigned)frame->height,
-             (unsigned)frame->len);
-
-    error = camera_encode_preview_region_jpeg(frame,
-                                              &image_copy,
-                                              &image_length,
-                                              &image_width,
-                                              &image_height);
-    if (error != ESP_OK)
-    {
-        goto exit;
-    }
-
-    camera_release(frame);
-    frame = NULL;
-
-    ESP_LOGI(TAG,
-             "Prepared preview-region upload: %ux%u, %u bytes",
+             "Captured image: %ux%u, %u bytes",
              image_width,
              image_height,
              (unsigned)image_length);
+
+    image_copy = heap_caps_malloc(image_length,
+                                  MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    if (image_copy == NULL)
+    {
+        image_copy = heap_caps_malloc(image_length, MALLOC_CAP_8BIT);
+    }
+    if (image_copy == NULL)
+    {
+        ESP_LOGE(TAG, "Unable to allocate %u-byte image upload buffer",
+                 (unsigned)image_length);
+        error = ESP_ERR_NO_MEM;
+        goto exit;
+    }
+
+    memcpy(image_copy, frame->buf, image_length);
+    camera_release(frame);
+    frame = NULL;
 
     error = oss_build_image_url(identity->device_id,
                                 frame_id,
@@ -471,7 +473,7 @@ esp_err_t image_task_process_one_frame(device_identity_t *identity)
     }
 
     ESP_LOGI(TAG,
-             "Preview-region frame uploaded: frame_id=%s dimensions=%ux%u bytes=%u",
+             "Full-frame image uploaded: frame_id=%s dimensions=%ux%u bytes=%u",
              frame_id,
              image_width,
              image_height,

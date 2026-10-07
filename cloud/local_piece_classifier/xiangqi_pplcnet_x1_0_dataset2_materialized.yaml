@@ -1,0 +1,129 @@
+# Fine-tuning configuration for the physically materialized dataset2 train set.
+Global:
+  checkpoints: null
+  pretrained_model: ./output/xiangqi_pplcnet_x1_0_finetune/best_model
+  output_dir: ./output/xiangqi_pplcnet_x1_0_dataset2_materialized
+  device: gpu
+  save_interval: 2
+  eval_during_train: true
+  eval_interval: 1
+  epochs: 20
+  print_batch_step: 10
+  use_visualdl: true
+  image_shape: [3, 160, 160]
+  save_inference_dir: ./output/xiangqi_pplcnet_x1_0_dataset2_materialized/inference
+  seed: 20261006
+
+Arch:
+  name: PPLCNet_x1_0
+  pretrained: false
+  use_ssld: true
+  class_num: 14
+  use_last_conv: false
+
+Loss:
+  Train:
+    - CELoss:
+        weight: 1.0
+        epsilon: 0.1
+  Eval:
+    - CELoss:
+        weight: 1.0
+
+Optimizer:
+  name: Momentum
+  momentum: 0.9
+  lr:
+    name: Cosine
+    learning_rate: 0.0002
+    warmup_epoch: 2
+  regularizer:
+    name: L2
+    coeff: 0.00003
+
+DataLoader:
+  Train:
+    dataset:
+      name: ImageNetDataset
+      image_root: ../../training_dataset2/piece_character_dataset/images/augmented_train_v1
+      cls_label_path: ../../training_dataset2/piece_character_dataset/paddleclas_augmented_v1/train_list.txt
+      transform_ops:
+        - DecodeImage:
+            to_rgb: true
+            channel_first: false
+        - RandCropImage:
+            size: 160
+            scale: [0.92, 1.0]
+            ratio: [0.95, 1.05]
+        - ColorJitter:
+            brightness: 0.08
+            contrast: 0.08
+            saturation: 0.05
+            hue: 0.02
+        - NormalizeImage:
+            scale: 1.0/255.0
+            mean: [0.485, 0.456, 0.406]
+            std: [0.229, 0.224, 0.225]
+            order: ''
+    sampler:
+      name: PKSampler
+      batch_size: 28
+      sample_per_id: 2
+      sample_method: id_avg_prob
+      drop_last: false
+      shuffle: true
+    loader:
+      num_workers: 0
+      use_shared_memory: false
+  Eval:
+    dataset:
+      name: ImageNetDataset
+      image_root: ../../training_dataset2/piece_character_dataset/images/trainable
+      cls_label_path: ../../training_dataset2/piece_character_dataset/paddleclas/val_list.txt
+      transform_ops:
+        - DecodeImage:
+            to_rgb: true
+            channel_first: false
+        - ResizeImage:
+            size: [160, 160]
+        - NormalizeImage:
+            scale: 1.0/255.0
+            mean: [0.485, 0.456, 0.406]
+            std: [0.229, 0.224, 0.225]
+            order: ''
+    sampler:
+      name: DistributedBatchSampler
+      batch_size: 32
+      drop_last: false
+      shuffle: false
+    loader:
+      num_workers: 0
+      use_shared_memory: false
+
+Infer:
+  infer_imgs: ../../training_dataset2/piece_character_dataset/images/trainable
+  batch_size: 1
+  transforms:
+    - DecodeImage:
+        to_rgb: true
+        channel_first: false
+    - ResizeImage:
+        size: [160, 160]
+    - NormalizeImage:
+        scale: 1.0/255.0
+        mean: [0.485, 0.456, 0.406]
+        std: [0.229, 0.224, 0.225]
+        order: ''
+    - ToCHWImage:
+  PostProcess:
+    name: Topk
+    topk: 3
+    class_id_map_file: ../../training_dataset2/piece_character_dataset/paddleclas_augmented_v1/label_list.txt
+
+Metric:
+  Train:
+    - TopkAcc:
+        topk: [1, 3]
+  Eval:
+    - TopkAcc:
+        topk: [1, 3]

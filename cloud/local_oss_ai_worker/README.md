@@ -179,7 +179,8 @@ python worker.py --bucket esp32-chess-assistant --device-ids chess-AABBCCDDEEFF,
 The OpenCV path now uses two separate geometry stages:
 
 ```text
-source image -> detect broad board quad -> rectify with enough surrounding board area
+source image -> validate and center-crop to 1080x1080
+-> detect broad board quad -> rectify with enough surrounding board area
 -> detect the playable 9x10 grid crop in the rectified image
 -> detect circles on both the rectified color image and a grid-suppressed copy
 -> fuse candidates -> pre-snap centers to board points -> build original-color crops
@@ -189,10 +190,19 @@ source image -> detect broad board quad -> rectify with enough surrounding board
 The rectification frame is intentionally broad so edge labels and border pieces are
 kept. The board coordinate frame is detected later from the rectified grid lines.
 If grid crop detection fails, the worker falls back to `CHESS_BOARD_CROP`.
+The first vertical grid line is anchored relative to the left edge of the 1080x1080
+crop, with a bounded dynamic search window. The upload manifest dimensions remain
+unchanged in the result protocol so the ESP32 can validate and display the response.
 
 Useful tuning variables:
 
 - `CHESS_OPENCV_DETECT_GRID_CROP=true`
+- `CHESS_CENTER_CROP_JPEG_QUALITY` (default `95`)
+- `CHESS_GRID_ANCHOR_LEFT_REFERENCE=true`
+- `CHESS_GRID_LEFT_REFERENCE_RATIO` (default `0.117`)
+- `CHESS_GRID_LEFT_REFERENCE_SEARCH_IMAGE_RATIO` (default `0.03`)
+- `CHESS_GRID_LEFT_REFERENCE_SEARCH_SPACING_RATIO` (default `0.25`)
+- `CHESS_GRID_LEFT_REFERENCE_MIN_WEIGHT_RATIO` (default `0.50`)
 - `CHESS_OPENCV_DUAL_CIRCLE_DETECTION=true`
 - `CHESS_CIRCLE_FUSION_MIN_RADIUS_RATIO` (default `0.60`)
 - `CHESS_CIRCLE_FUSION_MAX_DISTANCE_RATIO` (default `0.65`)
@@ -239,7 +249,7 @@ Useful tuning variables:
 - `CHESS_LOCAL_CLASSIFIER_BACKEND=auto` (`inprocess` or `subprocess` can force a
   backend)
 - `CHESS_LOCAL_CLASSIFIER_PYTHON` (Python executable used by subprocess mode)
-- `CHESS_LOCAL_CLASSIFIER_MIN_CONFIDENCE` (default `0.70`)
+- `CHESS_LOCAL_CLASSIFIER_MIN_CONFIDENCE` (default `0.50`)
 - `CHESS_LOCAL_CLASSIFIER_MIN_MARGIN` (default `0.10`)
 - `CHESS_LOCAL_CLASSIFIER_CROP_SCALE` (default `1.35`, matching training crops)
 - `CHESS_LOCAL_CLASSIFIER_CLOUD_FALLBACK=true`

@@ -146,7 +146,7 @@ def _classify_candidates_inprocess(image_body, circles):
     if device not in ("cpu", "gpu"):
         raise ValueError("CHESS_LOCAL_CLASSIFIER_DEVICE must be cpu or gpu")
 
-    min_confidence = float(os.getenv("CHESS_LOCAL_CLASSIFIER_MIN_CONFIDENCE", "0.70"))
+    min_confidence = float(os.getenv("CHESS_LOCAL_CLASSIFIER_MIN_CONFIDENCE", "0.50"))
     min_margin = float(os.getenv("CHESS_LOCAL_CLASSIFIER_MIN_MARGIN", "0.10"))
     crop_scale = float(os.getenv("CHESS_LOCAL_CLASSIFIER_CROP_SCALE", "1.35"))
     image_size = int(os.getenv("CHESS_LOCAL_CLASSIFIER_IMAGE_SIZE", "160"))
